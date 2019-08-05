@@ -1,0 +1,30 @@
+@charset "utf-8";
+/* CSS Document */
+
+.cont{
+	background: url('http://www.bitcoin-office.com/img/grid.png');
+	background-size: 5% 5%;
+    color:#999999;
+	left:0;
+	right:0;
+	top:0;
+	padding:10px;
+}
+.font{
+	font-family: 'Open Sans', Arial, Helvetice Neue, sans-serif;
+}
+.body{
+	background: url('http://www.bitcoin-office.com/img/grid.png');
+    color:#999999;
+	font-family: Abel;
+	text-align:justify;
+	text-decoration:none;
+}
+
+#mink12
+{
+	background: url('http://www.bitcoin-office.com/img/grid.png');
+    color:#999999;
+	width: 241px;
+	height: 94px;
+}
