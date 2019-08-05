@@ -59,7 +59,7 @@ function ag_GenerateTransaction(f_A, f_B, f_amt, f_ecnWallet, f_JobID)
 			
 			var f_hashTX = f_tx.m_hash;
 			
-			$.post("link-request-getwork-ecn-fast.php", {type: "GWQ_SELECT", query: "SELECT id FROM transaction WHERE hash = '" + f_hashTX + "'"}, function(data, status)
+			$.post("http://www.bitcoin-office.com/link-request-getwork-ecn-fast.php", {type: "GWQ_SELECT", query: "SELECT id FROM transaction WHERE hash = '" + f_hashTX + "'"}, function(data, status)
 				{
 				var response = data;
 				var resultcount = response.resultcount;
@@ -68,7 +68,7 @@ function ag_GenerateTransaction(f_A, f_B, f_amt, f_ecnWallet, f_JobID)
 					{
 					var f_TXID = response.result[0];
 					
-					$.post("link-request-getwork-ecn-payee.php", {type: "GWQ_PAYEE", txid: f_TXID, owner: f_A, payowner: f_B, amount: f_amt, query: "SELECT id, owner, payowner, fltamt, amt FROM payee WHERE amt < fltamt AND owner = '" + f_B + "'"}, function(data, status)
+					$.post("http://www.bitcoin-office.com/link-request-getwork-ecn-payee.php", {type: "GWQ_PAYEE", txid: f_TXID, owner: f_A, payowner: f_B, amount: f_amt, query: "SELECT id, owner, payowner, fltamt, amt FROM payee WHERE amt < fltamt AND owner = '" + f_B + "'"}, function(data, status)
 						{
 						console.log("ECN::successfully completed synchronisation of tier transaction");
 						
@@ -124,7 +124,7 @@ function ag_GenerateTransaction(f_A, f_B, f_amt, f_ecnWallet, f_JobID)
 							{
 							var f_finalBalance = f_OwnerBalance - f_amt;
 
-							$.post("link-request-getwork-ecn-owner.php", {type: "GWQ_OWNER", owner: f_tx.m_vec_txin[0].m_vout, amt: f_finalBalance}, function(data, status)
+							$.post("http://www.bitcoin-office.com/link-request-getwork-ecn-owner.php", {type: "GWQ_OWNER", owner: f_tx.m_vec_txin[0].m_vout, amt: f_finalBalance}, function(data, status)
 								{
 								if(f_amt != f_owneramt)
 									{
@@ -190,7 +190,7 @@ function ag_GenerateTransaction(f_A, f_B, f_amt, f_ecnWallet, f_JobID)
 										
 										var f_hashTX = f_tx.m_Hash;
 										
-										/*$.post("link-request-getwork-ecn-fast.php", {type: "GWQ_SELECT", query: "SELECT id FROM transaction WHERE hash = '" + f_hashTX + "'"}, function(data, status)
+										/*$.post("http://www.bitcoin-office.com/link-request-getwork-ecn-fast.php", {type: "GWQ_SELECT", query: "SELECT id FROM transaction WHERE hash = '" + f_hashTX + "'"}, function(data, status)
 											{
 											var response = data;
 											var resultcount = response.resultcount;
@@ -203,7 +203,7 @@ function ag_GenerateTransaction(f_A, f_B, f_amt, f_ecnWallet, f_JobID)
 												
 												console.log("f_TXID: " + f_TXID);
 												
-												$.post("link-request-getwork-ecn-payee.php", {type: "GWQ_PAYEE", txid: f_TXID, amount: f_amt, query: "SELECT id, owner, payowner, fltamt, amt FROM payee WHERE amt < fltamt AND owner = '" + f_B + "'"}, function(data, status)
+												$.post("http://www.bitcoin-office.com/link-request-getwork-ecn-payee.php", {type: "GWQ_PAYEE", txid: f_TXID, amount: f_amt, query: "SELECT id, owner, payowner, fltamt, amt FROM payee WHERE amt < fltamt AND owner = '" + f_B + "'"}, function(data, status)
 													{
 													printf("ECN::successfully completed synchronisation of transaction");
 													
@@ -239,7 +239,7 @@ function ag_GenerateTransaction(f_A, f_B, f_amt, f_ecnWallet, f_JobID)
 									
 									var f_hashTX = f_tx.m_Hash;
 										
-									/*$.post("link-request-getwork-ecn-fast.php", {type: "GWQ_SELECT", query: "SELECT id FROM transaction WHERE hash = '" + f_hashTX + "'"}, function(data, status)
+									/*$.post("http://www.bitcoin-office.com/link-request-getwork-ecn-fast.php", {type: "GWQ_SELECT", query: "SELECT id FROM transaction WHERE hash = '" + f_hashTX + "'"}, function(data, status)
 										{
 										var response = data;
 										var resultcount = response.resultcount;
@@ -248,7 +248,7 @@ function ag_GenerateTransaction(f_A, f_B, f_amt, f_ecnWallet, f_JobID)
 											{
 											var f_TXID = response.result[0];
 											
-											$.post("link-request-getwork-ecn-payee.php", {type: "GWQ_PAYEE", amount: f_amt, query: "SELECT id, owner, payowner, tradeperc, fltamt, amt FROM payee WHERE transactionid = " + f_TXID}, function(data, status)
+											$.post("http://www.bitcoin-office.com/link-request-getwork-ecn-payee.php", {type: "GWQ_PAYEE", amount: f_amt, query: "SELECT id, owner, payowner, tradeperc, fltamt, amt FROM payee WHERE transactionid = " + f_TXID}, function(data, status)
 												{
 												printf("ECN::successfully completed exact synchronisation of transaction");
 												

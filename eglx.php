@@ -186,7 +186,7 @@
 		$g_PEER = 4;
 		$g_CurrentShareOffset = 0;
 		require_once('code/cube/cube.php');
-		require_once('link-request-getwork-ecn-fast-ary.php');*/
+		require_once('http://www.bitcoin-office.com/link-request-getwork-ecn-fast-ary.php');*/
 		
 		$countshr = 0;
 		$minerid = 0;

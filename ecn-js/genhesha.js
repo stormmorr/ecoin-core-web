@@ -316,7 +316,7 @@ function ag_Gen_Hasha(f_Hesh, g_Target, f_JobID)
 	
 		//console.log("GetWorkQuery()");
 	
-		$.post("link-request-getwork-ecn-fast.php", {type: "GWQ_SELECT", query: "SELECT id, jobid, blockledger, dated FROM block ORDER BY dated DESC LIMIT 1"}, function(data, status)
+		$.post("http://www.bitcoin-office.com/link-request-getwork-ecn-fast.php", {type: "GWQ_SELECT", query: "SELECT id, jobid, blockledger, dated FROM block ORDER BY dated DESC LIMIT 1"}, function(data, status)
 			{
 			var resp = data;
 			var result = resp.result;
@@ -360,14 +360,14 @@ function ag_Gen_Hasha(f_Hesh, g_Target, f_JobID)
 			g_sharevalue[15] = f_Hesh.m_bckblue;
 			g_sharevalue[16] = 0.0;
 
-			$.post("link-request-getwork-ecn-fast.php", {type: "GWQ_SELECT", query: "SELECT id FROM share WHERE shareledger = " + f_Hash.m_OutputHash}, function(data, status)
+			$.post("http://www.bitcoin-office.com/link-request-getwork-ecn-fast.php", {type: "GWQ_SELECT", query: "SELECT id FROM share WHERE shareledger = " + f_Hash.m_OutputHash}, function(data, status)
 				{
 				var response = data;
 				var testresult = response.result;
 			
 				if(testresult["id"] <= 0)
 					{
-					$.post("link-request-getwork-ecn-fast.php", {type: "GWQ_INSERT", query: ag_PrepareInsert("share", 17, g_sharefield, g_sharevalue)}, function(data, status)
+					$.post("http://www.bitcoin-office.com/link-request-getwork-ecn-fast.php", {type: "GWQ_INSERT", query: ag_PrepareInsert("share", 17, g_sharefield, g_sharevalue)}, function(data, status)
 						{
 						var response = data;
 						var resultid = response.lastid;
@@ -407,7 +407,7 @@ function ag_Gen_Hasha(f_Hesh, g_Target, f_JobID)
 
 							g_CubeFieldCount = 55;
 							
-							$.post("link-request-getwork-ecn-fast.php", {type: "GWQ_INSERT", query: ag_PrepareInsert("cube", 55, g_cubefield, g_cubevalue)}, function(data, status)
+							$.post("http://www.bitcoin-office.com/link-request-getwork-ecn-fast.php", {type: "GWQ_INSERT", query: ag_PrepareInsert("cube", 55, g_cubefield, g_cubevalue)}, function(data, status)
 								{
 								/*var response = data;
 								var resultid = response.lastid;
@@ -416,7 +416,7 @@ function ag_Gen_Hasha(f_Hesh, g_Target, f_JobID)
 								g_adivalue[1] = f_Hesh.m_vec_Cube[f_Int];
 								g_adivalue[2] = f_ShareID;
 
-								$.post("link-request-getwork-ecn-fast.php", {type: "GWQ_INSERT", query: ag_PrepareInsert("adindex", 3, g_adifield, g_adivalue)}, function(data, status)
+								$.post("http://www.bitcoin-office.com/link-request-getwork-ecn-fast.php", {type: "GWQ_INSERT", query: ag_PrepareInsert("adindex", 3, g_adifield, g_adivalue)}, function(data, status)
 									{
 									}, "json");*/
 								}, "json");
@@ -434,7 +434,7 @@ function ag_Gen_Hasha(f_Hesh, g_Target, f_JobID)
 
 function ag_Load_Share(f_ShareID, f_JobID, f_PEER, f_CurrentShareOffset, thetaxx, thetaxy, thetaxz)
 {	
-	$.post("link-request-getwork-ecn-fast-ary.php", {shareid: f_ShareID, jobid: f_JobID, peer: f_PEER, offset: f_CurrentShareOffset, thetaxx, thetaxy, thetaxz}, function(data, status)
+	$.post("http://www.bitcoin-office.com/link-request-getwork-ecn-fast-ary.php", {shareid: f_ShareID, jobid: f_JobID, peer: f_PEER, offset: f_CurrentShareOffset, thetaxx, thetaxy, thetaxz}, function(data, status)
 		{
 		var clobnom = data.clobnom;
 		var clobarray = data.clob;

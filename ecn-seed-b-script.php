@@ -220,7 +220,7 @@
 		$usdamt = 0;
 		$btcamt = 0;
 		
-		//require_once("link-request-getwork-ecn-calc-owner.php");
+		//require_once("http://www.bitcoin-office.com/link-request-getwork-ecn-calc-owner.php");
 	?>
 	<title>Bitcoin-Office.com ecoin Cloud Mining Solution</title>
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
