@@ -1,9 +1,9 @@
-﻿var CUBE_ADMAX = 100;
+﻿var CUBE_ADMAX = 15;
 var g_swit = 0.75;
 var g_Result = false;
 
 var reportPeriod = 1000;
-var lowPeriod = 420000;
+var HighPeriod = 420000;
 var jobPeriod = 25000;
 var jobPeriodnonces = 360000;
 var maxNonce = 0xFFFFFFFF;
@@ -13,9 +13,9 @@ var run = true;
 
 var TotalHeshes = 0;
 
-var g_Lowton = null;
-var g_LowtonMark = 500000000000.0;
-var g_LowtonTarget = null;
+var g_Highton = null;
+var g_HightonMark = -500000000000;
+var g_HightonTarget = null;
 
 importScripts('hesh.js');
 importScripts('cube.js');
@@ -145,20 +145,107 @@ function ag_CompileTarget(response)
 	return f_Target;
 }
 
+function ag_CompileTarget_Script(response)
+{
+	var hellynom = response.helly;
+	var hollynom = response.holly;
+	var tvob = response.tvob;
+	var tcob = response.tcob;
+	
+	var f_Target = new classTarget_JScript();
+	
+	//f_Target.acMergeUpper();
+	
+	f_Target.acGatherNames();
+	
+	f_Target.acGatherICO_jscript_base();
+	
+	f_Target.acMerge_ICOtoName();
+	
+	var f_FunctionCount = 1;
+	for(var f_funcCount = 0; f_funcCount < f_FunctionCount; f_funcCount++)
+		{
+		var f_Function = new classFunction();
+		f_Function.m_Name = "";
+		
+		 ////////////////
+		// Demo 
+		
+		//Inputs Var		
+		/*while(f_Target.m_GRMinput[INSTA_TYPE_VAR_CALL] > -5)
+			{
+			var f_vec_Line = [];
+			var f_idx_vec_Line = 0;
+			
+			if(f_Target.m_GRMinput[INSTA_TYPE_VAR_CALL] > -5)
+				{
+				var f_NewInstaVarDef = new classInsta();
+				f_NewInstaVarDef.m_Type = INSTA_TYPE_VAR_DEF;
+				f_NewInstaVarDef.m_String = "var * = ";
+				f_NewInstaVarDef.m_value = 0.0;
+			
+				var f_NewInstaInputCall = new classInsta();
+				f_NewInstaInputCall.m_Type = INSTA_TYPE_VAR_CALL;
+				f_NewInstaInputCall.m_String = f_Target.ac_next_InputName(INSTA_TYPE_VAR_CALL);
+				f_NewInstaInputCall.m_value = 0.0;
+			
+				f_vec_Line[f_idx_vec_Line] = f_NewInstaVarDef;
+				f_idx_vec_Line++;
+				f_vec_Line[f_idx_vec_Line] = f_NewInstaInputCall;
+				f_idx_vec_Line++;
+			
+				f_Function.m_vec_CodeLineStorage[f_Function.m_idx_vec_CodeLineStorage] = f_vec_Line;
+				f_Function.m_idx_vec_CodeLineStorage++;
+				}
+			}*/
+			
+		//Output string
+		/*while(f_Target.m_GRMoutput[INSTA_TYPE_FUNC_CALL] > -5)
+			{
+			var f_NewInstaVarDef = new classInsta();
+			f_NewInstaVarDef.m_Type = INSTA_TYPE_FUNC_CALL;
+			f_NewInstaVarDef.m_String = f_Target.ac_next_OutputName(INSTA_TYPE_FUNC_CALL);
+			f_NewInstaVarDef.m_value = 0.0;
+				
+			while(f_Target.m_GRMoutput[INSTA_TYPE_VAR_CALL] > -5)
+				{
+				var f_NewInstaInputCall = new classInsta();
+				f_NewInstaInputCall.m_Type = INSTA_TYPE_VAR_CALL;
+				f_NewInstaInputCall.m_String = f_Target.ac_next_OutputName(INSTA_TYPE_VAR_CALL);
+				f_NewInstaInputCall.m_value = 0.0;
+			
+				f_vec_Line[f_idx_vec_Line] = f_NewInstaVarDef;
+				f_idx_vec_Line++;
+				f_vec_Line[f_idx_vec_Line] = f_NewInstaInputCall;
+				f_idx_vec_Line++;
+			
+				f_Function.m_vec_CodeLineStorage[f_Function.m_idx_vec_CodeLineStorage] = f_vec_Line;
+				f_Function.m_idx_vec_CodeLineStorage++;
+				}
+			}*/
+			
+		f_Target.m_vec_Function[f_Target.m_idx_vec_Function] = f_Function;
+		f_Target.m_idx_vec_Function++;
+		}	
+		
+	console.log("Loaded classTarget-jscript-base ID 1x");
+	
+	return f_Target;
+}
+
 function ag_Gen_Hesha(job, progress_report, cb)
 {
 	var data = job.data;
 	var f_JobID = job.jobid;
 	
-	var g_Target = ag_CompileTarget(job.response);	
+	var g_Target = ag_CompileTarget_Script(job.response);	
 	
 	var hashes = 0;
-    var t = (new Date()).getTime() + reportPeriod;
-	var l = (new Date()).getTime() + lowPeriod;
+    var timet = (new Date()).getTime() + 1000;
+	var h = (new Date()).getTime() + HighPeriod;
 	
-	job.targdiff = 9500.5; //Target Mark Threshold
+	job.targdiff = 15000; //Target Mark Threshold
 	var f_TargetFails = 0;
-	//job.targdiff += 1.0;
 	job.save = false;
 	job.end = false;
 	run = true;
@@ -379,11 +466,11 @@ function ag_Gen_Hesha(job, progress_report, cb)
 
 		var f_LimitSense = (CUBE_ADMAX * 1.0);// * Math.random();
 		
-		f_LimitSense /= 1.7;
+		//f_LimitSense /= 1.7;
 
 		while(f_Hesh.m_idx_vec_Cube < f_LimitSense)
 			{
-			var g_Fingat = Math.random() * 100;
+			var g_Fingat = 85;
 
 			if(g_Fingat > ((f_LimitSense / CUBE_ADMAX) * 80))
 				{
@@ -413,90 +500,112 @@ function ag_Gen_Hesha(job, progress_report, cb)
 		f_Hesh.m_bckgreen = f_ColorBCK.m_Y;
 		f_Hesh.m_bckblue = f_ColorBCK.m_Z;
 
-		var f_Target = new classTarget();
-		
-		f_Target.acFromHesh(f_Hesh);
-
 		var f_TargetScript = new classTarget_JScript();
 		
+		f_TargetScript.acGatherNames();
+		
 		//f_TargetScript.acMergeUpper();
-		f_TargetScript.acFromHesh(f_Hesh);
+		f_TargetScript.acFromHesh(f_Hesh, g_Target);
 
 		//console.log(f_TargetScript.m_String);
+		
+		//console.log("steam!");
 
-		if(f_Target.m_Collection.m_idx_vec_Element > 1)
+		if(f_TargetScript.m_idx_vec_Function >= 1)
 			{
-			var g_Result = true;//f_TargetScript.acCompare(f_Target, 5.55, job.targdiff, true);
+			var g_Result1 = true; //f_TargetScript.acCompare(f_Target, 5.55, job.targdiff, true);
 
+			//console.log("tea!");
+			
 			/*try
 				{
-				eval(this.m_vec_Function[0].m_String);
+				eval(f_TargetScript.m_vec_Function[0].m_vec_String);
 				}
 			catch(e)
 				{
 				//console.log(JSON.stringify(e));
-				g_Result = false;
+				g_Result1 = false;
 				}*/
-
-				//Faston
-			g_Result = true;
 			
-			if(g_Result == true)
+			if((g_Result1 == true) && (f_TargetScript.m_vec_Function[0].m_vec_String.length > 500))
 				{
-				job.hesh = f_Hesh;
-				job.hash = f_Hash;
-				job.heshtarget = f_TargetScript;
-				job.result = "_ECNJSSCRIPTSHARE_";
-				job.save = true;
-				run = false;
-				cb(job);
+				//console.log("mmm!");*/
+				var f_Result2 = f_TargetScript.acCompare(g_Target, 50.55 * (f_TargetScript.m_vec_Function[0].m_vec_String.length / 1000), job.targdiff);
+				
+				if(f_Result2 == true)
+				     {
+				     job.hesh = f_Hesh;
+				     job.hash = f_Hash;
+				     job.heshtarget = f_TargetScript;
+				     job.result = "_ECNJSSCRIPTSHARE_";
+				     job.save = true;
+					 job.mark = g_Target.m_Mark;
+				     run = false;
+				     cb(job);
+				     }
+				else
+					{
+					f_TargetFails++;
+					//f_TargetScript.acPowerDown();
+					
+					if(f_TargetFails > 2000)
+						{
+						job.targdiff--;
+						f_TargetFails = 0;
+						}
+						
+					if(g_Target.m_Mark > g_HightonMark)
+						{
+						g_HightonMark = g_Target.m_Mark;
+						g_Highton = f_Hesh;
+						g_HightonTarget = f_TargetScript;
+						}
+					}
 				}
 			else
 				{
 				f_TargetFails++;
 				//f_TargetScript.acPowerDown();
 				
-				if(f_TargetFails > 600)
+				if(f_TargetFails > 2000)
 					{
-					job.targdiff += 5000;
+					job.targdiff--;
 					f_TargetFails = 0;
 					}
 					
-				if(f_Target.m_Mark > 300.0)
+				if(g_Target.m_Mark > g_HightonMark)
 					{
-					if(f_Target.m_Mark < g_LowtonMark)
-						{
-						g_LowtonMark = f_Target.m_Mark;
-						g_Lowton = f_Hesh;
-						g_LowtonTarget = f_Target;
-						}
+					g_HightonMark = g_Target.m_Mark;
+					g_Highton = f_Hesh;
+					g_HightonTarget = f_TargetScript;
 					}
 				}
 				
 			TotalHeshes++;
-			job.targdiff += 3.5;
 			
-			if(l < (new Date()).getTime())
+			if(h < (new Date()).getTime())
 				{
-				l = (new Date()).getTime() + lowPeriod;
-				job.hesh = g_Lowton;
-				job.hash = g_Lowton.m_Hash;
-				job.heshtarget = g_LowtonTarget;
-				job.result = "_ECNLOWTON_";
+				h = (new Date()).getTime() + HighPeriod;
+				job.hesh = g_Highton;
+				job.hash = g_Highton.m_Hash;
+				job.heshtarget = g_HightonTarget;
+				job.result = "_ECNHIGHTON_";
 				job.save = true;
+				job.mark = g_HightonMark;
 				run = false;
 				cb(job);
 				}
 			else
 				{
-				if(t < (new Date()).getTime())
-					{
-					t = (new Date()).getTime() + reportPeriod;
+				if(timet < (new Date()).getTime())
+					{	
+					timet = (new Date()).getTime() + reportPeriod;
 					job.hesh = f_Hesh;
 					job.hash = f_Hash;
-					job.heshtarget = f_Target;
+					job.heshtarget = f_TargetScript;
 					job.result = "_ECNREPORT_";
 					job.save = false;
+					job.mark = g_HightonMark;
 					progress_report();
 					}
 				}

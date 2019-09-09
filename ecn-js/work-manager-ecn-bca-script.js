@@ -151,12 +151,12 @@ function onSuccess(jsonresp, f_admax)
 	job.response = response;
 	
 	var f_Hesh = new ecnHesh();
-				
+
 	console.log("Prepped ecnHesh");
 
 	job.hesh = f_Hesh;
 	job.jobid = 3;
-	job.targdiff = 105000.5;
+	job.targdiff = 30;
 
     var t = 70.0; //Target mark threshold PLEASE SET GLOBAL OR IF HERE
     var d = 26; //Difficulty
@@ -204,24 +204,28 @@ function eSession(f_admax)
 	console.log("           Majority share for the Majority");
 	console.log("...loading ecnWallet...");
 	
-	//ag_GatherTransactions(3);
+	//Input
+	for(var f_XY = 0; f_XY < g_idx_vec_scrInputHTML; f_XY++)
+		{
+		if(g_vec_scrInputHTML[f_XY] != "Ex")
+			{
+			document.getElementById("wwh_base_inputcanvas").innerHTML += g_vec_scrInputHTML[f_XY];
+			}
+		}
+}
+
+function eStartMiner()
+{
+	console.log("Starting ecn miner");
 	
-	this.m_vec_Wallet = [];
-	this.m_idx_vec_wallet = 0;
-	
-	//var f_Wallet = new ecnWallet();
-	
-	this.m_vec_Wallet[this.m_idx_vec_wallet] = g_Wallet;
-	this.m_idx_vec_wallet++;
-	
-	this.f_TargetID = 1;
+	var f_TargetID = 1;
     
-    ag_GetTargetFromID(this.f_TargetID, g_admax);
+    ag_GetTargetFromID(f_TargetID, g_admax);
 }
 
 function ag_GetTargetFromID(f_TargetID, f_admax)
 {
-	$.post("http://www.bitcoin-office.com/link-request-getwork-ecn-fast-target-volume.php", {targetid: 1}, function(data, status)
+	$.post("link-request-getwork-ecn-fast-target-volume.php", {targetid: 1}, function(data, status)
 		{
 		onSuccess(data, f_admax);
 		}, "json");
@@ -229,7 +233,7 @@ function ag_GetTargetFromID(f_TargetID, f_admax)
 
 function ag_Load_Share(f_ShareID, f_JobID, f_PEER, f_CurrentShareOffset, thetaxx, thetaxy, thetaxz)
 {	
-	$.post("http://www.bitcoin-office.com/link-request-getwork-ecn-fast-ary.php", {shareid: f_ShareID, jobid: f_JobID, peer: f_PEER, offset: f_CurrentShareOffset, thetaxx, thetaxy, thetaxz}, function(data, status)
+	$.post("link-request-getwork-ecn-fast-ary.php", {shareid: f_ShareID, jobid: f_JobID, peer: f_PEER, offset: f_CurrentShareOffset, thetaxx, thetaxy, thetaxz}, function(data, status)
 		{
 		var clobnom = data.clobnom;
 		var clobarray = data.clob;
@@ -263,6 +267,7 @@ function onWorkerMessage(event)
 	var f_Save = job.save;
 	var f_TargetDifficulty = job.targdiff;
 	var f_ShareResult = job.result;
+	var f_HighGrade = job.mark;
 	
 	if(f_Save == true)
 		{
@@ -288,7 +293,7 @@ function onWorkerMessage(event)
 		
 		 ///////////////
 		// post	
-		//$.post("http://www.bitcoin-office.com/link-request-getwork-ecn-fast.php", {type: "GWQ_SELECT", query: "SELECT id, jobid, blockledger, dated FROM block ORDER BY dated DESC LIMIT 1"}, function(data, status)
+		//$.post("link-request-getwork-ecn-fast.php", {type: "GWQ_SELECT", query: "SELECT id, jobid, blockledger, dated FROM block ORDER BY dated DESC LIMIT 1"}, function(data, status)
 		//	{
 			//var resp = data;
 			//var resultcount = resp.resultcount;
@@ -336,7 +341,7 @@ function onWorkerMessage(event)
 					
 					f_Hesh.m_Hash = f_Hash;
 
-					$.post("http://www.bitcoin-office.com/link-request-getwork-ecn-fast.php", {type: "GWQ_SELECT", query: "SELECT id FROM share WHERE shareledger = '" + f_Hash.m_OutputHash + "'"}, function(data, status)
+					$.post("link-request-getwork-ecn-fast.php", {type: "GWQ_SELECT", query: "SELECT id FROM share WHERE shareledger = '" + f_Hash.m_OutputHash + "'"}, function(data, status)
 						{
 						var response = data;
 						var resultcount = response.resultcount;
@@ -344,9 +349,9 @@ function onWorkerMessage(event)
 						if(resultcount <= 0)
 							{
 							console.log("online4");
-							$.post("http://www.bitcoin-office.com/link-request-getwork-ecn-long-share.php", {type: "GWQ_SHARE", mark: f_Target.m_Mark, jobid: f_JobID, hash: f_Hash.m_OutputHash, owner: "0360ce57376c9433e2a677216e8f5ef14f307b18a71b5c806f508084442ee1f7", bck_red: f_Hesh.m_bckred, bck_green: f_Hesh.m_bckgreen, bck_blue: f_Hesh.m_bckblue}, function(data, status)
+							$.post("link-request-getwork-ecn-long-share.php", {type: "GWQ_SHARE", mark: f_Target.m_Mark, jobid: f_JobID, hash: f_Hash.m_OutputHash, owner: "0360ce57376c9433e2a677216e8f5ef14f307b18a71b5c806f508084442ee1f7", bck_red: f_Hesh.m_bckred, bck_green: f_Hesh.m_bckgreen, bck_blue: f_Hesh.m_bckblue}, function(data, status)
 								{		
-								$.post("http://www.bitcoin-office.com/link-request-getwork-ecn-fast.php", {type: "GWQ_SELECT", query: "SELECT id FROM share WHERE shareledger = '" + f_Hash.m_OutputHash + "'"}, function(data, status)
+								$.post("link-request-getwork-ecn-fast.php", {type: "GWQ_SELECT", query: "SELECT id FROM share WHERE shareledger = '" + f_Hash.m_OutputHash + "'"}, function(data, status)
 									{
 									var resp = data;
 									var resultcount = resp.resultcount;
@@ -365,7 +370,7 @@ function onWorkerMessage(event)
 										
 										for(var f_Int = 0; f_Int < f_Hesh.m_idx_vec_Cube; f_Int++)
 											{
-											$.post("http://www.bitcoin-office.com/link-request-getwork-ecn-long-cube.php", {type: "GWQ_CUBE",
+											$.post("link-request-getwork-ecn-long-cube.php", {type: "GWQ_CUBE",
 												vert1x: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Vertex[0].m_X,
 												vert1y: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Vertex[0].m_Y,
 												vert1z: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Vertex[0].m_Z,
@@ -428,7 +433,7 @@ function onWorkerMessage(event)
 												g_adivalue[1] = f_Hesh.m_vec_Cube[f_Int];
 												g_adivalue[2] = f_ShareID;
 
-												$.post("http://www.bitcoin-office.com/link-request-getwork-ecn-fast.php", {type: "GWQ_INSERT", query: ag_PrepareInsert("adindex", 3, g_adifield, g_adivalue)}, function(data, status)
+												$.post("link-request-getwork-ecn-fast.php", {type: "GWQ_INSERT", query: ag_PrepareInsert("adindex", 3, g_adifield, g_adivalue)}, function(data, status)
 													{
 													}, "json");*/
 												}, "json");
@@ -440,17 +445,19 @@ function onWorkerMessage(event)
 											
 											ag_Load_Share(f_ShareID, f_JobID, 0, 0, 0.0, 0.0, 0.0);
 											
-											if(f_ShareResult == "_ECNJSSCRIPTSHARE_")
+											if((f_ShareResult == "_ECNJSSCRIPTSHARE_") ||
+											   (f_ShareResult == "_ECNHIGHTON_"))
 												{
-												console.log("ECN-SHARESCRIPT v1.1");	
-												console.log(f_Target.m_String);
+												console.log("ECN-SHARESCRIPT v1.1 " + f_ShareResult);	
+												console.log(f_Target.m_vec_Function[0].m_vec_String);
 												
 												document.getElementById('script').innerHTML = '<textarea rows="10" cols="80" style="color:#000000">' + f_Target.m_String + '</textarea>';
+												document.getElementById('grademark').innerHTML = 'GradeMark(highest) - ' + f_HighGrade;
 												
 												var f_Clear = true;
 												try
 													{
-													eval(f_Target.m_String);
+													eval(f_Target.m_vec_Function[0].m_vec_String);
 													}
 												catch(e)
 													{
@@ -479,7 +486,8 @@ function onWorkerMessage(event)
 		}
 	else
 		{
-		console.log("HeshRate: " + heshes_per_second + " < Grade: " + f_TargetDifficulty);
+		console.log("HeshRate: " + heshes_per_second + " < Grade: " + f_TargetDifficulty + " HighestMark: " + f_HighGrade);
+		document.getElementById('grademark').innerHTML = 'GradeMark(highest) - ' + f_HighGrade;
 		}
 
 	if(!job.total_heshes) job.total_heshes = 1;
