@@ -175,17 +175,22 @@ ecnWallet.prototype.Prepare_Start = function ()
 
 ecnWallet.prototype.Update = function ()
 {
-	g_UpdateFinger = 0;
-
+	console.log("RES¬this.m_idx_vec_Key = " + this.m_idx_vec_Key);
+	
 	for(var f_x = 0; f_x < this.m_idx_vec_Key; f_x++)
 		{
-		$.post("http://www.bitcoin-office.com/http://www.bitcoin-office.com/link-request-getwork-ecn-fast.php", {type: "GWQ_SELECT", query: "SELECT id FROM address WHERE owner = '" + this.m_vec_Adr[f_x] + "'"}, function(data, status)
-			{
-			var response = data;
-			var resultcount = response.resultcount;
+		console.log("f_x" + f_x);
+		console.log("f_adr = " + this.m_vec_Adr[f_x]);
 			
-			if(resultcount <= 0)
-				{
+		//$.post("http://www.bitcoin-office.com/link-request-getwork-ecn-fast.php", {type: "GWQ_SELECT", query: "SELECT id FROM address WHERE owner = '" + this.m_vec_Adr[f_x] + "'", adr: this.m_vec_Adr[f_x]}, function(data, status)
+		//	{
+			//var response = data;
+			//var resultcount = response.resultcount;
+		
+			console.log("'R'");
+			
+			//if(resultcount <= 0)
+			//	{
 				var g_adrfield = [];
 				g_adrfield[0] = "assetid";
 				g_adrfield[1] = "assetofficeid";
@@ -195,8 +200,7 @@ ecnWallet.prototype.Update = function ()
 				var g_adrvalue = [];
 				g_adrvalue[0] = "1";
 				g_adrvalue[1] = "3";
-				g_adrvalue[2] = g_Wallet.m_vec_Adr[g_UpdateFinger];
-				g_UpdateFinger++;
+				g_adrvalue[2] = this.m_vec_Adr[f_x];
 				g_adrvalue[3] = "0.0";
 				
 				var f_Resulttxadr = "";
@@ -206,14 +210,18 @@ ecnWallet.prototype.Update = function ()
 					f_Resulttxadr += g_adrvalue[f_i] + "::::";
 					}
 
-				$.post("http://www.bitcoin-office.com/http://www.bitcoin-office.com/link-request-getwork-ecn-insert.php", {type: "GWQ_INSERT", table: "address", count: 4, string: f_Resulttxadr}, function(data, status)
+				var f_Query = "SELECT id FROM address WHERE owner = '" + this.m_vec_Adr[f_x] + "'";
+				console.log(f_Query);
+
+				$.post("http://www.bitcoin-office.com/link-request-getwork-ecn-insert.php", {type: "GWQ_INSERT", table: "address", count: 4, string: f_Resulttxadr, typeC: "GWQ_SELECT", queryC: f_Query, adr: this.m_vec_Adr[f_x]}, function(data, status)
 					{
 					var response = data;
+					var resultcount = response.resultcount;
 					
-					console.log(JSON.stringify(response));
+					console.log("RESP¬" + JSON.stringify(response));
 					}, "json");
-				}
-			}, "json");
+			//	}
+		//	}, 'json');
 		}
 }
 
@@ -230,7 +238,7 @@ ecnWallet.prototype.GetBalance = function(f_InPoundsSterling, callback)
 			
 		this.m_RefreshLVL = 0;
 
-		$.post("http://www.bitcoin-office.com/http://www.bitcoin-office.com/link-request-getwork-ecn-fast.php", {type: "GWQ_SELECT", query: "SELECT amt FROM address WHERE owner = '" + g_Wallet.GetAdr() + "'"}, function(data, status)
+		$.post("http://www.bitcoin-office.com/link-request-getwork-ecn-fast.php", {type: "GWQ_SELECT", query: "SELECT amt FROM address WHERE owner = '" + g_Wallet.GetAdr() + "'"}, function(data, status)
 			{
 			var response = data;
 			var balresult = response.result;
@@ -296,14 +304,14 @@ ecnWallet.prototype.GetEValue = function(callback)
 
 	if(this.m_RefreshEValueLVL > 1)
 		{
-		$.post("http://www.bitcoin-office.com/http://www.bitcoin-office.com/link-request-getamt-ecn-fast.php", {type: "GWQ_SELECT", query: "SELECT amt FROM address"}, function(data, status)
+		$.post("http://www.bitcoin-office.com/link-request-getamt-ecn-fast.php", {type: "GWQ_SELECT", query: "SELECT amt FROM address"}, function(data, status)
 			{
 			var response = data;
 			var amtresult = response.ciramt;
 			
 			this.m_Circulationamt = amtresult;
 			
-			$.post("http://www.bitcoin-office.com/http://www.bitcoin-office.com/link-request-getwork-ecn-fast.php", {type: "GWQ_SELECT", query: "SELECT price, tx, unit, visits FROM coin WHERE assetofficeid = 3"}, function(data, status)
+			$.post("http://www.bitcoin-office.com/link-request-getwork-ecn-fast.php", {type: "GWQ_SELECT", query: "SELECT price, tx, unit, visits FROM coin WHERE assetofficeid = 3"}, function(data, status)
 				{
 				var resp = data;
 				var result = resp.result;
@@ -366,7 +374,7 @@ ecnWallet.prototype.GetEValue = function(callback)
 							f_ResultcoinUP += f_coinupvalue[f_i] + "::::";
 							}
 
-						$.post("http://www.bitcoin-office.com/http://www.bitcoin-office.com/link-request-getwork-ecn-update.php", {type: "GWQ_UPDATE", table: "coin", count: 4, string: f_ResultcoinUP, id: 2}, function(data, status)
+						$.post("http://www.bitcoin-office.com/link-request-getwork-ecn-update.php", {type: "GWQ_UPDATE", table: "coin", count: 4, string: f_ResultcoinUP, id: 2}, function(data, status)
 							{
 							g_TX = this.m_TX;
 							
@@ -404,7 +412,7 @@ ecnWallet.prototype.GetEValue = function(callback)
 						f_Resulttxcoin += f_coinupvalue[f_i] + "::::";
 						}
 
-					$.post("http://www.bitcoin-office.com/http://www.bitcoin-office.com/link-request-getwork-ecn-insert.php", {type: "GWQ_INSERT", table: "coin", count: 5, string: f_Resulttxcoin}, function(data, status)
+					$.post("http://www.bitcoin-office.com/link-request-getwork-ecn-insert.php", {type: "GWQ_INSERT", table: "coin", count: 5, string: f_Resulttxcoin}, function(data, status)
 						{
 						this.m_Price = 1.5;
 						this.m_TX = 15.0;

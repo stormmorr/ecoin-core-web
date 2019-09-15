@@ -63,6 +63,15 @@ var g_idx_vec_scrInputHTML = 0;
 var g_vec_scrInputType = [];
 var g_idx_vec_scrInputType = 0;
 
+var g_vec_scrInputNameCuteFunc = [];
+var g_idx_vec_scrInputNameCuteFunc = 0;
+		
+var g_vec_scrInputPlaceCuteFunc = [];
+var g_idx_vec_scrInputPlaceCuteFunc = 0;
+		
+var g_vec_scrInputTestCuteFunc = [];
+var g_idx_vec_scrInputTestCuteFunc = 0;
+
 var g_vec_scrControlName = [];
 var g_idx_vec_scrControlName = 0;
 
@@ -80,6 +89,11 @@ var g_idx_vec_control_Bridge = 0;
 
 var g_vec_output_Bridge = [];
 var g_idx_vec_output_Bridge = 0;
+
+var g_EnablePR = false;
+var g_ThisName = "Default_Insta";
+var g_ThisType = INSTA_TYPE_FUNC_DEF;
+var g_This = new classInsta(g_ThisName, g_ThisType);
 
 function classTarget_JScript()
 {
@@ -926,6 +940,62 @@ classTarget_JScript.prototype.acScan_Code_Bridges = function(f_Function, f_Strin
 		}
 
 	return f_Result;
+}
+
+classTarget_JScript.prototype.acMark_TestICO = function(f_Target)
+{
+	var f_Mark = new classMark();
+	
+	var f_Function = this.m_vec_Function[0];
+	
+	var f_Run = 0;
+	for(var f_XY = 0; f_XY < f_Function.m_idx_vec_CodeLineStorage; f_XY++)
+		{
+		var f_Line = f_Function.m_vec_CodeLineStorage[f_XY];
+
+		for(var f_I = 0; f_I < f_Line.length; f_I++)
+			{
+			g_This = f_Line[f_I]
+			g_ThisType = f_Line[f_I].m_Type;
+			g_ThisName = f_Line[f_I].m_String;
+				
+			var f_testARG = [];
+			f_testARG.f_indexInsta = f_I;
+			f_testARG.f_indexFunction = f_Run + f_I;
+			
+			var f_build_LastNameClose = [];
+			var f_build_LastTypeClose = [];
+			
+			for(var f_L = f_Line.length - 1; f_L >= f_Line.length; f_L--)
+				{
+				f_build_LastNameClose.push(f_Line[f_L].m_String);
+				f_build_LastTypeClose.push(f_Line[f_L].m_Type);
+				}
+			
+			f_build_LastNameClose.push(-5);
+			f_build_LastTypeClose.push(-5);
+			
+			f_testARG.build_LastNameClose = f_build_LastNameClose;
+			f_testARG.build_LastTypeClose = f_build_LastTypeClose;
+			
+			for(var f_A = 0; f_A < g_idx_vec_scrInputTestCuteFunc; f_A++)
+				{
+				var f_Achievement = g_vec_scrInputTestCuteFunc[f_A](f_Target, f_testARG);
+			
+				f_Mark.acIncrement(f_Achievement.m_Mark);
+			
+				if(f_Achievement.m_Success == true)
+					{
+					this.m_vec_Achievement[this.m_idx_vec_Achievement] = f_Achievement;
+					this.m_idx_vec_Achievement++;
+					}
+				}
+			}
+			
+		f_Run += f_Line.length;
+		}
+
+	return f_Mark;
 }
 
 classTarget_JScript.prototype.acMark_Bridges = function()
@@ -3037,6 +3107,11 @@ classTarget_JScript.prototype.acCompare = function(f_Target, f_QualityRank, f_Gr
 		
 		var f_Mark = this.acMark_Bridges();
 		
+		if(g_EnablePR == true)
+			{
+			f_Mark.acIncrement(this.acMark_TestICO());
+			}
+		
 		f_Target.m_Mark = f_Mark.acSumStuff(f_QualityRank);
 	//	}
 	//else
@@ -3203,6 +3278,15 @@ classMark.prototype.acSumStuff = function(f_QualityRank)
 		}
 		
 	return f_Mark;
+}
+
+function classAchievement()
+{
+	this.m_Mark = new classMark();
+	this.m_Success = false;
+	
+	this.m_vec_ReturnArgs = [];
+	this.m_idx_vec_ReturnArgs = 0;
 }
 
 function classFunction()
