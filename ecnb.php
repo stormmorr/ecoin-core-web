@@ -281,7 +281,7 @@
 			var f_B = document.getElementById('textB').value;
 			var f_AMT = document.getElementById('textAMT').value;
 			
-			$.post("http://www.bitcoin-office.com/link-request-getwork-ecn-fast.php", {type: "GWQ_SELECT", query: "SELECT id, jobid, blockledger, dated FROM block ORDER BY dated DESC LIMIT 1"}, function(data, status)
+			$.post("link-request-getwork-ecn-fast.php", {type: "GWQ_SELECT", query: "SELECT id, jobid, blockledger, dated FROM block ORDER BY dated DESC LIMIT 1"}, function(data, status)
 				{
 				var resp = data;
 				var resultcount = resp.resultcount;
