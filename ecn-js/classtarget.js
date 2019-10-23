@@ -911,7 +911,7 @@ classTarget.prototype.acSaveCloud = function(f_Name, f_Index)
 		
 	console.log("INSERT : " + f_Resulttxsync);
 
-	$.post("http://www.bitcoin-office.com/link-request-getwork-ecn-insert.php", {type: "GWQ_INSERT", table: "target", count: 5, string: f_Resulttxsync}, function(data, status)
+	$.post("link-request-getwork-ecn-insert.php", {type: "GWQ_INSERT", table: "target", count: 5, string: f_Resulttxsync}, function(data, status)
 		{
 		}, "json");
 		
@@ -946,7 +946,7 @@ classTarget.prototype.acSaveCloud = function(f_Name, f_Index)
 			
 		console.log("INSERT : " + f_Resulttxsync);
 
-		$.post("http://www.bitcoin-office.com/link-request-getwork-ecn-insert.php", {type: "GWQ_INSERT", table: "element", count: 6, string: f_Resulttxsync}, function(data, status)
+		$.post("link-request-getwork-ecn-insert.php", {type: "GWQ_INSERT", table: "element", count: 6, string: f_Resulttxsync}, function(data, status)
 			{
 			console.log("Insert element! volume = " + f_Volume);
 			}, "json");
@@ -978,7 +978,7 @@ classTarget.prototype.acSaveCloud = function(f_Name, f_Index)
 				
 			console.log("INSERT : " + f_Resulttxsync);
 
-			$.post("http://www.bitcoin-office.com/link-request-getwork-ecn-insert.php", {type: "GWQ_INSERT", table: "elindex", count: 3, string: f_Resulttxsync}, function(data, status)
+			$.post("link-request-getwork-ecn-insert.php", {type: "GWQ_INSERT", table: "elindex", count: 3, string: f_Resulttxsync}, function(data, status)
 				{
 				console.log("Insert elindex!");
 				}, "json");

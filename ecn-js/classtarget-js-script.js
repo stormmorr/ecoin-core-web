@@ -63,14 +63,17 @@ var g_idx_vec_scrInputHTML = 0;
 var g_vec_scrInputType = [];
 var g_idx_vec_scrInputType = 0;
 
-var g_vec_scrInputNameCuteFunc = [];
-var g_idx_vec_scrInputNameCuteFunc = 0;
-		
-var g_vec_scrInputPlaceCuteFunc = [];
-var g_idx_vec_scrInputPlaceCuteFunc = 0;
-		
+var g_vec_scrInputArg = [];
+var g_idx_vec_scrInputArg = 0;
+
 var g_vec_scrInputTestCuteFunc = [];
 var g_idx_vec_scrInputTestCuteFunc = 0;
+
+var g_vec_scrControlTestCuteFunc = [];
+var g_idx_vec_scrControlTestCuteFunc = 0;
+
+var g_vec_scrOutputTestCuteFunc = [];
+var g_idx_vec_scrOutputTestCuteFunc = 0;
 
 var g_vec_scrControlName = [];
 var g_idx_vec_scrControlName = 0;
@@ -78,11 +81,17 @@ var g_idx_vec_scrControlName = 0;
 var g_vec_scrControlType = [];
 var g_idx_vec_scrControlType = 0;
 
+var g_vec_scrControlArg = [];
+var g_idx_vec_scrControlArg = 0;
+
 var g_vec_scrOutputName = [];
 var g_idx_vec_scrOutputName = 0;
 
 var g_vec_scrOutputType = [];
 var g_idx_vec_scrOutputType = 0;
+
+var g_vec_scrOutputArg = [];
+var g_idx_vec_scrOutputArg = 0;
 
 var g_vec_control_Bridge = [];
 var g_idx_vec_control_Bridge = 0;
@@ -90,10 +99,19 @@ var g_idx_vec_control_Bridge = 0;
 var g_vec_output_Bridge = [];
 var g_idx_vec_output_Bridge = 0;
 
-var g_EnablePR = false;
+var g_vec_Name = [];
+var g_idx_vec_Name = 0;
+
+var g_EnablePR = true;
 var g_ThisName = "Default_Insta";
 var g_ThisType = INSTA_TYPE_FUNC_DEF;
 var g_This = new classInsta(g_ThisName, g_ThisType);
+var g_ThisIDX = 0;
+var g_ThisLine = [];
+
+var g_currentFunctionInstaCount = 0;
+
+var g_Complete_FUNC_CALL = new classCompleteList(INSTA_TYPE_FUNC_CALL);
 
 function classTarget_JScript()
 {
@@ -131,6 +149,8 @@ function classTarget_JScript()
 	this.m_InstaCountMap = 0;
 
 	this.m_String = "";
+	
+	this.m_UnisonArgCount = 0;
 
 	  ////////////////////////////////////
 	 // LEGACY of Structured Analysis
@@ -182,6 +202,9 @@ function classTarget_JScript()
 		{
 		this.m_GRMoutput[f_XY] = 0;
 		}
+		
+	this.m_vec_Achievement = [];
+	this.m_idx_vec_Achievement = 0;
 }
 
 classTarget_JScript.prototype.acPowerDown = function()
@@ -222,46 +245,79 @@ classBridge.prototype.ac_add_Path = function(f_A, f_Type, f_LineType)
 function classListI(f_INSTA)
 {
 	this.m_vec_List = [];
+	this.m_vec_ArgCount = [];
 	this.m_idx_vec_List = 0;
 	
+	var f_Clip = true;
 	for(var f_JET = 0; f_JET < g_idx_vec_scrInputType; f_JET++)
 		{
 		if(g_vec_scrInputType[f_JET] == f_INSTA)
 			{
 			this.m_vec_List[this.m_idx_vec_List] = g_vec_scrInputName[f_JET];
+			this.m_vec_ArgCount[this.m_idx_vec_List] = g_vec_scrInputArg[f_JET];
 			this.m_idx_vec_List++;
+			f_Clip = false;
 			}
 		}
+		
+	/*if(f_Clip == true)
+		{
+		this.m_vec_List[this.m_idx_vec_List] = "emptyInput";
+		this.m_vec_ArgCount[this.m_idx_vec_List] = -5;
+		this.m_idx_vec_List++;
+		}*/
 }
 
 function classListC(f_INSTA)
 {
 	this.m_vec_List = [];
+	this.m_vec_ArgCount = [];
 	this.m_idx_vec_List = 0;
 	
+	var f_Clip = true;
 	for(var f_JET = 0; f_JET < g_idx_vec_scrControlType; f_JET++)
 		{
 		if(g_vec_scrControlType[f_JET] == f_INSTA)
 			{
 			this.m_vec_List[this.m_idx_vec_List] = g_vec_scrControlName[f_JET];
+			this.m_vec_ArgCount[this.m_idx_vec_List] = g_vec_scrControlArg[f_JET];
 			this.m_idx_vec_List++;
+			f_Clip = false;
 			}
 		}
+		
+	/*if(f_Clip == true)
+		{
+		this.m_vec_List[this.m_idx_vec_List] = "emptyControl";
+		this.m_vec_ArgCount[this.m_idx_vec_List] = -5;
+		this.m_idx_vec_List++;
+		}*/
 }
 
 function classListO(f_INSTA)
 {
 	this.m_vec_List = [];
+	this.m_vec_ArgCount = [];
 	this.m_idx_vec_List = 0;
 	
+	var f_Clip = true;
 	for(var f_JET = 0; f_JET < g_idx_vec_scrOutputType; f_JET++)
 		{
 		if(g_vec_scrOutputType[f_JET] == f_INSTA)
 			{
 			this.m_vec_List[this.m_idx_vec_List] = g_vec_scrOutputName[f_JET];
+			this.m_vec_ArgCount[this.m_idx_vec_List] = g_vec_scrControlArg[f_JET];
 			this.m_idx_vec_List++;
+			f_Clip = false;
 			}
 		}
+		
+	/*if(f_Clip == true)
+		{
+		this.m_vec_List[this.m_idx_vec_List] = "emptyOutput";
+		this.m_vec_ArgCount[this.m_idx_vec_List] = -5;
+		this.m_idx_vec_List++;
+		}*/
 }
 
 function classList_Target_Name(f_INSTA, f_Target)
@@ -269,14 +325,101 @@ function classList_Target_Name(f_INSTA, f_Target)
 	this.m_vec_List = [];
 	this.m_idx_vec_List = 0;
 	
+	var f_Clip = true;
 	for(var f_JET = 0; f_JET < f_Target.m_idx_vec_Name; f_JET++)
 		{
 		if(f_Target.m_vec_Name[f_JET].m_INSTA_Type == f_INSTA)
 			{
 			this.m_vec_List[this.m_idx_vec_List] = f_Target.m_vec_Name[f_JET].m_Name;
 			this.m_idx_vec_List++;
+			f_Clip = false;
 			}
 		}
+
+	/*if(f_Clip == true)
+		{
+		this.m_vec_List[this.m_idx_vec_List] = "emptyName";
+		this.m_idx_vec_List++;
+		}*/
+}
+
+function classCompleteList(f_INSTA)
+{
+	this.m_vec_List = [];
+	this.m_vec_ArgCount = [];
+	this.m_idx_vec_List = 0;
+	
+	var f_Clip = true;
+	for(var f_JET = 0; f_JET < g_idx_vec_scrInputType; f_JET++)
+		{
+		if(g_vec_scrInputType[f_JET] == f_INSTA)
+			{
+			this.m_vec_List[this.m_idx_vec_List] = g_vec_scrInputName[f_JET];
+			this.m_vec_ArgCount[this.m_idx_vec_List] = g_vec_scrInputArg[f_JET];
+			this.m_idx_vec_List++;
+			f_Clip = false;
+			}
+		}
+		
+	for(var f_JET = 0; f_JET < g_idx_vec_scrControlType; f_JET++)
+		{
+		if(g_vec_scrControlType[f_JET] == f_INSTA)
+			{
+			this.m_vec_List[this.m_idx_vec_List] = g_vec_scrControlName[f_JET];
+			this.m_vec_ArgCount[this.m_idx_vec_List] = g_vec_scrControlArg[f_JET];
+			this.m_idx_vec_List++;
+			f_Clip = false;
+			}
+		}
+		
+	for(var f_JET = 0; f_JET < g_idx_vec_scrOutputType; f_JET++)
+		{
+		if(g_vec_scrOutputType[f_JET] == f_INSTA)
+			{
+			this.m_vec_List[this.m_idx_vec_List] = g_vec_scrOutputName[f_JET];
+			this.m_vec_ArgCount[this.m_idx_vec_List] = g_vec_scrOutputArg[f_JET];
+			this.m_idx_vec_List++;
+			f_Clip = false;
+			}
+		}
+		
+	//FIXME propagate function friendly socket namely
+
+	/*if(f_Clip == true)
+		{
+		this.m_vec_List[this.m_idx_vec_List] = "emptyJavaComplete";
+		this.m_vec_ArgCount[this.m_idx_vec_List] = -5;
+		this.m_idx_vec_List++;
+		}*/
+}
+
+classTarget_JScript.prototype.acEvalNames = function()
+{
+	for(var f_Helly = 0; f_Helly < this.m_idx_vec_Name; f_Helly++)
+		{
+		var f_Trigger = "var ";
+		f_Trigger += this.m_vec_Name[f_Helly].m_Name;
+		f_Trigger += " = 0;";
+		
+		eval(f_Trigger);
+		
+		//console.log(f_Trigger);
+		}
+}
+
+classTarget_JScript.prototype.acEvalNamestoString = function()
+{
+	var f_String = "";
+	for(var f_Helly = 0; f_Helly < this.m_idx_vec_Name; f_Helly++)
+		{
+		var f_Trigger = "var ";
+		f_Trigger += this.m_vec_Name[f_Helly].m_Name;
+		f_Trigger += " = 0;";
+		
+		f_String += f_Trigger;
+		}
+		
+	return f_String;
 }
 
 //fixme: add three ways lazy bear approach to changing variable insta names
@@ -284,15 +427,32 @@ classTarget_JScript.prototype.acMakeUnison = function(f_Target, f_Name, f_BitCou
 {
 	if(f_INSTA == INSTA_TYPE_VAR_CALL)
 		{
-		if(f_index_Function <= 100)
+		if(f_index_Insta <= (g_currentFunctionInstaCount / 10))
 			{
 			if(f_index_Insta > 0)
 				{
 				var f_VarCall_List = new classListI(INSTA_TYPE_VAR_CALL);
 				
-				var f_inputFactorFinger = this.ac_takeMeasurementINTV1(f_Element, 0, f_VarCall_List.m_idx_vec_List, 0, 3, 5);
-				
-				return f_VarCall_List.m_vec_List[f_inputFactorFinger];
+				if(f_VarCall_List.m_idx_vec_List <= 0)
+					{
+					var f_clsName = new clsName(f_Name, f_BitCount, f_INSTA, f_index_Insta, f_index_Function);
+		
+					f_clsName.m_vec_Name[f_clsName.m_idx_vec_Name] = f_clsName;
+					f_clsName.m_idx_vec_Name++;
+					
+					f_Target.m_vec_Name[f_Target.m_idx_vec_Name] = f_clsName;
+					f_Target.m_idx_vec_Name++;
+					
+					return f_Name;
+					}
+				else
+					{
+					var f_inputFactorFinger = this.ac_takeMeasurementINTV1(f_Element, 0, f_VarCall_List.m_idx_vec_List, 0, 3, 5);
+					
+					this.m_UnisonArgCount = f_VarCall_List.m_vec_ArgCount[f_inputFactorFinger];
+					
+					return f_VarCall_List.m_vec_List[f_inputFactorFinger];
+					}
 				}
 			else
 				{
@@ -300,22 +460,56 @@ classTarget_JScript.prototype.acMakeUnison = function(f_Target, f_Name, f_BitCou
 					{
 					var f_VarCall_List = new classListO(INSTA_TYPE_VAR_CALL);
 				
-					var f_inputFactorFinger = this.ac_takeMeasurementINTV1(f_Element, 0, f_VarCall_List.m_idx_vec_List, 0, 3, 5);
-				
-					return f_VarCall_List.m_vec_List[f_inputFactorFinger];
+					if(f_VarCall_List.m_idx_vec_List <= 0)
+						{
+						var f_clsName = new clsName(f_Name, f_BitCount, f_INSTA, f_index_Insta, f_index_Function);
+			
+						f_clsName.m_vec_Name[f_clsName.m_idx_vec_Name] = f_clsName;
+						f_clsName.m_idx_vec_Name++;
+						
+						f_Target.m_vec_Name[f_Target.m_idx_vec_Name] = f_clsName;
+						f_Target.m_idx_vec_Name++;
+						
+						return f_Name;
+						}
+					else
+						{
+						var f_inputFactorFinger = this.ac_takeMeasurementINTV1(f_Element, 0, f_VarCall_List.m_idx_vec_List, 0, 3, 5);
+						
+						this.m_UnisonArgCount = f_VarCall_List.m_vec_ArgCount[f_inputFactorFinger];
+					
+						return f_VarCall_List.m_vec_List[f_inputFactorFinger];
+						}
 					}
 				else
 					{
 					var f_VarCall_List = new classListC(INSTA_TYPE_VAR_CALL);
 				
-					var f_inputFactorFinger = this.ac_takeMeasurementINTV1(f_Element, 0, f_VarCall_List.m_idx_vec_List, 0, 3, 5);
-				
-					return f_VarCall_List.m_vec_List[f_inputFactorFinger];	
+					if(f_VarCall_List.m_idx_vec_List <= 0)
+						{
+						var f_clsName = new clsName(f_Name, f_BitCount, f_INSTA, f_index_Insta, f_index_Function);
+			
+						f_clsName.m_vec_Name[f_clsName.m_idx_vec_Name] = f_clsName;
+						f_clsName.m_idx_vec_Name++;
+						
+						f_Target.m_vec_Name[f_Target.m_idx_vec_Name] = f_clsName;
+						f_Target.m_idx_vec_Name++;
+						
+						return f_Name;
+						}
+					else
+						{
+						var f_inputFactorFinger = this.ac_takeMeasurementINTV1(f_Element, 0, f_VarCall_List.m_idx_vec_List, 0, 3, 5);
+						
+						this.m_UnisonArgCount = f_VarCall_List.m_vec_ArgCount[f_inputFactorFinger];
+					
+						return f_VarCall_List.m_vec_List[f_inputFactorFinger];
+						}
 					}
 				}
 			}
-		else if((f_index_Function > 100) &&
-				(f_index_Function <= 500))
+		else if((f_index_Insta > (g_currentFunctionInstaCount / 10)) &&
+				(f_index_Insta <= (g_currentFunctionInstaCount / 2)))
 			{
 			if(f_index_Insta > 0)
 				{
@@ -325,17 +519,51 @@ classTarget_JScript.prototype.acMakeUnison = function(f_Target, f_Name, f_BitCou
 					{
 					var f_VarCall_List = new classListO(INSTA_TYPE_VAR_CALL);
 				
-					var f_inputFactorFinger = this.ac_takeMeasurementINTV1(f_Element, 0, f_VarCall_List.m_idx_vec_List, 0, 3, 5);
-				
-					return f_VarCall_List.m_vec_List[f_inputFactorFinger];
+					if(f_VarCall_List.m_idx_vec_List <= 0)
+						{
+						var f_clsName = new clsName(f_Name, f_BitCount, f_INSTA, f_index_Insta, f_index_Function);
+			
+						f_clsName.m_vec_Name[f_clsName.m_idx_vec_Name] = f_clsName;
+						f_clsName.m_idx_vec_Name++;
+						
+						f_Target.m_vec_Name[f_Target.m_idx_vec_Name] = f_clsName;
+						f_Target.m_idx_vec_Name++;
+						
+						return f_Name;
+						}
+					else
+						{
+						var f_inputFactorFinger = this.ac_takeMeasurementINTV1(f_Element, 0, f_VarCall_List.m_idx_vec_List, 0, 3, 5);
+						
+						this.m_UnisonArgCount = f_VarCall_List.m_vec_ArgCount[f_inputFactorFinger];
+					
+						return f_VarCall_List.m_vec_List[f_inputFactorFinger];
+						}
 					}
 				else
 					{
 					var f_VarCall_List = new classListC(INSTA_TYPE_VAR_CALL);
-				
-					var f_inputFactorFinger = this.ac_takeMeasurementINTV1(f_Element, 0, f_VarCall_List.m_idx_vec_List, 0, 3, 1);
-				
-					return f_VarCall_List.m_vec_List[f_inputFactorFinger];
+					
+					if(f_VarCall_List.m_idx_vec_List <= 0)
+						{
+						var f_clsName = new clsName(f_Name, f_BitCount, f_INSTA, f_index_Insta, f_index_Function);
+			
+						f_clsName.m_vec_Name[f_clsName.m_idx_vec_Name] = f_clsName;
+						f_clsName.m_idx_vec_Name++;
+						
+						f_Target.m_vec_Name[f_Target.m_idx_vec_Name] = f_clsName;
+						f_Target.m_idx_vec_Name++;
+						
+						return f_Name;
+						}
+					else
+						{
+						var f_inputFactorFinger = this.ac_takeMeasurementINTV1(f_Element, 0, f_VarCall_List.m_idx_vec_List, 0, 3, 1);
+						
+						this.m_UnisonArgCount = f_VarCall_List.m_vec_ArgCount[f_inputFactorFinger];
+					
+						return f_VarCall_List.m_vec_List[f_inputFactorFinger];
+						}
 					}
 				}
 			else
@@ -351,46 +579,101 @@ classTarget_JScript.prototype.acMakeUnison = function(f_Target, f_Name, f_BitCou
 				return f_Name;
 				}
 			}
-		else if((f_index_Function > 500) &&
-				(f_index_Function <= 750))
+		else if((f_index_Insta > (g_currentFunctionInstaCount / 2)) &&
+				(f_index_Insta <= (g_currentFunctionInstaCount / 1.25)))
 			{
 			var f_VarCall_List_Name = new classList_Target_Name(INSTA_TYPE_VAR_CALL, f_Target);
 			
-			var f_nameFactorFinger = this.ac_takeMeasurementINTV1(f_Element, 0, f_VarCall_List_Name.m_idx_vec_List, 0, 3, 7);
-		
-			return f_VarCall_List_Name.m_vec_List[f_nameFactorFinger];
+			if(f_VarCall_List_Name.m_idx_vec_List <= 0)
+				{
+				var f_clsName = new clsName(f_Name, f_BitCount, f_INSTA, f_index_Insta, f_index_Function);
+	
+				f_clsName.m_vec_Name[f_clsName.m_idx_vec_Name] = f_clsName;
+				f_clsName.m_idx_vec_Name++;
+				
+				f_Target.m_vec_Name[f_Target.m_idx_vec_Name] = f_clsName;
+				f_Target.m_idx_vec_Name++;
+				
+				return f_Name;
+				}
+			else
+				{
+				var f_nameFactorFinger = this.ac_takeMeasurementINTV1(f_Element, 0, f_VarCall_List_Name.m_idx_vec_List, 0, 3, 7);
+			
+				return f_VarCall_List_Name.m_vec_List[f_nameFactorFinger];
+				}
 			}
-		else if(f_index_Function <= 1000)
+		else if((f_index_Insta > (g_currentFunctionInstaCount / 1.25)) &&
+				(f_index_Insta <= g_currentFunctionInstaCount))
 			{
 			if(f_index_Insta > 0)
 				{
 				var f_VarCall_List_Control = new classListC(INSTA_TYPE_VAR_CALL);
 			
-				var f_controlFactorFinger = this.ac_takeMeasurementINTV1(f_Element, 0, f_VarCall_List_Control.m_idx_vec_List, 0, 3, 7);
-			
-				return f_VarCall_List_Control.m_vec_List[f_controlFactorFinger];
+				if(f_VarCall_List_Control.m_idx_vec_List <= 0)
+					{
+					var f_clsName = new clsName(f_Name, f_BitCount, f_INSTA, f_index_Insta, f_index_Function);
+		
+					f_clsName.m_vec_Name[f_clsName.m_idx_vec_Name] = f_clsName;
+					f_clsName.m_idx_vec_Name++;
+					
+					f_Target.m_vec_Name[f_Target.m_idx_vec_Name] = f_clsName;
+					f_Target.m_idx_vec_Name++;
+					
+					return f_Name;
+					}
+				else
+					{
+					var f_controlFactorFinger = this.ac_takeMeasurementINTV1(f_Element, 0, f_VarCall_List_Control.m_idx_vec_List, 0, 3, 7);
+					
+					this.m_UnisonArgCount = f_VarCall_List_Control.m_vec_ArgCount[f_controlFactorFinger];
+				
+					return f_VarCall_List_Control.m_vec_List[f_controlFactorFinger];
+					}
 				}
 			else
 				{
 				var f_VarCall_List_Output = new classListO(INSTA_TYPE_VAR_CALL);
 			
-				var f_outputFactorFinger = this.ac_takeMeasurementINTV1(f_Element, 0, f_VarCall_List_Output.m_idx_vec_List, 0, 3, 7);
-			
-				return f_VarCall_List_Output.m_vec_List[f_outputFactorFinger];
+				if(f_VarCall_ListOutput.m_idx_vec_List <= 0)
+					{
+					var f_clsName = new clsName(f_Name, f_BitCount, f_INSTA, f_index_Insta, f_index_Function);
+		
+					f_clsName.m_vec_Name[f_clsName.m_idx_vec_Name] = f_clsName;
+					f_clsName.m_idx_vec_Name++;
+					
+					f_Target.m_vec_Name[f_Target.m_idx_vec_Name] = f_clsName;
+					f_Target.m_idx_vec_Name++;
+					
+					return f_Name;
+					}
+				else
+					{
+					var f_outputFactorFinger = this.ac_takeMeasurementINTV1(f_Element, 0, f_VarCall_List_Output.m_idx_vec_List, 0, 3, 7);
+					
+					this.m_UnisonArgCount = f_VarCall_List_Output.m_vec_ArgCount[f_outputFactorFinger];
+				
+					return f_VarCall_List_Output.m_vec_List[f_outputFactorFinger];
+					}
 				}
 			}
 		else
 			{
-			var f_VarCall_List_Name = new classList_Target_Name(INSTA_TYPE_VAR_CALL, f_Target);
-			
-			var f_nameFactorFinger = this.ac_takeMeasurementINTV1(f_Element, 0, f_VarCall_List_Name.m_idx_vec_List, 0, 3, 7);
-		
-			return f_VarCall_List_Name.m_vec_List[f_nameFactorFinger];
+			var f_clsName = new clsName(f_Name, f_BitCount, f_INSTA, f_index_Insta, f_index_Function);
+
+			f_clsName.m_vec_Name[f_clsName.m_idx_vec_Name] = f_clsName;
+			f_clsName.m_idx_vec_Name++;
+
+			f_Target.m_vec_Name[f_Target.m_idx_vec_Name] = f_clsName;
+			f_Target.m_idx_vec_Name++;
+
+			//return "First_Name";
+			return f_Name;
 			}
 		}
 	else if(f_INSTA == INSTA_TYPE_FUNC_CALL)
 		{
-		if(f_index_Function <= 100)
+		if(f_index_Insta <= (g_currentFunctionInstaCount / 10))
 			{
 			if(f_index_Insta > 0)
 				{
@@ -398,81 +681,85 @@ classTarget_JScript.prototype.acMakeUnison = function(f_Target, f_Name, f_BitCou
 				
 				var f_inputFactorFinger = this.ac_takeMeasurementINTV1(f_Element, 0, f_VarCall_List.m_idx_vec_List, 0, 3, 5);
 				
+				this.m_UnisonArgCount = f_VarCall_List.m_vec_ArgCount[f_inputFactorFinger];
+				
 				return f_VarCall_List.m_vec_List[f_inputFactorFinger];
 				}
 			else
 				{
-				if(this.ac_takeMeasurementINTV1(f_Element, 0, 1, 0, 3, 1))
-					{
-					var f_VarCall_List = new classListO(INSTA_TYPE_FUNC_CALL);
+				var f_VarCall_List = new classListC(INSTA_TYPE_FUNC_CALL);
+			
+				var f_inputFactorFinger = this.ac_takeMeasurementINTV1(f_Element, 0, f_VarCall_List.m_idx_vec_List, 0, 3, 5);
 				
-					var f_inputFactorFinger = this.ac_takeMeasurementINTV1(f_Element, 0, f_VarCall_List.m_idx_vec_List, 0, 3, 5);
-				
-					return f_VarCall_List.m_vec_List[f_inputFactorFinger];
-					}
-				else
-					{
-					var f_VarCall_List = new classListC(INSTA_TYPE_FUNC_CALL);
-				
-					var f_inputFactorFinger = this.ac_takeMeasurementINTV1(f_Element, 0, f_VarCall_List.m_idx_vec_List, 0, 3, 5);
-				
-					return f_VarCall_List.m_vec_List[f_inputFactorFinger];	
-					}
+				this.m_UnisonArgCount = f_VarCall_List.m_vec_ArgCount[f_inputFactorFinger];
+			
+				return f_VarCall_List.m_vec_List[f_inputFactorFinger];
 				}
 			}
-		else if((f_index_Function > 100) &&
-				(f_index_Function <= 500))
+		else if((f_index_Insta > (g_currentFunctionInstaCount / 10)) &&
+				(f_index_Insta <= (g_currentFunctionInstaCount / 2)))
 			{
-			if(f_index_Insta > 0)
+			var f_FingerFactorial = this.ac_takeMeasurementINTV1(f_Element, 0, 5, 0, 3, 2);
+			
+			if(f_FingerFactorial >= 0 && f_FingerFactorial < 3)
 				{
-				var f_FingerFactorial = this.ac_takeMeasurementINTV1(f_Element, 0, 5, 0, 3, 2);
+				var f_VarCall_List = new classListO(INSTA_TYPE_FUNC_CALL);
+			
+				var f_inputFactorFinger = this.ac_takeMeasurementINTV1(f_Element, 0, f_VarCall_List.m_idx_vec_List, 0, 3, 5);
 				
-				if(f_FingerFactorial >= 2)
-					{
-					var f_VarCall_List = new classListO(INSTA_TYPE_FUNC_CALL);
+				this.m_UnisonArgCount = f_VarCall_List.m_vec_ArgCount[f_inputFactorFinger];
+			
+				return f_VarCall_List.m_vec_List[f_inputFactorFinger];
+				}
+			else if(f_FingerFactorial >= 3 && f_FingerFactorial < 5)
+				{
+				var f_VarCall_List = new classListC(INSTA_TYPE_FUNC_CALL);
+			
+				var f_inputFactorFinger = this.ac_takeMeasurementINTV1(f_Element, 0, f_VarCall_List.m_idx_vec_List, 0, 3, 1);
 				
-					var f_inputFactorFinger = this.ac_takeMeasurementINTV1(f_Element, 0, f_VarCall_List.m_idx_vec_List, 0, 3, 5);
-				
-					return f_VarCall_List.m_vec_List[f_inputFactorFinger];
-					}
-				else
-					{
-					var f_VarCall_List = new classListC(INSTA_TYPE_FUNC_CALL);
-				
-					var f_inputFactorFinger = this.ac_takeMeasurementINTV1(f_Element, 0, f_VarCall_List.m_idx_vec_List, 0, 3, 1);
-				
-					return f_VarCall_List.m_vec_List[f_inputFactorFinger];
-					}
+				this.m_UnisonArgCount = f_VarCall_List.m_vec_ArgCount[f_inputFactorFinger];
+			
+				return f_VarCall_List.m_vec_List[f_inputFactorFinger];
 				}
 			else
 				{
-				var f_clsName = new clsName(f_Name, f_BitCount, f_INSTA, f_index_Insta, f_index_Function);
+				//on hold for more functions to generate and choose from
+				/*var f_VarCall_List_Name = new classList_Target_Name(INSTA_TYPE_FUNC_CALL, f_Target);
 		
-				f_clsName.m_vec_Name[f_clsName.m_idx_vec_Name] = f_clsName;
-				f_clsName.m_idx_vec_Name++;
+				var f_nameFactorFinger = this.ac_takeMeasurementINTV1(f_Element, 0, f_VarCall_List_Name.m_idx_vec_List, 0, 3, 7);
+	
+				return f_VarCall_List_Name.m_vec_List[f_nameFactorFinger];*/
 				
-				f_Target.m_vec_Name[f_Target.m_idx_vec_Name] = f_clsName;
-				f_Target.m_idx_vec_Name++;
+				var f_VarCall_List = new classListC(INSTA_TYPE_FUNC_CALL);
+			
+				var f_inputFactorFinger = this.ac_takeMeasurementINTV1(f_Element, 0, f_VarCall_List.m_idx_vec_List, 0, 3, 1);
 				
-				return f_Name;
+				this.m_UnisonArgCount = f_VarCall_List.m_vec_ArgCount[f_inputFactorFinger];
+			
+				return f_VarCall_List.m_vec_List[f_inputFactorFinger];
 				}
 			}
-		else if((f_index_Function > 500) &&
-				(f_index_Function <= 750))
+		else if((f_index_Insta > (g_currentFunctionInstaCount / 2)) &&
+				(f_index_Insta <= (g_currentFunctionInstaCount / 1.25)))
 			{
-			var f_VarCall_List_Name = new classList_Target_Name(INSTA_TYPE_FUNC_CALL, f_Target);
+			var f_VarCall_List = new classListC(INSTA_TYPE_FUNC_CALL);
+				
+			var f_inputFactorFinger = this.ac_takeMeasurementINTV1(f_Element, 0, f_VarCall_List.m_idx_vec_List, 0, 3, 1);
 			
-			var f_nameFactorFinger = this.ac_takeMeasurementINTV1(f_Element, 0, f_VarCall_List_Name.m_idx_vec_List, 0, 3, 7);
+			this.m_UnisonArgCount = f_VarCall_List.m_vec_ArgCount[f_inputFactorFinger];
 		
-			return f_VarCall_List_Name.m_vec_List[f_nameFactorFinger];
+			return f_VarCall_List.m_vec_List[f_inputFactorFinger];
 			}
-		else if(f_index_Function <= 1000)
+		else if((f_index_Insta > (g_currentFunctionInstaCount / 1.25)) &&
+				(f_index_Insta <= (g_currentFunctionInstaCount)))
 			{
 			if(f_index_Insta > 0)
 				{
 				var f_VarCall_List_Control = new classListC(INSTA_TYPE_FUNC_CALL);
 			
 				var f_controlFactorFinger = this.ac_takeMeasurementINTV1(f_Element, 0, f_VarCall_List_Control.m_idx_vec_List, 0, 3, 7);
+				
+				this.m_UnisonArgCount = f_VarCall_List_Control.m_vec_ArgCount[f_controlFactorFinger];
 			
 				return f_VarCall_List_Control.m_vec_List[f_controlFactorFinger];
 				}
@@ -481,160 +768,47 @@ classTarget_JScript.prototype.acMakeUnison = function(f_Target, f_Name, f_BitCou
 				var f_VarCall_List_Output = new classListO(INSTA_TYPE_FUNC_CALL);
 			
 				var f_outputFactorFinger = this.ac_takeMeasurementINTV1(f_Element, 0, f_VarCall_List_Output.m_idx_vec_List, 0, 3, 7);
+				
+				this.m_UnisonArgCount = f_VarCall_List_Output.m_vec_ArgCount[f_outputFactorFinger];
 			
 				return f_VarCall_List_Output.m_vec_List[f_outputFactorFinger];
 				}
 			}
 		else
 			{
-			var f_VarCall_List_Name = new classList_Target_Name(INSTA_TYPE_FUNC_CALL, f_Target);
+			var f_VarCall_List_Control = new classListC(INSTA_TYPE_FUNC_CALL);
 			
-			var f_nameFactorFinger = this.ac_takeMeasurementINTV1(f_Element, 0, f_VarCall_List_Name.m_idx_vec_List, 0, 3, 7);
+			var f_controlFactorFinger = this.ac_takeMeasurementINTV1(f_Element, 0, f_VarCall_List_Control.m_idx_vec_List, 0, 3, 7);
+			
+			this.m_UnisonArgCount = f_VarCall_List_Control.m_vec_ArgCount[f_controlFactorFinger];
 		
-			return f_VarCall_List_Name.m_vec_List[f_nameFactorFinger];
+			return f_VarCall_List_Control.m_vec_List[f_controlFactorFinger];
 			}
 		}
 	else
 		{
-		var f_FingerFactorial = this.ac_takeMeasurementINTV1(f_Element, 0, 5, 0, 3, 2);
-				
-		if(f_FingerFactorial >= 2)
-			{
-			var f_VarCall_List_Name = new classList_Target_Name(INSTA_TYPE_FUNC_CALL, f_Target);
-		
-			var f_nameFactorFinger = this.ac_takeMeasurementINTV1(f_Element, 0, f_VarCall_List_Name.m_idx_vec_List, 0, 3, 5);
-		
-			return f_VarCall_List_Name.m_vec_List[f_nameFactorFinger];
-			}
-		else
-			{
-			var f_clsName = new clsName(f_Name, f_BitCount, f_INSTA, f_index_Insta, f_index_Function);
-		
-			f_clsName.m_vec_Name[f_clsName.m_idx_vec_Name] = f_clsName;
-			f_clsName.m_idx_vec_Name++;
-			
-			f_Target.m_vec_Name[f_Target.m_idx_vec_Name] = f_clsName;
-			f_Target.m_idx_vec_Name++;
-			
-			return f_Name;
-			}
+		var f_clsName = new clsName(f_Name, f_BitCount, f_INSTA, f_index_Insta, f_index_Function);
+
+		f_clsName.m_vec_Name[f_clsName.m_idx_vec_Name] = f_clsName;
+		f_clsName.m_idx_vec_Name++;
+
+		f_Target.m_vec_Name[f_Target.m_idx_vec_Name] = f_clsName;
+		f_Target.m_idx_vec_Name++;
+
+		//return "First_Name";
+		return f_Name;
 		}
-		
+
 	var f_clsName = new clsName(f_Name, f_BitCount, f_INSTA, f_index_Insta, f_index_Function);
-		
+
 	f_clsName.m_vec_Name[f_clsName.m_idx_vec_Name] = f_clsName;
 	f_clsName.m_idx_vec_Name++;
-	
+
 	f_Target.m_vec_Name[f_Target.m_idx_vec_Name] = f_clsName;
 	f_Target.m_idx_vec_Name++;
-	
-	return f_Name;
-}
 
-classTarget_JScript.prototype.acGatherNames = function()
-{
-	//FROZEN//
-	//AJAX bitcoin-office.com for gathering names
-	//presents Math functions feel free to edit
-	this.m_vec_Name[this.m_idx_vec_Name] = new clsName("Math.abs(", 0, INSTA_TYPE_FUNC_CALL, 0, 0);
-	this.m_idx_vec_Name++;
-	/*this.m_vec_Name[this.m_idx_vec_Name].m_Code = function(f_IN)
-		 {
-	     var f_Input = f_IN;
-		 var f_Output = 
-	     }*/
-	this.m_vec_Name[this.m_idx_vec_Name] = new clsName("Math.acos(", 0, INSTA_TYPE_FUNC_CALL, 0, 0);
-	this.m_idx_vec_Name++;
-	
-	this.m_vec_Name[this.m_idx_vec_Name] = new clsName("Math.acosh(", 0, INSTA_TYPE_FUNC_CALL, 0, 0);
-	this.m_idx_vec_Name++;
-	
-	this.m_vec_Name[this.m_idx_vec_Name] = new clsName("Math.asin(", 0, INSTA_TYPE_FUNC_CALL, 0, 0);
-	this.m_idx_vec_Name++;
-	
-	this.m_vec_Name[this.m_idx_vec_Name] = new clsName("Math.asinh(", 0, INSTA_TYPE_FUNC_CALL, 0, 0);
-	this.m_idx_vec_Name++;
-	
-	this.m_vec_Name[this.m_idx_vec_Name] = new clsName("Math.atan(", 0, INSTA_TYPE_FUNC_CALL, 0, 0);
-	this.m_idx_vec_Name++;
-	
-	this.m_vec_Name[this.m_idx_vec_Name] = new clsName("Math.atan2(", 0, INSTA_TYPE_FUNC_CALL, 0, 0);
-	this.m_idx_vec_Name++;
-	
-	this.m_vec_Name[this.m_idx_vec_Name] = new clsName("Math.atanh(", 0, INSTA_TYPE_FUNC_CALL, 0, 0);
-	this.m_idx_vec_Name++;
-	
-	this.m_vec_Name[this.m_idx_vec_Name] = new clsName("Math.acosh(", 0, INSTA_TYPE_FUNC_CALL, 0, 0);
-	this.m_idx_vec_Name++;
-	
-	this.m_vec_Name[this.m_idx_vec_Name] = new clsName("Math.cbrt(", 0, INSTA_TYPE_FUNC_CALL, 0, 0);
-	this.m_idx_vec_Name++;
-	
-	this.m_vec_Name[this.m_idx_vec_Name] = new clsName("Math.ceil(", 0, INSTA_TYPE_FUNC_CALL, 0, 0);
-	this.m_idx_vec_Name++;
-	
-	this.m_vec_Name[this.m_idx_vec_Name] = new clsName("Math.cos(", 0, INSTA_TYPE_FUNC_CALL, 0, 0);
-	this.m_idx_vec_Name++;
-	
-	this.m_vec_Name[this.m_idx_vec_Name] = new clsName("Math.atan2(", 0, INSTA_TYPE_FUNC_CALL, 0, 0);
-	this.m_idx_vec_Name++;
-	
-	this.m_vec_Name[this.m_idx_vec_Name] = new clsName("Math.atanh(", 0, INSTA_TYPE_FUNC_CALL, 0, 0);
-	this.m_idx_vec_Name++;
-	
-	this.m_vec_Name[this.m_idx_vec_Name] = new clsName("Math.acosh(", 0, INSTA_TYPE_FUNC_CALL, 0, 0);
-	this.m_idx_vec_Name++;
-	
-	this.m_vec_Name[this.m_idx_vec_Name] = new clsName("Math.cbrt(", 0, INSTA_TYPE_FUNC_CALL, 0, 0);
-	this.m_idx_vec_Name++;
-	
-	this.m_vec_Name[this.m_idx_vec_Name] = new clsName("Math.ceil(", 0, INSTA_TYPE_FUNC_CALL, 0, 0);
-	this.m_idx_vec_Name++;
-	
-	this.m_vec_Name[this.m_idx_vec_Name] = new clsName("Math.cosh(", 0, INSTA_TYPE_FUNC_CALL, 0, 0);
-	this.m_idx_vec_Name++;
-	
-	this.m_vec_Name[this.m_idx_vec_Name] = new clsName("Math.exp(", 0, INSTA_TYPE_FUNC_CALL, 0, 0);
-	this.m_idx_vec_Name++;
-	
-	this.m_vec_Name[this.m_idx_vec_Name] = new clsName("Math.floor(", 0, INSTA_TYPE_FUNC_CALL, 0, 0);
-	this.m_idx_vec_Name++;
-	
-	this.m_vec_Name[this.m_idx_vec_Name] = new clsName("Math.log(", 0, INSTA_TYPE_FUNC_CALL, 0, 0);
-	this.m_idx_vec_Name++;
-	
-	this.m_vec_Name[this.m_idx_vec_Name] = new clsName("Math.max(", 0, INSTA_TYPE_FUNC_CALL, 0, 0);
-	this.m_idx_vec_Name++;
-	
-	this.m_vec_Name[this.m_idx_vec_Name] = new clsName("Math.min(", 0, INSTA_TYPE_FUNC_CALL, 0, 0);
-	this.m_idx_vec_Name++;
-	
-	this.m_vec_Name[this.m_idx_vec_Name] = new clsName("Math.pow(", 0, INSTA_TYPE_FUNC_CALL, 0, 0);
-	this.m_idx_vec_Name++;
-	
-	this.m_vec_Name[this.m_idx_vec_Name] = new clsName("Math.random(", 0, INSTA_TYPE_FUNC_CALL, 0, 0);
-	this.m_idx_vec_Name++;
-	
-	this.m_vec_Name[this.m_idx_vec_Name] = new clsName("Math.round(", 0, INSTA_TYPE_FUNC_CALL, 0, 0);
-	this.m_idx_vec_Name++;
-	
-	this.m_vec_Name[this.m_idx_vec_Name] = new clsName("Math.sin(", 0, INSTA_TYPE_FUNC_CALL, 0, 0);
-	this.m_idx_vec_Name++;
-	
-	this.m_vec_Name[this.m_idx_vec_Name] = new clsName("Math.sinh(", 0, INSTA_TYPE_FUNC_CALL, 0, 0);
-	this.m_idx_vec_Name++;
-	
-	this.m_vec_Name[this.m_idx_vec_Name] = new clsName("Math.sqrt(", 0, INSTA_TYPE_FUNC_CALL, 0, 0);
-	this.m_idx_vec_Name++;
-	
-	this.m_vec_Name[this.m_idx_vec_Name] = new clsName("Math.tan(", 0, INSTA_TYPE_FUNC_CALL, 0, 0);
-	this.m_idx_vec_Name++;
-	
-	this.m_vec_Name[this.m_idx_vec_Name] = new clsName("Math.tanh(", 0, INSTA_TYPE_FUNC_CALL, 0, 0);
-	this.m_idx_vec_Name++;
-	
-	this.m_vec_Name[this.m_idx_vec_Name] = new clsName("Math.trunc(", 0, INSTA_TYPE_FUNC_CALL, 0, 0);
-	this.m_idx_vec_Name++;
+	//return "Default_Name";
+	return f_Name;
 }
 
 classTarget_JScript.prototype.ac_next_InputName = function(f_Type)
@@ -796,83 +970,14 @@ classTarget_JScript.prototype.acMerge_ICOtoName = function()
 		}
 }
 
-classTarget_JScript.prototype.acGatherICO_default = function()
-{
-	 //////////////////////////
-	// 
-	g_vec_scrInputName[g_idx_vec_scrInputName] = "ac_takeMeasurementINTV1";
-	g_idx_vec_scrInputName++;
-	
-	g_vec_scrInputType[g_idx_vec_scrInputType] = INSTA_TYPE_FUNC_CALL;
-	g_idx_vec_scrInputType++;
-	
-	g_vec_scrInputName[g_idx_vec_scrInputName] = "ag_GenerateName";
-	g_idx_vec_scrInputName++;
-	
-	g_vec_scrInputType[g_idx_vec_scrInputType] = INSTA_TYPE_FUNC_CALL;
-	g_idx_vec_scrInputType++;
-	
-	g_vec_scrInputName[g_idx_vec_scrInputName] = "g_X";
-	g_idx_vec_scrInputName++;
-	
-	g_vec_scrInputType[g_idx_vec_scrInputType] = INSTA_TYPE_VAR_CALL;
-	g_idx_vec_scrInputType++;
-	
-	g_vec_scrInputName[g_idx_vec_scrInputName] = "g_Y";
-	g_idx_vec_scrInputName++;
-	
-	g_vec_scrInputType[g_idx_vec_scrInputType] = INSTA_TYPE_VAR_CALL;
-	g_idx_vec_scrInputType++;
-	
-	g_vec_scrInputName[g_idx_vec_scrInputName] = "g_Z";
-	g_idx_vec_scrInputName++;
-	
-	g_vec_scrInputType[g_idx_vec_scrInputType] = INSTA_TYPE_VAR_CALL;
-	g_idx_vec_scrInputType++;
-	
-	g_vec_scrControlName[g_idx_vec_scrControlName] = "Math.cos";
-	g_idx_vec_scrControlName++;
-	
-	g_vec_scrControlType[g_idx_vec_scrControlType] = INSTA_TYPE_FUNC_CALL;
-	g_idx_vec_scrControlType++;
-	
-	g_vec_scrControlName[g_idx_vec_scrControlName] = "Math.sin";
-	g_idx_vec_scrControlName++;
-	
-	g_vec_scrControlType[g_idx_vec_scrControlType] = INSTA_TYPE_FUNC_CALL;
-	g_idx_vec_scrControlType++;
-	
-	g_vec_scrControlName[g_idx_vec_scrControlName] = "Math.sqrt";
-	g_idx_vec_scrControlName++;
-	
-	g_vec_scrControlType[g_idx_vec_scrControlType] = INSTA_TYPE_FUNC_CALL;
-	g_idx_vec_scrControlType++;
-
-	g_vec_scrControlName[g_idx_vec_scrControlName] = "if(";
-	g_idx_vec_scrControlName++;
-	
-	g_vec_scrControlType[g_idx_vec_scrControlType] = INSTA_TYPE_CONDITIONAL;
-	g_idx_vec_scrControlType++;
-	
-	g_vec_scrOutputName[g_idx_vec_scrOutputName] = "";
-	g_idx_vec_scrOutputName++;
-	
-	g_vec_scrOutputType[g_idx_vec_scrOutputType] = INSTA_TYPE_FUNC_CALL;
-	g_idx_vec_scrOutputType++;
-	
-	g_vec_scrOutputName[g_idx_vec_scrOutputName] = "playSound";
-	g_idx_vec_scrOutputName++;
-	
-	g_vec_scrOutputType[g_idx_vec_scrOutputType] = INSTA_TYPE_FUNC_CALL;
-	g_idx_vec_scrOutputType++;
-}
-
 function classBridgeResult()
 {
 	this.m_vec_LineIndex = [];
 	this.m_vec_Position_Equals = [];
 	this.m_vec_Position_Argument = [];
 	this.m_vec_String_Equal = [];
+	this.m_vec_Type_Equal = [];
+	this.m_vec_Line = [];
 	this.m_idx_vec = 0;
 }
 
@@ -899,12 +1004,14 @@ classTarget_JScript.prototype.acScan_Code_Bridges = function(f_Function, f_Strin
 			if(f_Found == true)
 				{
 				f_Result.m_vec_LineIndex[f_Result.m_idx_vec] = f_XY;
+				f_Result.m_vec_Line[f_Result.m_idx_vec] = f_Line;
 
 				if(f_I == 0)
 					{
 					f_Result.m_vec_Position_Equals[f_Result.m_idx_vec] = f_I;
 					f_Result.m_vec_Position_Argument[f_Result.m_idx_vec] = -5;
 					f_Result.m_vec_String_Equal[f_Result.m_idx_vec] = "E";
+					f_Result.m_vec_Type_Equal[f_Result.m_idx_vec] = f_Type;
 					}
 				else
 					{
@@ -924,13 +1031,15 @@ classTarget_JScript.prototype.acScan_Code_Bridges = function(f_Function, f_Strin
 						{
 						f_Result.m_vec_Position_Equals[f_Result.m_idx_vec] = f_I;
 						f_Result.m_vec_Position_Argument[f_Result.m_idx_vec] = f_I - f_Index;
-						f_Result.m_vec_String_Equal[f_Result.m_idx_vec] = "F";
+						f_Result.m_vec_String_Equal[f_Result.m_idx_vec] = f_Line[0].m_String;
+						f_Result.m_vec_Type_Equal[f_Result.m_idx_vec] = f_Line[0].m_Type;
 						}
 					else
 						{
 						f_Result.m_vec_Position_Equals[f_Result.m_idx_vec] = f_I;
 						f_Result.m_vec_Position_Argument[f_Result.m_idx_vec] = -5;
 						f_Result.m_vec_String_Equal[f_Result.m_idx_vec] = f_Line[0].m_String;
+						f_Result.m_vec_Type_Equal[f_Result.m_idx_vec] = f_Line[0].m_Type;
 						}
 					}
 
@@ -946,6 +1055,9 @@ classTarget_JScript.prototype.acMark_TestICO = function(f_Target)
 {
 	var f_Mark = new classMark();
 	
+	g_idx_vec_Input_Pack_takeMeasure = 0;
+	g_idx_vec_Input_PackB_takeMeasure = 0;
+	
 	var f_Function = this.m_vec_Function[0];
 	
 	var f_Run = 0;
@@ -955,24 +1067,28 @@ classTarget_JScript.prototype.acMark_TestICO = function(f_Target)
 
 		for(var f_I = 0; f_I < f_Line.length; f_I++)
 			{
-			g_This = f_Line[f_I]
+			//this
+			g_This = f_Line[f_I];
 			g_ThisType = f_Line[f_I].m_Type;
 			g_ThisName = f_Line[f_I].m_String;
-				
+			g_ThisLine = f_Line;
+			
+			//testarg			
 			var f_testARG = [];
 			f_testARG.f_indexInsta = f_I;
 			f_testARG.f_indexFunction = f_Run + f_I;
 			
+			//lastname
 			var f_build_LastNameClose = [];
 			var f_build_LastTypeClose = [];
 			
-			for(var f_L = f_Line.length - 1; f_L >= f_Line.length; f_L--)
+			for(var f_L = f_I; f_L >= 0; f_L--)
 				{
 				f_build_LastNameClose.push(f_Line[f_L].m_String);
 				f_build_LastTypeClose.push(f_Line[f_L].m_Type);
 				}
 			
-			f_build_LastNameClose.push(-5);
+			f_build_LastNameClose.push("-5");
 			f_build_LastTypeClose.push(-5);
 			
 			f_testARG.build_LastNameClose = f_build_LastNameClose;
@@ -980,7 +1096,42 @@ classTarget_JScript.prototype.acMark_TestICO = function(f_Target)
 			
 			for(var f_A = 0; f_A < g_idx_vec_scrInputTestCuteFunc; f_A++)
 				{
+				g_ThisIDX = f_A;
+				
+				//var f_Achievement = new classAchievement();
 				var f_Achievement = g_vec_scrInputTestCuteFunc[f_A](f_Target, f_testARG);
+			
+				f_Mark.acIncrement(f_Achievement.m_Mark);
+			
+				if(f_Achievement.m_Success == true)
+					{
+					this.m_vec_Achievement[this.m_idx_vec_Achievement] = f_Achievement;
+					this.m_idx_vec_Achievement++;
+					}
+				}
+				
+			for(var f_A = 0; f_A < g_idx_vec_scrControlTestCuteFunc; f_A++)
+				{
+				g_ThisIDX = f_A;
+				
+				//var f_Achievement = new classAchievement();
+				var f_Achievement = g_vec_scrControlTestCuteFunc[f_A](f_Target, f_testARG);
+			
+				f_Mark.acIncrement(f_Achievement.m_Mark);
+			
+				if(f_Achievement.m_Success == true)
+					{
+					this.m_vec_Achievement[this.m_idx_vec_Achievement] = f_Achievement;
+					this.m_idx_vec_Achievement++;
+					}
+				}
+				
+			for(var f_A = 0; f_A < g_idx_vec_scrOutputTestCuteFunc; f_A++)
+				{
+				g_ThisIDX = f_A;
+				
+				//var f_Achievement = new classAchievement();
+				var f_Achievement = g_vec_scrOutputTestCuteFunc[f_A](f_Target, f_testARG);
 			
 				f_Mark.acIncrement(f_Achievement.m_Mark);
 			
@@ -994,6 +1145,8 @@ classTarget_JScript.prototype.acMark_TestICO = function(f_Target)
 			
 		f_Run += f_Line.length;
 		}
+		
+	//console.log(JSON.stringify(f_Mark));
 
 	return f_Mark;
 }
@@ -1023,7 +1176,7 @@ classTarget_JScript.prototype.acMark_Bridges = function()
 				if(f_BridgeResultB.m_idx_vec == 0 &&
 				   f_BridgeResultC.m_idx_vec == 0)
 					{
-					f_Mark.m_vec_Int[4] += 30;
+					f_Mark.m_vec_Int[4] += 10000;
 					}
 				else
 					{
@@ -1034,7 +1187,7 @@ classTarget_JScript.prototype.acMark_Bridges = function()
 							if(f_BridgeResultB.m_vec_Position_Equals[f_jet] >= 1 ||
 							   f_BridgeResultB.m_vec_Position_Argument[f_jet] != -5)
 								{
-								f_Mark.m_vec_Int[6] += 3;
+								f_Mark.m_vec_Int[6] += 3000;
 								
 								f_vec_Scanlist[f_idx_vec_Scanlist] = f_BridgeResultB.m_vec_String_Equal[f_jet];
 								f_idx_vec_Scanlist++;
@@ -1049,10 +1202,159 @@ classTarget_JScript.prototype.acMark_Bridges = function()
 							if((f_BridgeResultC.m_vec_Position_Equals[f_jet] >= 1) ||
 							   (f_BridgeResultC.m_vec_Position_Argument[f_jet] != -5))
 								{
-								f_Mark.m_vec_Int[6] += 3;
+								f_Mark.m_vec_Int[6] += 3000;
 								
 								f_vec_Scanlist[f_idx_vec_Scanlist] = f_BridgeResultC.m_vec_String_Equal[f_jet];
 								f_idx_vec_Scanlist++;
+								}
+							}
+						}
+					}
+				}
+			else if((f_Bridge.m_vec_LineType[1] == LINE_TYPE_INPUT) &&
+					(f_Bridge.m_vec_LineType[2] == LINE_TYPE_OUTPUT))
+				{
+				//Scan, Search Wider			
+				var f_BridgeResultB = this.acScan_Code_Bridges(f_Function, g_vec_scrInputName[f_Bridge.m_vec_A[1]]);
+				var f_BridgeResultC = this.acScan_Code_Bridges(f_Function, g_vec_scrOutputName[f_Bridge.m_vec_A[2]]);
+				
+				if(f_BridgeResultB.m_idx_vec == 0 &&
+				   f_BridgeResultC.m_idx_vec == 0)
+					{
+					f_Mark.m_vec_Int[4] += 10000;
+					}
+				else
+					{
+					if(f_BridgeResultB.m_idx_vec >= 1)
+						{
+						for(var f_jet = 0; f_jet < f_BridgeResultB.m_idx_vec; f_jet++)
+							{
+							if(f_BridgeResultB.m_vec_Position_Equals[f_jet] == 0)
+								{
+								f_Mark.m_vec_Int[6] += 3000;
+								
+								f_vec_Scanlist[f_idx_vec_Scanlist] = f_BridgeResultB.m_vec_String_Equal[f_jet];
+								f_idx_vec_Scanlist++;
+								
+								for(var f_SCRAM = 0; f_SCRAM < f_BridgeResultB.m_vec_Line[f_jet].length; f_SCRAM++)
+									{
+									if(f_BridgeResultB.m_vec_Line[f_SCRAM].m_Type == INSTA_TYPE_FUNC_CALL)
+										{
+										if(f_Bridge.m_vec_LineType[3] == LINE_TYPE_CONTROL)
+											{
+											var f_workurlFound = true;
+
+											for(var f_Jet = 0; (f_Jet < f_BridgeResultB.m_vec_Line[f_jet][f_SCRAM].m_String.length) && (f_Jet < g_vec_scrOutputName[f_Bridge.m_vec_A[3]].length); f_Jet++)
+												{
+												if(f_BridgeResultB.m_vec_Line[f_jet][f_SCRAM].m_String.charAt(f_Jet) != g_vec_scrOutputName[f_Bridge.m_vec_A[3]].charAt(f_Jet))
+													{
+													f_workurlFound = false;
+													}
+												}
+												
+											if(f_workurlFound = true)
+												{
+												f_Mark.m_vec_Int[6] += 2800;
+												}
+											}
+										}
+									else if(f_BridgeResultB.m_vec_Line[f_SCRAM].m_Type == INSTA_TYPE_VAR_CALL)
+										{
+										var f_BridgeResultE = this.acScan_Code_Bridges(f_Function, f_BridgeResultB.m_vec_Line[f_SCRAM].m_String);
+										
+										if(f_BridgeResultE.m_idx_vec == 0)
+											{
+											f_Mark.m_vec_Int[4] += 10000;
+											}
+										else
+											{
+											if(f_BridgeResultE.m_idx_vec >= 1)
+												{
+												for(var f_jeto = 0; f_jeto < f_BridgeResultE.m_idx_vec; f_jeto++)
+													{
+													if(f_BridgeResultE.m_vec_Position_Equals[f_jet] == 0)
+														{
+														f_Mark.m_vec_Int[6] += 1890;
+														
+														f_vec_Scanlist[f_idx_vec_Scanlist] = f_BridgeResultB.m_vec_Line[f_SCRAM].m_String;
+														f_idx_vec_Scanlist++;
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					//C
+					if(f_BridgeResultC.m_idx_vec >= 1)
+						{
+						for(var f_jet = 0; f_jet < f_BridgeResultC.m_idx_vec; f_jet++)
+							{
+							if(f_Bridge.m_vec_LineType[4] == LINE_TYPE_CONTROL)
+								{
+								for(var f_Hoy = 0; f_Hoy < f_BridgeResultC.m_vec_Line[f_jet].length; f_Hoy++)
+									{
+									var f_controlfuncFound = true;
+									
+									for(var f_Jet = 0; (f_Jet < f_BridgeResultC.m_vec_Line[f_jet][f_Hoy].m_String.length) && (f_Jet < g_vec_scrOutputName[f_Bridge.m_vec_A[4]].length); f_Jet++)
+										{
+										if(f_BridgeResultC.m_vec_Line[f_jet][f_Hoy].m_String.charAt(f_Jet) != g_vec_scrOutputName[f_Bridge.m_vec_A[4]].charAt(f_Jet))
+											{
+											f_controlfuncFound = false;
+											}
+										}
+										
+									if(f_controlfuncFound = true)
+										{
+										f_Mark.m_vec_Int[6] += 2800;
+										}
+									}
+								}
+								
+							if(f_BridgeResultC.m_vec_Position_Equals[f_jet] >= 1)
+								{
+								if(f_BridgeResultC.m_vec_Type_Equal[f_jet] == INSTA_TYPE_VAR_CALL)
+									{
+									f_Mark.m_vec_Int[6] += 35;
+								
+									f_vec_Scanlist[f_idx_vec_Scanlist] = f_BridgeResultC.m_vec_String_Equal[f_jet];
+									f_idx_vec_Scanlist++;
+									
+									var f_BridgeResultE = this.acScan_Code_Bridges(f_Function, g_vec_scrControlName[f_Bridge.m_vec_A[0]]);
+									
+									if(f_BridgeResultE.m_idx_vec == 0)
+										{
+										f_Mark.m_vec_Int[4] += 13000;
+										}
+									else
+										{
+										if(f_BridgeResultE.m_idx_vec >= 1)
+											{
+											for(var f_jeta = 0; f_jeta < f_BridgeResultE.m_idx_vec; f_jeta++)
+												{
+												if(f_BridgeResultE.m_vec_Position_Equals[f_jet] == 0)
+													{
+													var f_datavarFound = true;
+								
+													for(var f_Jet = 0; (f_Jet < f_BridgeResultE.m_vec_Line[2].m_String.length) && (f_Jet < f_BridgeResultC.m_vec_String_Equal[f_jet]); f_Jet++)
+														{
+														if(f_BridgeResultE.m_vec_Line[2].m_String.charAt(f_Jet) != f_BridgeResultC.m_vec_String_Equal[f_jet].charAt(f_Jet))
+															{
+															f_datavarFound = false;
+															}
+														}
+														
+													if(f_datavarFound = true)
+														{
+														f_Mark.m_vec_Int[6] += 4260;
+														}
+													}
+												}
+											}
+										}
+									}
 								}
 							}
 						}
@@ -1076,7 +1378,7 @@ classTarget_JScript.prototype.acMark_Bridges = function()
 				
 				if(f_BridgeResultA.m_idx_vec == 0)
 					{
-					f_Mark.m_vec_Int[4] += 15;
+					f_Mark.m_vec_Int[4] += 1500;
 					}
 				else
 					{
@@ -1085,7 +1387,7 @@ classTarget_JScript.prototype.acMark_Bridges = function()
 						if((f_BridgeResultA.m_vec_Position_Equals[f_jet] == 0) &&
 						   (f_BridgeResultA.m_vec_Position_Argument[f_jet] == -5))
 							{
-							f_Mark.m_vec_Int[5] += 3;
+							f_Mark.m_vec_Int[5] += 300;
 							}
 						}
 					}
@@ -1096,7 +1398,7 @@ classTarget_JScript.prototype.acMark_Bridges = function()
 				
 					if(f_BridgeResultA.m_idx_vec == 0)
 						{
-						f_Mark.m_vec_Int[4] += 15;
+						f_Mark.m_vec_Int[4] += 1500;
 						}
 					else
 						{
@@ -1105,9 +1407,9 @@ classTarget_JScript.prototype.acMark_Bridges = function()
 							if((f_BridgeResultA.m_vec_Position_Equals[f_jet] == 0) &&
 							   (f_BridgeResultA.m_vec_Position_Argument[f_jet] == -5))
 								{
-								f_Mark.m_vec_Int[5] += 3;
+								f_Mark.m_vec_Int[5] += 300;
 								}
-							}
+						}
 						}
 					}
 				}
@@ -1118,7 +1420,7 @@ classTarget_JScript.prototype.acMark_Bridges = function()
 			
 			if(f_ReturnBridgeResult.m_idx_vec == 0)
 				{
-				f_Mark.m_vec_Int[4] += 15;
+				f_Mark.m_vec_Int[4] += 150;
 				}
 			else
 				{
@@ -1127,410 +1429,16 @@ classTarget_JScript.prototype.acMark_Bridges = function()
 					if((f_ReturnBridgeResult.m_vec_Position_Equals[f_forge] == 0) &&
 						(f_ReturnBridgeResult.m_vec_Position_Argument [f_forge] == -5))
 						{
-						f_Mark.m_vec_Int[6] += 5;
+						f_Mark.m_vec_Int[6] += 500;
 						}
 					}
 				}
 			}
 		}
 		
-	//console.log("f_Mark=" + JSON.stringify(f_Mark));
+	//console.log(JSON.stringify(f_Mark));
 		
 	return f_Mark;
-}
-
-classTarget_JScript.prototype.acGatherICO_jscript_base = function()
-{
-	 //////////////////////////
-	//
-	g_vec_scrInputName[g_idx_vec_scrInputName] = "firstinput";
-	g_idx_vec_scrInputName++;
-	
-	g_vec_scrInputHTML[g_idx_vec_scrInputHTML] = "<input type=\"number\" name=\"" + g_vec_scrInputName[g_idx_vec_scrInputName - 1] + "\" id=\"" + "wwh_icobase_input_" + g_vec_scrInputName[g_idx_vec_scrInputName - 1] + "\" value=\"1\" min=\"1\" max=\"5\">";
-	g_idx_vec_scrInputHTML++;
-	
-	g_vec_scrInputType[g_idx_vec_scrInputType] = INSTA_TYPE_FUNC_CALL;
-	g_idx_vec_scrInputType++;
-	
-	
-	g_vec_scrInputName[g_idx_vec_scrInputName] = "wwb_ecnbase_ac_takeMeasurementINTV1";
-	g_idx_vec_scrInputName++;
-	
-	g_vec_scrInputHTML[g_idx_vec_scrInputHTML] = "Ex";
-	g_idx_vec_scrInputHTML++;
-	
-	g_vec_scrInputType[g_idx_vec_scrInputType] = INSTA_TYPE_FUNC_CALL;
-	g_idx_vec_scrInputType++;
-	
-	
-	g_vec_scrInputName[g_idx_vec_scrInputName] = "wwb_ecnbase_ag_GenerateName";
-	g_idx_vec_scrInputName++;
-	
-	g_vec_scrInputHTML[g_idx_vec_scrInputHTML] = "Ex";
-	g_idx_vec_scrInputHTML++;
-	
-	g_vec_scrInputType[g_idx_vec_scrInputType] = INSTA_TYPE_FUNC_CALL;
-	g_idx_vec_scrInputType++;
-	
-	g_vec_scrInputName[g_idx_vec_scrInputName] = "wwb_ecnbase_acMakeUnison";
-	g_idx_vec_scrInputName++;
-	
-	g_vec_scrInputHTML[g_idx_vec_scrInputHTML] = "Ex";
-	g_idx_vec_scrInputHTML++;
-	
-	g_vec_scrInputType[g_idx_vec_scrInputType] = INSTA_TYPE_FUNC_CALL;
-	g_idx_vec_scrInputType++;
-	
-	g_vec_scrInputName[g_idx_vec_scrInputName] = "g_X";
-	g_idx_vec_scrInputName++;
-	
-	g_vec_scrInputHTML[g_idx_vec_scrInputHTML] = "<input type=\"text\" name=\"" + g_vec_scrInputName[g_idx_vec_scrInputName - 1] + "\" id=\"" + "wwh_icobase_input_" + g_vec_scrInputName[g_idx_vec_scrInputName - 1] + "\" value=\"" + g_vec_scrInputName[g_idx_vec_scrInputName - 1] + "\">";
-	g_idx_vec_scrInputHTML++;
-	
-	g_vec_scrInputType[g_idx_vec_scrInputType] = INSTA_TYPE_VAR_CALL;
-	g_idx_vec_scrInputType++;
-	
-	g_vec_scrInputName[g_idx_vec_scrInputName] = "g_Y";
-	g_idx_vec_scrInputName++;
-	
-	g_vec_scrInputHTML[g_idx_vec_scrInputHTML] = "<input type=\"text\" name=\"" + g_vec_scrInputName[g_idx_vec_scrInputName - 1] + "\" id=\"" + "wwh_icobase_input_" + g_vec_scrInputName[g_idx_vec_scrInputName - 1] + "\" value=\"" + g_vec_scrInputName[g_idx_vec_scrInputName - 1] + "\">";
-	g_idx_vec_scrInputHTML++;
-	
-	g_vec_scrInputType[g_idx_vec_scrInputType] = INSTA_TYPE_VAR_CALL;
-	g_idx_vec_scrInputType++;
-	
-	g_vec_scrInputName[g_idx_vec_scrInputName] = "g_Z";
-	g_idx_vec_scrInputName++;
-	
-	g_vec_scrInputHTML[g_idx_vec_scrInputHTML] = "<input type=\"text\" name=\"" + g_vec_scrInputName[g_idx_vec_scrInputName - 1] + "\" id=\"" + "wwh_icobase_input_" + g_vec_scrInputName[g_idx_vec_scrInputName - 1] + "\" value=\"" + g_vec_scrInputName[g_idx_vec_scrInputName - 1] + "\">";
-	g_idx_vec_scrInputHTML++;
-	
-	g_vec_scrInputType[g_idx_vec_scrInputType] = INSTA_TYPE_VAR_CALL;
-	g_idx_vec_scrInputType++;
-	
-	g_vec_scrControlName[g_idx_vec_scrControlName] = "Math.cos";
-	g_idx_vec_scrControlName++;
-	
-	g_vec_scrControlType[g_idx_vec_scrControlType] = INSTA_TYPE_FUNC_CALL;
-	g_idx_vec_scrControlType++;
-	
-	g_vec_scrControlName[g_idx_vec_scrControlName] = "Math.sin";
-	g_idx_vec_scrControlName++;
-	
-	g_vec_scrControlType[g_idx_vec_scrControlType] = INSTA_TYPE_FUNC_CALL;
-	g_idx_vec_scrControlType++;
-	
-	g_vec_scrControlName[g_idx_vec_scrControlName] = "Math.sqrt";
-	g_idx_vec_scrControlName++;
-	
-	g_vec_scrControlType[g_idx_vec_scrControlType] = INSTA_TYPE_FUNC_CALL;
-	g_idx_vec_scrControlType++;
-
-	g_vec_scrControlName[g_idx_vec_scrControlName] = "if(";
-	g_idx_vec_scrControlName++;
-	
-	g_vec_scrControlType[g_idx_vec_scrControlType] = INSTA_TYPE_CONDITIONAL;
-	g_idx_vec_scrControlType++;
-	
-	var f_ControlBridge1 = new classBridge();
-	
-	f_ControlBridge1.ac_add_Path(g_idx_vec_scrControlName - 1, INSTA_TYPE_CONDITIONAL, LINE_TYPE_CONTROL);
-	f_ControlBridge1.ac_add_Path(0, INSTA_TYPE_FUNC_CALL, LINE_TYPE_INPUT);
-	f_ControlBridge1.ac_add_Path(1, INSTA_TYPE_FUNC_CALL, LINE_TYPE_INPUT);
-	
-	g_vec_control_Bridge[g_idx_vec_control_Bridge] = f_ControlBridge1;
-	g_idx_vec_control_Bridge++;
-	
-	g_vec_scrOutputName[g_idx_vec_scrOutputName] = "f_Result";
-	g_idx_vec_scrOutputName++;
-	
-	g_vec_scrOutputType[g_idx_vec_scrOutputType] = INSTA_TYPE_VAR_CALL;
-	g_idx_vec_scrOutputType++;
-	
-	var f_OutputBridge1 = new classBridge();
-	
-	f_OutputBridge1.ac_add_Path(g_idx_vec_scrOutputName - 1, INSTA_TYPE_VAR_CALL, LINE_TYPE_OUTPUT);
-	f_OutputBridge1.ac_add_Path(0, INSTA_TYPE_FUNC_CALL, LINE_TYPE_INPUT);
-	f_OutputBridge1.ac_add_Path(1, INSTA_TYPE_FUNC_CALL, LINE_TYPE_INPUT);
-	f_OutputBridge1.ac_add_Path(-5, INSTA_TYPE_VAR_CALL, LINE_TYPE_NORMAL);
-	
-	g_vec_output_Bridge[g_idx_vec_output_Bridge] = f_OutputBridge1;
-	g_idx_vec_output_Bridge++;
-	
-	g_vec_scrOutputName[g_idx_vec_scrOutputName] = "window.getElementById(wwb_base_output1).innerHTML";
-	g_idx_vec_scrOutputName++;
-	
-	g_vec_scrOutputType[g_idx_vec_scrOutputType] = INSTA_TYPE_VAR_CALL;
-	g_idx_vec_scrOutputType++;
-	
-	g_vec_scrOutputName[g_idx_vec_scrOutputName] = "window.getElementById(wwb_navbar_output1).innerHTML";
-	g_idx_vec_scrOutputName++;
-	
-	g_vec_scrOutputType[g_idx_vec_scrOutputType] = INSTA_TYPE_VAR_CALL;
-	g_idx_vec_scrOutputType++;
-	
-	g_vec_scrOutputName[g_idx_vec_scrOutputName] = "window.getElementById(wwb_content1_output1).innerHTML";
-	g_idx_vec_scrOutputName++;
-	
-	g_vec_scrOutputType[g_idx_vec_scrOutputType] = INSTA_TYPE_VAR_CALL;
-	g_idx_vec_scrOutputType++;
-	
-	g_vec_scrOutputName[g_idx_vec_scrOutputName] = "window.getElementById(wwb_deploy_output1).innerHTML";
-	g_idx_vec_scrOutputName++;
-	
-	g_vec_scrOutputType[g_idx_vec_scrOutputType] = INSTA_TYPE_VAR_CALL;
-	g_idx_vec_scrOutputType++;
-	
-	g_vec_scrOutputName[g_idx_vec_scrOutputName] = "window.getElementById(wwb_mission_output1).innerHTML";
-	g_idx_vec_scrOutputName++;
-	
-	g_vec_scrOutputType[g_idx_vec_scrOutputType] = INSTA_TYPE_VAR_CALL;
-	g_idx_vec_scrOutputType++;
-	
-	g_vec_scrOutputName[g_idx_vec_scrOutputName] = "window.getElementById(wwb_mission_output2).innerHTML";
-	g_idx_vec_scrOutputName++;
-	
-	g_vec_scrOutputType[g_idx_vec_scrOutputType] = INSTA_TYPE_VAR_CALL;
-	g_idx_vec_scrOutputType++;
-	
-	g_vec_scrOutputName[g_idx_vec_scrOutputName] = "return ";
-	g_idx_vec_scrOutputName++;
-	
-	g_vec_scrOutputType[g_idx_vec_scrOutputType] = INSTA_TYPE_FUNC_CALL;
-	g_idx_vec_scrOutputType++;
-	
-	var f_OutputBridge2 = new classBridge();
-	
-	f_OutputBridge2.ac_add_Path(g_idx_vec_scrOutputName - 1, INSTA_TYPE_FUNC_CALL, LINE_TYPE_OUTPUT);
-	f_OutputBridge2.ac_add_Path(-5, INSTA_TYPE_VAR_DEF, LINE_TYPE_INPUT);
-	
-	g_vec_output_Bridge[g_idx_vec_output_Bridge] = f_OutputBridge2;
-	g_idx_vec_output_Bridge++;
-}
-
-classTarget_JScript.prototype.acGatherICO_html_base = function()
-{
-	 //////////////////////////
-	// 
-	g_vec_scrInputName[g_idx_vec_scrInputName] = "ac_takeMeasurementINTV1";
-	g_idx_vec_scrInputName++;
-	
-	g_vec_scrInputType[g_idx_vec_scrInputType] = INSTA_TYPE_FUNC_CALL;
-	g_idx_vec_scrInputType++;
-	
-	g_vec_scrInputName[g_idx_vec_scrInputName] = "ag_GenerateName";
-	g_idx_vec_scrInputName++;
-	
-	g_vec_scrInputType[g_idx_vec_scrInputType] = INSTA_TYPE_FUNC_CALL;
-	g_idx_vec_scrInputType++;
-	
-	g_vec_scrInputName[g_idx_vec_scrInputName] = "g_X";
-	g_idx_vec_scrInputName++;
-	
-	g_vec_scrInputType[g_idx_vec_scrInputType] = INSTA_TYPE_VAR_CALL;
-	g_idx_vec_scrInputType++;
-	
-	g_vec_scrInputName[g_idx_vec_scrInputName] = "g_Y";
-	g_idx_vec_scrInputName++;
-	
-	g_vec_scrInputType[g_idx_vec_scrInputType] = INSTA_TYPE_VAR_CALL;
-	g_idx_vec_scrInputType++;
-	
-	g_vec_scrInputName[g_idx_vec_scrInputName] = "g_Z";
-	g_idx_vec_scrInputName++;
-	
-	g_vec_scrInputType[g_idx_vec_scrInputType] = INSTA_TYPE_VAR_CALL;
-	g_idx_vec_scrInputType++;
-	
-	g_vec_scrControlName[g_idx_vec_scrControlName] = "Math.cos";
-	g_idx_vec_scrControlName++;
-	
-	g_vec_scrControlType[g_idx_vec_scrControlType] = INSTA_TYPE_FUNC_CALL;
-	g_idx_vec_scrControlType++;
-	
-	g_vec_scrControlName[g_idx_vec_scrControlName] = "Math.sin";
-	g_idx_vec_scrControlName++;
-	
-	g_vec_scrControlType[g_idx_vec_scrControlType] = INSTA_TYPE_FUNC_CALL;
-	g_idx_vec_scrControlType++;
-	
-	g_vec_scrControlName[g_idx_vec_scrControlName] = "Math.sqrt";
-	g_idx_vec_scrControlName++;
-	
-	g_vec_scrControlType[g_idx_vec_scrControlType] = INSTA_TYPE_FUNC_CALL;
-	g_idx_vec_scrControlType++;
-
-	g_vec_scrControlName[g_idx_vec_scrControlName] = "if(";
-	g_idx_vec_scrControlName++;
-	
-	g_vec_scrControlType[g_idx_vec_scrControlType] = INSTA_TYPE_CONDITIONAL;
-	g_idx_vec_scrControlType++;
-	
-	g_vec_scrOutputName[g_idx_vec_scrOutputName] = "";
-	g_idx_vec_scrOutputName++;
-	
-	g_vec_scrOutputType[g_idx_vec_scrOutputType] = INSTA_TYPE_FUNC_CALL;
-	g_idx_vec_scrOutputType++;
-	
-	g_vec_scrOutputName[g_idx_vec_scrOutputName] = "playSound";
-	g_idx_vec_scrOutputName++;
-	
-	g_vec_scrOutputType[g_idx_vec_scrOutputType] = INSTA_TYPE_FUNC_CALL;
-	g_idx_vec_scrOutputType++;
-}
-
-classTarget_JScript.prototype.acGatherICO_php_base = function()
-{
-	 //////////////////////////
-	// 
-	g_vec_scrInputName[g_idx_vec_scrInputName] = "ac_takeMeasurementINTV1";
-	g_idx_vec_scrInputName++;
-	
-	g_vec_scrInputType[g_idx_vec_scrInputType] = INSTA_TYPE_FUNC_CALL;
-	g_idx_vec_scrInputType++;
-	
-	g_vec_scrInputName[g_idx_vec_scrInputName] = "ag_GenerateName";
-	g_idx_vec_scrInputName++;
-	
-	g_vec_scrInputType[g_idx_vec_scrInputType] = INSTA_TYPE_FUNC_CALL;
-	g_idx_vec_scrInputType++;
-	
-	g_vec_scrInputName[g_idx_vec_scrInputName] = "g_X";
-	g_idx_vec_scrInputName++;
-	
-	g_vec_scrInputType[g_idx_vec_scrInputType] = INSTA_TYPE_VAR_CALL;
-	g_idx_vec_scrInputType++;
-	
-	g_vec_scrInputName[g_idx_vec_scrInputName] = "g_Y";
-	g_idx_vec_scrInputName++;
-	
-	g_vec_scrInputType[g_idx_vec_scrInputType] = INSTA_TYPE_VAR_CALL;
-	g_idx_vec_scrInputType++;
-	
-	g_vec_scrInputName[g_idx_vec_scrInputName] = "g_Z";
-	g_idx_vec_scrInputName++;
-	
-	g_vec_scrInputType[g_idx_vec_scrInputType] = INSTA_TYPE_VAR_CALL;
-	g_idx_vec_scrInputType++;
-	
-	g_vec_scrControlName[g_idx_vec_scrControlName] = "Math.cos";
-	g_idx_vec_scrControlName++;
-	
-	g_vec_scrControlType[g_idx_vec_scrControlType] = INSTA_TYPE_FUNC_CALL;
-	g_idx_vec_scrControlType++;
-	
-	g_vec_scrControlName[g_idx_vec_scrControlName] = "Math.sin";
-	g_idx_vec_scrControlName++;
-	
-	g_vec_scrControlType[g_idx_vec_scrControlType] = INSTA_TYPE_FUNC_CALL;
-	g_idx_vec_scrControlType++;
-	
-	g_vec_scrControlName[g_idx_vec_scrControlName] = "Math.sqrt";
-	g_idx_vec_scrControlName++;
-	
-	g_vec_scrControlType[g_idx_vec_scrControlType] = INSTA_TYPE_FUNC_CALL;
-	g_idx_vec_scrControlType++;
-
-	g_vec_scrControlName[g_idx_vec_scrControlName] = "if(";
-	g_idx_vec_scrControlName++;
-	
-	g_vec_scrControlType[g_idx_vec_scrControlType] = INSTA_TYPE_CONDITIONAL;
-	g_idx_vec_scrControlType++;
-	
-	g_vec_scrOutputName[g_idx_vec_scrOutputName] = "";
-	g_idx_vec_scrOutputName++;
-	
-	g_vec_scrOutputType[g_idx_vec_scrOutputType] = INSTA_TYPE_FUNC_CALL;
-	g_idx_vec_scrOutputType++;
-	
-	g_vec_scrOutputName[g_idx_vec_scrOutputName] = "playSound";
-	g_idx_vec_scrOutputName++;
-	
-	g_vec_scrOutputType[g_idx_vec_scrOutputType] = INSTA_TYPE_FUNC_CALL;
-	g_idx_vec_scrOutputType++;
-}
-
-classTarget_JScript.prototype.acGatherICO_php_base = function()
-{
-	 //////////////////////////
-	// 
-	g_vec_scrInputName[g_idx_vec_scrInputName] = "ac_takeMeasurementINTV1";
-	g_idx_vec_scrInputName++;
-	
-	g_vec_scrInputType[g_idx_vec_scrInputType] = INSTA_TYPE_FUNC_CALL;
-	g_idx_vec_scrInputType++;
-	
-	g_vec_scrInputName[g_idx_vec_scrInputName] = "ag_GenerateName";
-	g_idx_vec_scrInputName++;
-	
-	g_vec_scrInputType[g_idx_vec_scrInputType] = INSTA_TYPE_FUNC_CALL;
-	g_idx_vec_scrInputType++;
-	
-	g_vec_scrInputName[g_idx_vec_scrInputName] = "g_X";
-	g_idx_vec_scrInputName++;
-	
-	g_vec_scrInputType[g_idx_vec_scrInputType] = INSTA_TYPE_VAR_CALL;
-	g_idx_vec_scrInputType++;
-	
-	g_vec_scrInputName[g_idx_vec_scrInputName] = "g_Y";
-	g_idx_vec_scrInputName++;
-	
-	g_vec_scrInputType[g_idx_vec_scrInputType] = INSTA_TYPE_VAR_CALL;
-	g_idx_vec_scrInputType++;
-	
-	g_vec_scrInputName[g_idx_vec_scrInputName] = "g_Z";
-	g_idx_vec_scrInputName++;
-	
-	g_vec_scrInputType[g_idx_vec_scrInputType] = INSTA_TYPE_VAR_CALL;
-	g_idx_vec_scrInputType++;
-	
-	g_vec_scrControlName[g_idx_vec_scrControlName] = "Math.cos";
-	g_idx_vec_scrControlName++;
-	
-	g_vec_scrControlType[g_idx_vec_scrControlType] = INSTA_TYPE_FUNC_CALL;
-	g_idx_vec_scrControlType++;
-	
-	g_vec_scrControlName[g_idx_vec_scrControlName] = "Math.sin";
-	g_idx_vec_scrControlName++;
-	
-	g_vec_scrControlType[g_idx_vec_scrControlType] = INSTA_TYPE_FUNC_CALL;
-	g_idx_vec_scrControlType++;
-	
-	g_vec_scrControlName[g_idx_vec_scrControlName] = "Math.sqrt";
-	g_idx_vec_scrControlName++;
-	
-	g_vec_scrControlType[g_idx_vec_scrControlType] = INSTA_TYPE_FUNC_CALL;
-	g_idx_vec_scrControlType++;
-
-	g_vec_scrControlName[g_idx_vec_scrControlName] = "if(";
-	g_idx_vec_scrControlName++;
-	
-	g_vec_scrControlType[g_idx_vec_scrControlType] = INSTA_TYPE_CONDITIONAL;
-	g_idx_vec_scrControlType++;
-	
-	g_vec_scrOutputName[g_idx_vec_scrOutputName] = "$output +=";
-	g_idx_vec_scrOutputName++;
-	
-	g_vec_scrOutputType[g_idx_vec_scrOutputType] = INSTA_TYPE_VAR_CALL;
-	g_idx_vec_scrOutputType++;
-	
-	g_vec_scrOutputName[g_idx_vec_scrOutputName] = "write(";
-	g_idx_vec_scrOutputName++;
-	
-	g_vec_scrOutputType[g_idx_vec_scrOutputType] = INSTA_TYPE_VAR_CALL;
-	g_idx_vec_scrOutputType++;
-	
-	g_vec_scrOutputName[g_idx_vec_scrOutputName] = "playSound";
-	g_idx_vec_scrOutputName++;
-	
-	g_vec_scrOutputType[g_idx_vec_scrOutputType] = INSTA_TYPE_FUNC_CALL;
-	g_idx_vec_scrOutputType++;
-}
-
-classTarget_JScript.prototype.acGen_SuperName = function(f_GeoName)
-{
-	this.m_vec_Name[this.m_idx_vec_Name] = "wwb_" + f_GeoName;
-	this.m_idx_vec_Name++;
 }
 
 function classFactor()
@@ -1833,74 +1741,24 @@ classTarget_JScript.prototype.acFromHesh = function(f_Hesh, f_Target)
 		this.m_Collection.m_vec_Element[this.m_Collection.m_idx_vec_Element] = f_Element;
 		this.m_Collection.m_idx_vec_Element++;
 		}
-		
+
 	this.m_SchemaTop = 0;
-	this.m_SchemaRef[0].m_X = 0.120;
-	this.m_SchemaRef[0].m_Y = 0.70;
-	this.m_SchemaRef[0].m_Z = 0.95;
-	this.m_SchemaRef[1].m_X = 0.120;
-	this.m_SchemaRef[1].m_Y = 0.70;
-	this.m_SchemaRef[1].m_Z = 0.95;
-	this.m_SchemaRef[2].m_X = 0.120;
-	this.m_SchemaRef[2].m_Y = 0.70;
-	this.m_SchemaRef[2].m_Z = 0.95;
-	this.m_SchemaRef[3].m_X = 0.120;
-	this.m_SchemaRef[3].m_Y = 0.70;
-	this.m_SchemaRef[3].m_Z = 0.95;
-	this.m_SchemaRef[4].m_X = 0.120;
-	this.m_SchemaRef[4].m_Y = 0.70;
-	this.m_SchemaRef[4].m_Z = 0.95;
-	this.m_SchemaRef[5].m_X = 0.120;
-	this.m_SchemaRef[5].m_Y = 0.70;
-	this.m_SchemaRef[5].m_Z = 0.95;
-	this.m_SchemaRef[6].m_X = 0.120;
-	this.m_SchemaRef[6].m_Y = 0.70;
-	this.m_SchemaRef[6].m_Z = 0.95;
-	this.m_SchemaRef[7].m_X = 0.120;
-	this.m_SchemaRef[7].m_Y = 0.70;
-	this.m_SchemaRef[7].m_Z = 0.95;
-	this.m_SchemaRef[8].m_X = 0.120;
-	this.m_SchemaRef[8].m_Y = 0.70;
-	this.m_SchemaRef[8].m_Z = 0.95;
-	this.m_SchemaRef[9].m_X = 0.120;
-	this.m_SchemaRef[9].m_Y = 0.70;
-	this.m_SchemaRef[9].m_Z = 0.95;
-	this.m_SchemaRef[10].m_X = 0.120;
-	this.m_SchemaRef[10].m_Y = 0.70;
-	this.m_SchemaRef[10].m_Z = 0.95;
-	this.m_SchemaRef[11].m_X = 0.120;
-	this.m_SchemaRef[11].m_Y = 0.70;
-	this.m_SchemaRef[11].m_Z = 0.95;
-	this.m_SchemaRef[12].m_X = 0.120;
-	this.m_SchemaRef[12].m_Y = 0.70;
-	this.m_SchemaRef[12].m_Z = 0.95;
-	this.m_SchemaRef[13].m_X = 0.120;
-	this.m_SchemaRef[13].m_Y = 0.70;
-	this.m_SchemaRef[13].m_Z = 0.95;
-	this.m_SchemaRef[14].m_X = 0.120;
-	this.m_SchemaRef[14].m_Y = 0.70;
-	this.m_SchemaRef[14].m_Z = 0.95;
-	this.m_SchemaRef[15].m_X = 0.120;
-	this.m_SchemaRef[15].m_Y = 0.70;
-	this.m_SchemaRef[15].m_Z = 0.95;
-	this.m_SchemaRef[16].m_X = 0.120;
-	this.m_SchemaRef[16].m_Y = 0.70;
-	this.m_SchemaRef[16].m_Z = 0.95;
-	this.m_SchemaRef[17].m_X = 0.120;
-	this.m_SchemaRef[17].m_Y = 0.70;
-	this.m_SchemaRef[17].m_Z = 0.95;
-	g_SchemaSize = 3;
+	this.m_SchemaRef[0].m_X = 0.120153;
+	this.m_SchemaRef[0].m_Y = 0.70128;
+	this.m_SchemaRef[0].m_Z = 0.951234;
+	g_SchemaSize = 1;
 	
 	var f_Element = this.m_Collection.m_vec_Element[0];
-	
-	var f_FunctionCount = this.ac_takeMeasurementINTV1(f_Element, 1, 3, 0, 3, 1);
+	var f_FunctionCount = 1;
 
 	for(var f_jet = 0; f_jet < f_FunctionCount; f_jet++)
 		{
-		var f_FunctionType = this.ac_takeMeasurementINTV1(f_Element, 1, 3, 0, 3, 2);
-		var f_ArgumentCount = this.ac_takeMeasurementINTV1(f_Element, 0, 6, 2, 3, 3);
-		var f_InstaCountMap = this.ac_takeMeasurementINTV1(f_Element, 1, 500, 20, 3, 4);
+		var f_FunctionType = 1;
+		var f_ArgumentCount = this.ac_takeMeasurementINTV1(f_Element, 0, 6, 1, 3, 3);
+		var f_Weight = this.ac_takeMeasurementINTV1(f_Element, 1, 4, 0, 3, 3);
+		var f_InstaCountMap = this.ac_takeMeasurementINTV1(f_Element, 18, 100, f_Weight, 3, 4);
 		this.m_InstaCountMap = f_InstaCountMap;
+		g_currentFunctionInstaCount = f_InstaCountMap;
 		
 		var f_vec_CodeLineStorage = [];
 		var f_idx_vec_CodeLineStorage = 0;
@@ -1924,8 +1782,8 @@ classTarget_JScript.prototype.acFromHesh = function(f_Hesh, f_Target)
 				f_StringA += ", ";
 				}
 				
-			var f_VarNameA = this.acMakeUnison(f_Target, ag_GenerateName(this.ac_takeMeasurement(f_Element)), 1, INSTA_TYPE_VAR_DEF, f_Element, f_Function.m_idx_vec_Insta, this.m_idx_vec_Function);
-			var f_Insta = new classInsta(f_VarNameA, INSTA_TYPE_VAR_DEF);
+			var f_VarNameA = this.acMakeUnison(f_Target, ag_GenerateName(this.ac_takeMeasurement(f_Element)), 1, INSTA_TYPE_VAR_CALL, f_Element, f_Function.m_idx_vec_Insta, this.m_idx_vec_Function);
+			var f_Insta = new classInsta(f_VarNameA, INSTA_TYPE_VAR_CALL);
 
 			f_Function.m_vec_Insta[f_Function.m_idx_vec_Insta] = f_Insta;
 			f_Function.m_idx_vec_Insta++;
@@ -1935,7 +1793,7 @@ classTarget_JScript.prototype.acFromHesh = function(f_Hesh, f_Target)
 
 		f_Function.m_vec_String += f_StringA;
 		
-		f_Function.m_vec_String += ")\n	{\n";
+		f_Function.m_vec_String += ")\n{\n";
 		
 		this.acResetLine();
 		
@@ -1946,10 +1804,8 @@ classTarget_JScript.prototype.acFromHesh = function(f_Hesh, f_Target)
 
 		var f_ElementID = 0;
 		
-		while(this.m_InstaCountMap > 0)
+		while((this.m_InstaCountMap > 0) || (this.m_idx_vec_CountLock > 0))
 			{
-			f_Element = this.m_Collection.m_vec_Element[f_ElementID];
-			
 			f_ElementID++;
 			
 			if(f_ElementID >= this.m_Collection.m_idx_vec_Element)
@@ -1957,8 +1813,9 @@ classTarget_JScript.prototype.acFromHesh = function(f_Hesh, f_Target)
 				f_ElementID = 0;
 				}
 				
-			var f_Contact = false;
+			f_Element = this.m_Collection.m_vec_Element[f_ElementID];
 				
+			var f_Contact = false;
 			var f_InstaType = this.ac_takeMeasurementINTV1(f_Element, 0, INSTA_TYPE_COUNT, 2, 3, 6);
 
 			if(f_InstaType == INSTA_TYPE_VAR_DEF)
@@ -2075,10 +1932,16 @@ classTarget_JScript.prototype.acFromHesh = function(f_Hesh, f_Target)
 							{
 							f_Function.m_vec_String += ", ";
 							}
-
-						if(this.m_LastTypeII == INSTA_TYPE_DATA)
+						else if(this.m_LastTypeII == INSTA_TYPE_DATA)
 							{
 							f_Function.m_vec_String += ", ";
+							}
+						else if(this.m_LastTypeII == INSTA_TYPE_FUNC_CALL)
+							{
+							if(f_Function.m_vec_String.charAt(f_Function.m_vec_String.length - 1) == ')')
+								{
+								f_Function.m_vec_String += ", ";
+								}
 							}
 						}
 					else
@@ -2215,10 +2078,20 @@ classTarget_JScript.prototype.acFromHesh = function(f_Hesh, f_Target)
 					f_conInstaCount[2] = 3 + this.ac_takeMeasurementINTV1(f_Element, 2, 25, 4, 3, 6);
 					var f_Select = this.ac_takeMeasurementINTV1(f_Element, 0, 3, 1, 3, 3);
 					
+					var f_storeSpace = "";
+					
+					for(var f_cv2 = 0; f_cv2 < this.m_idx_vec_CountLock; f_cv2++)
+						{
+						if(this.m_vec_CountLock[f_cv2].m_String.search("}") != -1)
+							{
+							f_storeSpace += "	";
+							}
+						}
+					
 					this.m_vec_CountLock[this.m_idx_vec_CountLock] = new classCountLock(f_conInstaCount[f_Select], "\n}\n", INSTA_TYPE_CONDITIONAL);
 					this.m_idx_vec_CountLock++;
 					
-					this.m_vec_CountLock[this.m_idx_vec_CountLock] = new classCountLock(f_InstaCount, ")\n	{", INSTA_TYPE_CONDITIONAL);
+					this.m_vec_CountLock[this.m_idx_vec_CountLock] = new classCountLock(f_InstaCount, ")\n" + f_storeSpace + "{\n", INSTA_TYPE_CONDITIONAL);
 					this.m_idx_vec_CountLock++;
 					f_Contact = true;
 					}
@@ -2242,7 +2115,16 @@ classTarget_JScript.prototype.acFromHesh = function(f_Hesh, f_Target)
 						
 					var f_Name = this.acMakeUnison(f_Target, ag_GenerateName(this.ac_takeMeasurement(f_Element)), 1, INSTA_TYPE_VAR_DEF, f_Element, f_Function.m_idx_vec_Insta, this.m_idx_vec_Function);
 					var f_forVarName = ag_GenerateName(this.ac_takeMeasurement(f_Element));
-					var f_Str = "for(var " + f_forVarName + " = 0; " + f_forVarName + " < " + f_Name + "; " + f_forVarName + "++)\n	{\n 	";
+					
+					var f_clsName = new clsName(f_forVarName, 1, INSTA_TYPE_VAR_CALL, f_Function.m_idx_vec_Insta, this.m_idx_vec_Function);
+		
+					f_clsName.m_vec_Name[f_clsName.m_idx_vec_Name] = f_clsName;
+					f_clsName.m_idx_vec_Name++;
+					
+					f_Target.m_vec_Name[f_Target.m_idx_vec_Name] = f_clsName;
+					f_Target.m_idx_vec_Name++;
+					
+					var f_Str = "for(var " + f_forVarName + " = 0; " + f_forVarName + " < " + f_Name + "; " + f_forVarName + "++)\n";
 					var f_Insta = new classInsta(f_Str, INSTA_TYPE_LOOP_DEF);
 
 					f_Function.m_vec_Insta[f_Function.m_idx_vec_Insta] = f_Insta;
@@ -2251,7 +2133,18 @@ classTarget_JScript.prototype.acFromHesh = function(f_Hesh, f_Target)
 					f_Function.m_vec_String += f_Str;
 					this.m_InstaCountMap--;
 					
-					var f_loopInstaCount = this.ac_takeMeasurementINTV1(f_Element, 8, 105, 8, 3, 1);
+					for(var f_cv2 = 0; f_cv2 < this.m_idx_vec_CountLock; f_cv2++)
+						{
+						if(this.m_vec_CountLock[f_cv2].m_String.search("}") != -1)
+							{
+							f_Function.m_vec_String += "	";
+							}
+						}
+						
+					f_Function.m_vec_String += "	";
+					f_Function.m_vec_String += "{\n";
+					
+					var f_loopInstaCount = this.ac_takeMeasurementINTV1(f_Element, 8, 15, 2, 3, 1);
 					
 					this.m_vec_CountLock[this.m_idx_vec_CountLock] = new classCountLock(f_loopInstaCount, "\n}\n", INSTA_TYPE_LOOP_DEF);
 					this.m_idx_vec_CountLock++;
@@ -2338,10 +2231,16 @@ classTarget_JScript.prototype.acFromHesh = function(f_Hesh, f_Target)
 							{
 							f_Function.m_vec_String += ", ";
 							}
-
-						if(this.m_LastTypeII == INSTA_TYPE_DATA)
+						else if(this.m_LastTypeII == INSTA_TYPE_DATA)
 							{
 							f_Function.m_vec_String += ", ";
+							}
+						else if(this.m_LastTypeII == INSTA_TYPE_FUNC_CALL)
+							{
+							if(f_Function.m_vec_String.charAt(f_Function.m_vec_String.length - 1) == ')')
+								{
+								f_Function.m_vec_String += ", ";
+								}
 							}
 						}
 					else
@@ -2444,7 +2343,16 @@ classTarget_JScript.prototype.acFromHesh = function(f_Hesh, f_Target)
 					f_Function.m_vec_String += f_StringB;
 					this.m_InstaCountMap--;
 					
-					var f_arguInstaCount = this.ac_takeMeasurementINTV1(f_Element, 1, 3, 0, 3, 4);
+					var f_arguInstaCount = this.m_UnisonArgCount;//this.ac_takeMeasurementINTV1(f_Element, 1, 3, 0, 3, 4);
+
+					if(f_arguInstaCount < 0)
+						{
+						f_arguInstaCount = 0;
+						}
+					else if(f_arguInstaCount > 0)
+						{
+						f_arguInstaCount++;
+						}
 					
 					this.m_vec_CountLock[this.m_idx_vec_CountLock] = new classCountLock(f_arguInstaCount, ")", INSTA_TYPE_FUNC_CALL);
 					this.m_idx_vec_CountLock++;
@@ -2531,10 +2439,16 @@ classTarget_JScript.prototype.acFromHesh = function(f_Hesh, f_Target)
 							{
 							f_Function.m_vec_String += ", ";
 							}
-
-						if(this.m_LastTypeII == INSTA_TYPE_DATA)
+						else if(this.m_LastTypeII == INSTA_TYPE_DATA)
 							{
 							f_Function.m_vec_String += ", ";
+							}
+						else if(this.m_LastTypeII == INSTA_TYPE_FUNC_CALL)
+							{
+							if(f_Function.m_vec_String.charAt(f_Function.m_vec_String.length - 1) == ')')
+								{
+								f_Function.m_vec_String += ", ";
+								}
 							}
 						}
 					else
@@ -2628,7 +2542,7 @@ classTarget_JScript.prototype.acFromHesh = function(f_Hesh, f_Target)
 					//target restriction point
 					var f_StringB = "";
 					var f_Scale = 32;
-					var f_VarType = this.ac_takeMeasurementINTV1(f_Element, 0, 3, 4, 3, 1);
+					var f_VarType = this.ac_takeMeasurementINTV1(f_Element, 0, 5, 1, 3, 1);
 					var f_VarSize = this.ac_takeMeasurementINTV1(f_Element, 1, f_Scale, 7, 3, 0);
 					
 					if(f_VarType == VAR_TYPE_INT)
@@ -2638,6 +2552,12 @@ classTarget_JScript.prototype.acFromHesh = function(f_Hesh, f_Target)
 					else if(f_VarType >= VAR_TYPE_FLT)
 						{
 						f_StringB += parseFloat(this.ac_takeMeasurementINTV1(f_Element, 1, 10, 2, 3, 7)) * parseFloat(f_VarSize);
+						}
+					else	//Functions eval
+						{
+						var f_FingerA = this.ac_takeMeasurementINTV1(f_Element, 0, g_Complete_FUNC_CALL.m_idx_vec_List, 0, 3, 1);
+						
+						f_StringB += "\"" + g_Complete_FUNC_CALL.m_vec_List[f_FingerA] + "();\"";
 						}
 					/*else if(f_VarType == VAR_TYPE_HEX)
 						{
@@ -2692,7 +2612,10 @@ classTarget_JScript.prototype.acFromHesh = function(f_Hesh, f_Target)
 					     {
 					     var f_Caramel = f_cv;
 
-					     this.m_vec_CountLock[f_Caramel].m_Count--;
+						 if(f_Caramel == (this.m_idx_vec_CountLock - 1))
+							{
+							this.m_vec_CountLock[f_Caramel].m_Count--;
+							}
 					
 					     if(this.m_vec_CountLock[f_Caramel].m_Count <= 0)
 							{
@@ -2705,50 +2628,74 @@ classTarget_JScript.prototype.acFromHesh = function(f_Hesh, f_Target)
 								
 							if(f_on == true)
 								{
-								var f_Lock = this.m_vec_CountLock[f_Caramel];
-
-								f_Function.m_vec_String += f_Lock.m_String;
-
-								if(f_Lock.m_String.search("\n") != -1)
+								if(this.m_InstaCountMap > 0)	//close one lock
 									{
-									this.acResetLine();
-									f_vec_CodeLineStorage[f_idx_vec_CodeLineStorage] = f_vec_CodeLine;
-									f_idx_vec_CodeLineStorage++;
-									f_idx_vec_CodeLine = 0;
-									}
+									var f_Lock = this.m_vec_CountLock[f_Caramel];
 
-								this.acDecFactor(f_Lock.m_Factor);
+									f_Function.m_vec_String += f_Lock.m_String;
 
-								this.m_idx_vec_CountLock--;
-								
-								for(var f_XY = f_Caramel; f_XY < this.m_idx_vec_CountLock; f_XY++)
-									{
-									this.m_vec_CountLock[f_XY] = this.m_vec_CountLock[f_XY + 1];
-									}
-								
-								if(f_Lock.m_String == ")")
-									{
-									var f_ont = true;
-									
-									for(var f_cv1 = 0; f_cv1 < this.m_idx_vec_CountLock; f_cv1++)
-										{
-										for(var f_cv3 = 0; f_cv3 < this.m_vec_CountLock[f_cv1].m_String.length; f_cv3++)
-											{
-											if(this.m_vec_CountLock[f_cv1].m_String.charAt(f_cv3) == ')')
-												{
-												f_ont = false;
-												}
-											}
-										}
-										
-									if(f_ont == true)
+									if(f_Lock.m_String.search("\n") != -1)
 										{
 										this.acResetLine();
 										f_vec_CodeLineStorage[f_idx_vec_CodeLineStorage] = f_vec_CodeLine;
 										f_idx_vec_CodeLineStorage++;
 										f_idx_vec_CodeLine = 0;
-										f_Function.m_vec_String += ";\n";
 										}
+
+									this.acDecFactor(f_Lock.m_Factor);
+
+									this.m_idx_vec_CountLock--;
+									
+									for(var f_XY = f_Caramel; f_XY < this.m_idx_vec_CountLock; f_XY++)
+										{
+										this.m_vec_CountLock[f_XY] = this.m_vec_CountLock[f_XY + 1];
+										}
+									
+									if(f_Lock.m_String == ")")
+										{
+										var f_ont = true;
+										
+										for(var f_cv1 = 0; f_cv1 < this.m_idx_vec_CountLock; f_cv1++)
+											{
+											for(var f_cv3 = 0; f_cv3 < this.m_vec_CountLock[f_cv1].m_String.length; f_cv3++)
+												{
+												if(this.m_vec_CountLock[f_cv1].m_String.charAt(f_cv3) == ')')
+													{
+													f_ont = false;
+													}
+												}
+											}
+											
+										if(f_ont == true)
+											{
+											this.acResetLine();
+											f_vec_CodeLineStorage[f_idx_vec_CodeLineStorage] = f_vec_CodeLine;
+											f_idx_vec_CodeLineStorage++;
+											f_idx_vec_CodeLine = 0;
+											f_Function.m_vec_String += ";\n";
+											}
+										}
+									}
+								else	//else close all locks
+									{
+									for(var f_XYZ = this.m_idx_vec_CountLock - 1; f_XYZ >= 0; f_XYZ--)
+										{
+										var f_Lock = this.m_vec_CountLock[f_XYZ];
+
+										f_Function.m_vec_String += f_Lock.m_String;
+
+										if(f_Lock.m_String.search("\n") != -1)
+											{
+											this.acResetLine();
+											f_vec_CodeLineStorage[f_idx_vec_CodeLineStorage] = f_vec_CodeLine;
+											f_idx_vec_CodeLineStorage++;
+											f_idx_vec_CodeLine = 0;
+											}
+											
+										this.m_idx_vec_CountLock--;
+										}
+										
+									this.m_idx_vec_CountLock = 0;
 									}
 								}
 							else
@@ -3107,12 +3054,16 @@ classTarget_JScript.prototype.acCompare = function(f_Target, f_QualityRank, f_Gr
 		
 		var f_Mark = this.acMark_Bridges();
 		
+		//console.log(JSON.stringify(f_Mark));
+		
+		f_Target.m_Mark += f_Mark.acSumStuff(f_QualityRank * 200.0);
+		
 		if(g_EnablePR == true)
 			{
-			f_Mark.acIncrement(this.acMark_TestICO());
+			var f_MarkICO = this.acMark_TestICO(f_Target);
+			
+			f_Target.m_Mark += f_MarkICO.acSumStuff(f_QualityRank * 5.0);
 			}
-		
-		f_Target.m_Mark = f_Mark.acSumStuff(f_QualityRank);
 	//	}
 	//else
 	//	{
@@ -3183,11 +3134,6 @@ classTarget_JScript.prototype.acCompareStructure = function(f_Target, f_QualityR
 		{
 		return false;
 		}
-
-	/*if(Math.random() < 0.1)
-		{
-		console.log("CubeHESHGen(" + f_True + ")QualityRank[" + f_QualityRank + "]:Mark " + f_Target.m_Mark + " < Diff(" + f_Grade + ")tVol=" + f_testVolumes);
-		}*/
 }
 
 function classInsta(f_StringC, f_Type)
@@ -3263,18 +3209,16 @@ classMark.prototype.acSumStuff = function(f_QualityRank)
 {
 	var f_Mark = 0.0;
 
-	   ////////////////
-	  //
-	 //
-	// Movin to positive Marking Scheme
+	 ////////////////////////////////////////
+	// Traversing to positive Marking Scheme
 	for(var f_X = this.m_idx_flip; f_X < this.m_idx_vec_Int; f_X++)
 		{
-		f_Mark += this.m_vec_Int[f_X] * f_QualityRank; //adjustment
+		f_Mark += this.m_vec_Int[f_X] * 8.5; //(f_QualityRank / 3.0); //adjustment
 		}
 	
 	for(var f_X = 0; f_X < this.m_idx_flip; f_X++)
 		{
-		f_Mark -= this.m_vec_Int[f_X] * f_QualityRank;
+		f_Mark -= this.m_vec_Int[f_X];// * (f_QualityRank * 5.0);
 		}
 		
 	return f_Mark;
@@ -3385,7 +3329,7 @@ classTarget_JScript.prototype.ac_takeMeasurement = function(f_Vertex)
 		f_CharCount[0] = this.ac_takeMeasurementINTV1(f_Vertex, 2, 5, 1, 3, 4);
 		f_CharCount[1] = this.ac_takeMeasurementINTV1(f_Vertex, 2, 8, 1, 3, 5);
 		f_CharCount[2] = this.ac_takeMeasurementINTV1(f_Vertex, 2, 15, 1, 3, 6);
-		var f_Select = this.ac_takeMeasurementINTV1(f_Vertex, 0, 3, 1, 3, 3);
+		var f_Select = this.ac_takeMeasurementINTV1(f_Vertex, 0, 3, 0, 3, 3);
 		
 		for(var f_helly = 0; f_helly < f_CharCount[f_Select]; f_helly++)
 			{
@@ -3641,9 +3585,9 @@ classTarget_JScript.prototype.ac_takeMeasurementINTV1 = function(f_Vertex, f_Sta
 
 				var f_Vec = new BiVector();
 				
-				f_Vec.m_X = this.m_SchemaRef[this.m_SchemaTop].m_X - f_Vertex.m_vec_Vertex[f_helly].m_X;
-				f_Vec.m_Y = this.m_SchemaRef[this.m_SchemaTop].m_Y - f_Vertex.m_vec_Vertex[f_helly].m_Y;
-				f_Vec.m_Z = this.m_SchemaRef[this.m_SchemaTop].m_Z - f_Vertex.m_vec_Vertex[f_helly].m_Z;
+				f_Vec.m_X = this.m_SchemaRef[this.m_SchemaTop].m_X;
+				f_Vec.m_Y = this.m_SchemaRef[this.m_SchemaTop].m_Y;
+				f_Vec.m_Z = this.m_SchemaRef[this.m_SchemaTop].m_Z;
 				
 				f_Float += f_Vec.dot();
 				}
@@ -3794,19 +3738,4 @@ function ag_NameStamp(f_Measurement, f_Type, f_BitCount)
 function ag_GenerateName(f_Measurement)
 {
 	return f_Measurement;
-}
-
-function ag_GenerateValue(f_Measurement)
-{
-//#pragma message("generate several methods and results for differing value types")
-	var f_ValueStream = f_Measurement;
-
-	var f_Int = f_ValueStream;
-
-	var f_Char = "";
-	f_Char = f_Int;
-
-	var f_Result = f_Char;
-
-	return f_Result;
 }

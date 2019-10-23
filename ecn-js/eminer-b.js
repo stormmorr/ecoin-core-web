@@ -67,107 +67,6 @@ function BuildHesh(clob, clobnom, clob_bckred, clob_bckgreen, clob_bckblue)
 	return f_Hesh;
 }
 
-function meinWebGLStart(threads)
-{
-	canvas = document.getElementById('cvs_egl');
-	canvas.height = 800;
-	canvas.width = 1000;
-
-	gl = WebGLUtils.setupWebGL(canvas);
-
-	if(!gl)
-		{
-		gl_working = false;
-		alert("Fehler: WebGL-Context konnte nicht initialisiert werden");
-		}
-
-	var program = gl.createProgram();
-
-	if(!program)
-		{
-		gl_working = false;
-		}
-		
-	vShaderQuellcode = readScript('eshader-vs.js');
-    fShaderQuellcode = readScript('eshader-fs.js');
-		
-	vShader = gl.createShader(gl.VERTEX_SHADER);
-	gl.shaderSource(vShader,vShaderQuellcode);
-	gl.compileShader(vShader);
-	if(!gl.getShaderParameter(vShader, gl.COMPILE_STATUS))
-		{
-		console.log(gl.getShaderInfoLog(vShader));
-		}
-	gl.attachShader(program,vShader);
-
-	fShader = gl.createShader(gl.FRAGMENT_SHADER);
-	gl.shaderSource(fShader,fShaderQuellcode);
-	gl.compileShader(fShader);
-	if(!gl.getShaderParameter(fShader, gl.COMPILE_STATUS))
-		{
-		console.log(gl.getShaderInfoLog(fShader));
-		}
-	gl.attachShader(program,fShader);
-
-	gl.linkProgram(program);
-	gl.useProgram(program);
-
-	posAtrLoc = gl.getAttribLocation(program, "vPos");
-	gl.enableVertexAttribArray( posAtrLoc );
-
-	colAtrLoc = gl.getAttribLocation(program, "vCol");
-	gl.enableVertexAttribArray( colAtrLoc );
-	
-	modelUniLoc = gl.getUniformLocation(program, "model");
-	viewUniLoc = gl.getUniformLocation(program, "view");
-	projUniLoc = gl.getUniformLocation(program, "proj");
-		
-	g_indexBuffer = gl.createBuffer();
-	
-	var cubeIndices =
-		[
-			0,2,1, // -x
-			1,2,3,
-
-			4,5,6, // +x
-			5,7,6,
-
-			0,1,5, // -y
-			0,5,4,
-
-			2,6,7, // +y
-			2,7,3,
-
-			0,4,6, // -z
-			0,6,2,
-
-			1,3,7, // +z
-			1,7,5,
-		];
-	
-	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, g_indexBuffer);
-	gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint8Array(cubeIndices), gl.STATIC_DRAW);
-	
-	var model = new Float32Array([1.000000, 0.000000, 0.000000, 0.000000,
-									0.000000, 1.000000, 0.000000, 0.000000,
-									-0.000000, 0.000000, 1.000000, 0.000000,
-									0.000000, 0.000000, 0.000000, 1.000000]);
-
-	var view = new Float32Array([0.593852, -0.000000, 0.804574, -0.445389,
-								  0.118900, 0.989020, -0.087760, 0.108629,
-								  -0.795740, 0.147780, 0.587332, -12.568904,
-								  0.000000, 0.000000, 0.000000, 1.000000]);
-
-	var proj = new Float32Array([1.428148, 0.000000, 0.000000, 0.000000,
-								  0.000000, 1.428148, 0.000000, 0.000000,
-								  0.000000, 0.000000, -1.000100, -0.010001,
-								  0.000000, 0.000000, -1.000000, 0.000000]);
-								  
-    gl.uniformMatrix4fv(modelUniLoc, false, model);
-    gl.uniformMatrix4fv(viewUniLoc, false, view);
-	gl.uniformMatrix4fv(projUniLoc, false, proj);
-}
-
 function readScript(n) {
     var xhr = new XMLHttpRequest();
     xhr.open("GET", n, false);
@@ -294,7 +193,7 @@ function eminer(clob, clobnom, hellynom, clob_bckred, clob_bckgreen, clob_bckblu
 	
 	var f_Reject = false;
 			
-	for(var f_x = 0; f_x < hellynom; f_x++)
+	/*for(var f_x = 0; f_x < hellynom; f_x++)
 		{
 		if(clob[f_x * 6] < -30.0)
 			{
@@ -349,7 +248,7 @@ function eminer(clob, clobnom, hellynom, clob_bckred, clob_bckgreen, clob_bckblu
 			clob[(f_x * 6) + 5] = 0.3;
 			//f_Reject = true;
 			}
-		}
+		}*/
 	
 	var dim = 6 * 8;
 	

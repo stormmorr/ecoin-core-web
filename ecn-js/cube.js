@@ -114,6 +114,13 @@ BiVector.prototype.acNorm = function ()
 		}
 }
 
+BiVector.prototype.acFix = function (f_DecimalPlaces)
+{
+	this.m_X = parseFloat(this.m_X.toFixed(f_DecimalPlaces));
+	this.m_Y = parseFloat(this.m_Y.toFixed(f_DecimalPlaces));
+	this.m_Z = parseFloat(this.m_Z.toFixed(f_DecimalPlaces));
+}
+
 function aabb()
 {
 	this._min = new BiVector(-99999.9);
@@ -396,13 +403,15 @@ CubeTransaction.prototype.isValid = function()
 
 function ag_SynchronizeTX(f_tx)
 {
-	/*$.post("http://www.bitcoin-office.com/link-request-getwork-ecn-fast.php", {type: "GWQ_SELECT", query: "SELECT id FROM transactions WHERE hash = '" + f_tx.m_Hash + "'"}, function(data, status)
+	/*$.post("link-request-getwork-ecn-fast.php", {type: "GWQ_SELECT", query: "SELECT id FROM transactions WHERE hash = '" + f_tx.m_Hash + "'"}, function(data, status)
 		{
 		var response = data;
 		var resultcount = response.resultcount;
 
 		if(resultcount == 0)
 			{*/
+			console.log(JSON.stringify(f_tx));
+			
 			var g_syncfield = [];
 			g_syncfield[0] = "status";
 			g_syncfield[1] = "locktime";
@@ -434,15 +443,15 @@ function ag_SynchronizeTX(f_tx)
 				f_Resulttxsync += g_syncvalue[f_i] + "::::";
 				}
 				
-			//console.log("INSERT : " + f_Resulttxsync);
+			console.log("INSERT : " + f_Resulttxsync);
 
-			$.post("http://www.bitcoin-office.com/link-request-getwork-ecn-insert.php", {type: "GWQ_INSERT", table: "transactions", count: 10, string: f_Resulttxsync}, function(data, status)
+			$.post("link-request-getwork-ecn-insert.php", {type: "GWQ_INSERT", typeC: "GWQ_INSERT", table: "transactions", count: 10, string: f_Resulttxsync}, function(data, status)
 				{
 				var response = data;
 				
-				//console.log(JSON.stringify(response));
+				console.log(JSON.stringify(response));
 				
-				$.post("http://www.bitcoin-office.com/link-request-getwork-ecn-fast.php", {type: "GWQ_SELECT", query: "SELECT id FROM transactions WHERE hash = '" + f_tx.m_Hash + "'"}, function(data, status)
+				$.post("link-request-getwork-ecn-fast.php", {type: "GWQ_SELECT", query: "SELECT id FROM transactions WHERE hash = '" + f_tx.m_Hash + "'"}, function(data, status)
 					{
 					var resp = data;
 					var resultcount = resp.resultcount;
@@ -474,7 +483,7 @@ function ag_SynchronizeTX(f_tx)
 							f_Resulttxinsync += g_txinsyncvalue[f_i] + "::::";
 							}
 
-						$.post("http://www.bitcoin-office.com/link-request-getwork-ecn-insert.php", {type: "GWQ_INSERT", table: "txin", count: 6, string: f_Resulttxinsync}, function(data, status)
+						$.post("link-request-getwork-ecn-insert.php", {type: "GWQ_INSERT", typeC: "GWQ_INSERT", table: "txin", count: 6, string: f_Resulttxinsync}, function(data, status)
 							{
 							var response = data;
 
@@ -503,7 +512,7 @@ function ag_SynchronizeTX(f_tx)
 									f_Resulttxoutsync += g_txoutsyncvalue[f_i] + "::::";
 									}
 
-								$.post("http://www.bitcoin-office.com/link-request-getwork-ecn-insert.php", {type: "GWQ_INSERT", table: "txout", count: 6, string: f_Resulttxoutsync}, function(data, status)
+								$.post("link-request-getwork-ecn-insert.php", {type: "GWQ_INSERT", typeC: "GWQ_INSERT", table: "txout", count: 6, string: f_Resulttxoutsync}, function(data, status)
 									{
 									var response = data;
 									
@@ -552,7 +561,7 @@ CubeTransaction.prototype.acUpdateSync = function()
 		
 	console.log(f_Resulttxsync);
 
-	$.post("http://www.bitcoin-office.com/link-request-getwork-ecn-update.php", {type: "GWQ_UPDATE", table: "transactions", count: 9, string: f_Resulttxsync, id: this.m_txid}, function(data, status) {}, "json");
+	$.post("link-request-getwork-ecn-update.php", {type: "GWQ_UPDATE", table: "transactions", count: 9, string: f_Resulttxsync, id: this.m_txid}, function(data, status) {}, "json");
 		
 	var f_SyncUniqueID = this.m_txid;
 	
@@ -579,7 +588,7 @@ CubeTransaction.prototype.acUpdateSync = function()
 		f_Resulttxinsync += g_txinsyncvalue[f_i] + "::::";
 		}
 
-	$.post("http://www.bitcoin-office.com/link-request-getwork-ecn-update.php", {type: "GWQ_UPDATE", table: "txin", count: 6, string: f_Resulttxinsync, id: this.m_vec_txin[0].m_txinid}, function(data, status) {}, "json");
+	$.post("link-request-getwork-ecn-update.php", {type: "GWQ_UPDATE", table: "txin", count: 6, string: f_Resulttxinsync, id: this.m_vec_txin[0].m_txinid}, function(data, status) {}, "json");
 	
 	console.log("TXOUT: " + this.m_idx_vec_txout);
 
@@ -608,7 +617,7 @@ CubeTransaction.prototype.acUpdateSync = function()
 			f_Resulttxoutsync += g_txoutsyncvalue[f_i] + "::::";
 			}
 
-		$.post("http://www.bitcoin-office.com/link-request-getwork-ecn-update.php", {type: "GWQ_UPDATE", table: "txout", count: 6, string: f_Resulttxoutsync, id: this.m_vec_txout[0].m_txoutid}, function(data, status)
+		$.post("link-request-getwork-ecn-update.php", {type: "GWQ_UPDATE", table: "txout", count: 6, string: f_Resulttxoutsync, id: this.m_vec_txout[0].m_txoutid}, function(data, status)
 			{
 			console.log("Updated TX " + f_SyncUniqueID + " txout!");
 			}, "json");
@@ -617,7 +626,7 @@ CubeTransaction.prototype.acUpdateSync = function()
 
 function ag_getTX(f_txid, f_txoutid, callback) //f_txoutid: optional, sets flag upon found for use later
 {
-	$.post("http://www.bitcoin-office.com/link-request-getwork-ecn-fast.php", {type: "GWQ_SELECT", query: "SELECT id, hash, amt, confirmation, jobid, hdid, gnshareid, owner, status FROM transactions WHERE id = " + f_txid}, function(data, status)
+	$.post("link-request-getwork-ecn-fast.php", {type: "GWQ_SELECT", query: "SELECT id, hash, amt, confirmation, jobid, hdid, gnshareid, owner, status FROM transactions WHERE id = " + f_txid}, function(data, status)
 		{
 		var response = data;
 		var resultcount = response.resultcount;
@@ -643,7 +652,7 @@ function ag_getTX(f_txid, f_txoutid, callback) //f_txoutid: optional, sets flag 
 			f_TX.m_owner = result[7];
 			f_TX.m_status = result[8];
 			
-			$.post("http://www.bitcoin-office.com/link-request-getwork-ecn-fast.php", {type: "GWQ_SELECT", query: "SELECT id, adrid, owner, pubkey, txoutamt, owneramt, dated FROM txout WHERE transactionid = " + f_txid}, function(data, status)
+			$.post("link-request-getwork-ecn-fast.php", {type: "GWQ_SELECT", query: "SELECT id, adrid, owner, pubkey, txoutamt, owneramt, dated FROM txout WHERE transactionid = " + f_txid}, function(data, status)
 				{
 				var response = data;
 				var resultcount = response.resultcount;
@@ -721,7 +730,7 @@ function ag_getTX(f_txid, f_txoutid, callback) //f_txoutid: optional, sets flag 
 				
 				console.log("f_Tx");
 				
-				$.post("http://www.bitcoin-office.com/link-request-getwork-ecn-fast.php", {type: "GWQ_SELECT", query: "SELECT id, vout, pubkey, vsign, amt, dated FROM txin WHERE transactionid = " + f_txid}, function(data, status)
+				$.post("link-request-getwork-ecn-fast.php", {type: "GWQ_SELECT", query: "SELECT id, vout, pubkey, vsign, amt, dated FROM txin WHERE transactionid = " + f_txid}, function(data, status)
 					{
 					var response = data;
 					var resultcount = response.resultcount;
@@ -753,12 +762,9 @@ function ag_getTX(f_txid, f_txoutid, callback) //f_txoutid: optional, sets flag 
 								var f_NewJobID = parseInt(f_TX.m_jobid);
 								
 								console.log("Genesis Tracking");
-			
-								f_NewJobID--;
-								
 								console.log("sync Tracking f_TX.m_vec_txout[0].m_owner: " + f_TX.m_vec_txout[0].m_owner + " f_NewJobID: " + f_NewJobID);
 								
-								$.post("http://www.bitcoin-office.com/link-request-getwork-ecn-calc-owner.php", {owner: f_TX.m_vec_txout[0].m_owner, jobid: f_NewJobID}, function(data, status)
+								$.post("link-request-getwork-ecn-calc-owner.php", {owner: f_TX.m_vec_txout[0].m_owner, jobid: f_NewJobID}, function(data, status)
 									{
 									var response = data;
 									var resultamount = response.amount;
@@ -840,7 +846,7 @@ function ag_getTX(f_txid, f_txoutid, callback) //f_txoutid: optional, sets flag 
 
 function ag_GenesisProtectionTX(f_JobID, f_Result, f_Block, callback, escape_callback)
 {
-	$.post("http://www.bitcoin-office.com/link-request-getwork-ecn-fast.php", {type: "GWQ_SELECT", query: "SELECT id, hash, confirmation, owner FROM transactions WHERE (jobid < " + f_JobID + " AND status = 1 AND confirmation < 6) OR (jobid = " + f_JobID + " AND status = 1)"}, function(data, status)
+	$.post("link-request-getwork-ecn-fast.php", {type: "GWQ_SELECT", query: "SELECT id, hash, confirmation, owner FROM transactions WHERE (jobid < " + f_JobID + " AND status = 1 AND confirmation < 6) OR (jobid = " + f_JobID + " AND status = 1)"}, function(data, status)
 		{
 		var response = data;
 		var resultcount = response.resultcount;
@@ -958,7 +964,7 @@ function ag_GenesisProtectionTX(f_JobID, f_Result, f_Block, callback, escape_cal
 
 function ag_get_TXfromvout(f_vout, callback)
 {
-	$.post("http://www.bitcoin-office.com/link-request-getwork-ecn-fast.php", {type: "GWQ_SELECT", query: "SELECT id, transactionid, dated FROM txout WHERE owner = '" + f_vout + "' ORDER BY dated DESC LIMIT 1"}, function(data, status)
+	$.post("link-request-getwork-ecn-fast.php", {type: "GWQ_SELECT", query: "SELECT id, transactionid, dated FROM txout WHERE owner = '" + f_vout + "' ORDER BY dated DESC LIMIT 1"}, function(data, status)
 		{
 		var response = data;
 		var result = response.result;
@@ -971,18 +977,11 @@ function ag_get_TXfromvout(f_vout, callback)
 		//assume remote connection for windows
 		if(f_TxLCount > 0)
 			{
-			if(f_TxLCount == 1)
+			ag_getTX(result[1], result[0], function(f_TX)
 				{
-				ag_getTX(result[1], result[0], function(f_TX)
-					{
-					console.log("f_TX: " + JSON.stringify(f_TX));
-					callback(f_TX);
-					});
-				}
-			else
-				{
-				console.log("ECN-ERROR Received incorrect number of txouts from data layer");
-				}
+				console.log("f_TX: " + JSON.stringify(f_TX));
+				callback(f_TX);
+				});
 			}
 		else
 			{
@@ -1034,7 +1033,7 @@ function ag_VerifyTXIN(f_txin, f_amt, callback)
 
 function ag_OwnerBalance(f_owner, f_JetID, callback)
 {
-	$.post("http://www.bitcoin-office.com/link-request-getwork-ecn-fast.php", {type: "GWQ_SELECT", query: "SELECT id, amt, owner FROM address WHERE owner = '" + f_owner + "'"}, function(data, status)
+	$.post("link-request-getwork-ecn-fast.php", {type: "GWQ_SELECT", query: "SELECT id, amt, owner FROM address WHERE owner = '" + f_owner + "'"}, function(data, status)
 		{
 		var response = data;
 		var result = response.result;
@@ -1075,6 +1074,7 @@ function ag_Verify(f_Verified, f_Transaction, f_hash, f_Result, callback)
 
 	if(!f_Chek)
 		{
+		console.log("callback-ag_Verify-exiting");
 		callback(f_Verified, f_Transaction, f_hash, f_Result)
 		}
 }
@@ -1152,8 +1152,12 @@ function ag_PrepareVerifyTX(f_Verified, f_Transaction, f_hash, f_Result, callbac
 function ag_addGenesisTracking(f_gnid, f_JobID, g_Wallet)
 {
 	var f_jobid = parseInt(f_JobID) + 1;
+
+	var f_query = "SELECT id FROM transactions WHERE hdid = 'eCookieHash1234' AND jobid = " + f_jobid + " AND gnshareid > -1 AND owner = '" + g_Wallet.GetAdr() + "'";
+
+	console.log("ECN-Stat-Select f_query = " + f_query);
 	
-	$.post("http://www.bitcoin-office.com/link-request-getwork-ecn-fast.php", {type: "GWQ_SELECT", query: "SELECT id FROM transactions WHERE hdid = '" + g_Wallet.m_hdid + "' AND jobid = " + f_jobid + " AND gnshareid > -1 AND owner = '" + g_Wallet.GetAdr() + "'"}, function(data, status)
+	$.post("link-request-getwork-ecn-fast.php", {type: "GWQ_SELECT", query: f_query}, function(data, status)
 		{
 		var response = data;
 		var result = response.result;
@@ -1169,7 +1173,7 @@ function ag_addGenesisTracking(f_gnid, f_JobID, g_Wallet)
 			var f_txin = new CubeTXIN();
 
 			f_txin.m_vout = "Genesis Tracking";
-			
+
 			f_tx.m_vec_txin[f_tx.m_idx_vec_txin] = f_txin;
 			f_tx.m_idx_vec_txin++;
 
@@ -1178,10 +1182,10 @@ function ag_addGenesisTracking(f_gnid, f_JobID, g_Wallet)
 			f_txout.m_owner = g_Wallet.GetAdr();
 			f_txout.m_txoutamt = -1.0;
 			f_txout.m_owneramt = -1.0;
-			
+
 			f_tx.m_vec_txout[f_tx.m_idx_vec_txout] = f_txout;
 			f_tx.m_idx_vec_txout++;
-			
+
 			f_tx.m_owner = g_Wallet.GetAdr();
 			f_tx.m_amt = -1.0;
 
@@ -1192,8 +1196,11 @@ function ag_addGenesisTracking(f_gnid, f_JobID, g_Wallet)
 			f_tx.m_hdid = g_Wallet.m_hdid;
 
 			f_tx.acHash();
-			
+
 			var f_TXstr = JSON.stringify(f_tx);
+			console.log("GENESISTRACKING tx = " + f_TXstr);
+			console.log("GENESISTRACKING f_tx.m_owner = " + f_tx.m_owner);
+			console.log("GENESISTRACKING g_Wallet.GetAdr() = " + g_Wallet.GetAdr());
 
 			ag_SynchronizeTX(f_tx);
 			}
@@ -1224,7 +1231,7 @@ function ag_GatherFunction(f_JobID, f_Result, f_Block, callback)
 										{
 										var f_finalBalance = parseFloat(f_Amount) + parseFloat(f_Transaction.m_vec_txout[af_Jet].m_txoutamt);
 
-										$.post("http://www.bitcoin-office.com/link-request-getwork-ecn-owner.php", {type: "GWQ_OWNER", owner: f_Transaction.m_vec_txout[af_Jet].m_owner, amt: f_finalBalance}, function(data, status) {}, "json");
+										$.post("link-request-getwork-ecn-owner.php", {type: "GWQ_OWNER", owner: f_Transaction.m_vec_txout[af_Jet].m_owner, amt: f_finalBalance}, function(data, status) {}, "json");
 										
 										f_Transaction.m_vec_txout[af_Jet].m_owneramt = f_finalBalance;
 										
@@ -1276,7 +1283,7 @@ function ag_GatherFunction(f_JobID, f_Result, f_Block, callback)
 						if(f_Transaction.m_confirmation < 6)
 							{
 								//  Increase Confirmation
-							$.post("http://www.bitcoin-office.com/link-request-getwork-ecn-tx-confirmation.php", {type: "GWQ_CONFIRMATION", txid: f_Transaction.m_txid, confirmation: f_Transaction.m_confirmation}, function(data, status) {}, "json");
+							$.post("link-request-getwork-ecn-tx-confirmation.php", {type: "GWQ_CONFIRMATION", txid: f_Transaction.m_txid, confirmation: f_Transaction.m_confirmation}, function(data, status) {}, "json");
 							}
 						}
 
@@ -1287,7 +1294,7 @@ function ag_GatherFunction(f_JobID, f_Result, f_Block, callback)
 					if(f_Transaction.m_txid > -1)
 						{
 						//DELETE transaction or flag as suspicious
-						$.post("http://www.bitcoin-office.com/link-request-getwork-ecn-tx-status.php", {type: "GWQ_TX_STATUS", txid: f_Transaction.m_txid, status: -5}, function(data, status) {}, "json");
+						$.post("link-request-getwork-ecn-tx-status.php", {type: "GWQ_TX_STATUS", txid: f_Transaction.m_txid, status: -5}, function(data, status) {}, "json");
 						}
 					else
 						{	//unverified yet to be checked transaction hash of 1
@@ -1315,7 +1322,7 @@ function ag_GatherTransactions(f_JobID, f_Block, callback)
 {
 	console.log("ag_GatherTransactions");
 
-	/*$.post("http://www.bitcoin-office.com/link-request-getwork-ecn-fast.php", {type: "GWQ_SELECT", query: "SELECT id FROM transactions WHERE jobid < " + f_JobID + " AND status != -5 AND confirmation < 6"}, function(data, status)
+	/*$.post("link-request-getwork-ecn-fast.php", {type: "GWQ_SELECT", query: "SELECT id FROM transactions WHERE jobid < " + f_JobID + " AND status != -5 AND confirmation < 6"}, function(data, status)
 		{
 		var response = data;
 		var result = response.result;
@@ -1329,7 +1336,7 @@ function ag_GatherTransactions(f_JobID, f_Block, callback)
 				{
 				var f_waywardtxid = result[f_Into].id;
 				
-				$.post("http://www.bitcoin-office.com/link-request-getwork-ecn-wayward.php", {type: "GWQ_WAYWARD", txid: f_waywardtxid, jobid: f_JobID, block: f_Into, txcount: resultcount}, function(data, status)
+				$.post("link-request-getwork-ecn-wayward.php", {type: "GWQ_WAYWARD", txid: f_waywardtxid, jobid: f_JobID, block: f_Into, txcount: resultcount}, function(data, status)
 					{
 					var response = data;
 					var resultblock = parseInt(response.block) + 1;
@@ -1362,11 +1369,48 @@ function ag_GatherTransactions(f_JobID, f_Block, callback)
 		}, "json");*/
 }
 
+function ag_VoteShareUp(f_ShareID)
+{
+	$.post("link-request-vote-share-up.php", {shareid: f_ShareID}, function(data, status)
+		{
+		var response = data;
+		var result = response.result;
+		var resultcount = response.resultcount;
+		var score = response.score;
+		
+		if(result == "Vote!")
+			{
+			var f_Text = "ECN::Stat::: Voted on share " + f_ShareID;
+			console.log(f_Text);
+			document.getElementById("votingresults").innerHTML = f_Text;
+			document.getElementById("voteresult").innerHTML = "Current Vote is " + score;
+			}
+		else if(result == "Block Found!")
+			{
+			var f_Text = "ECN::Stat::: by you Block Found! Voting on share " + f_ShareID;
+			console.log(f_Text);
+			document.getElementById("votingresults").innerHTML = f_Text;
+			}
+		else if(result == "Sorry only one vote per wallet...")
+			{
+			var f_Text = "ECN::Error::: Sorry only one vote per wallet...";
+			console.log(f_Text);
+			document.getElementById("votingresults").innerHTML = f_Text;
+			}
+		else
+			{
+			var f_Text = "ECN::Error::: Sorry unknown error";
+			console.log(f_Text);
+			document.getElementById("votingresults").innerHTML = f_Text;
+			}
+		}, "json");
+}
+
 /*CubeTransaction.prototype.acGetTXOutsFromTiers = function()
 {
 	var f_InputHash = "";
 	
-	$.post("http://www.bitcoin-office.com/link-request-getwork-ecn-fast.php", {type: "GWQ_SELECT", query: "SELECT id FROM share WHERE shareledger = '" + f_Hash.m_OutputHash + "'"}, function(data, status)
+	$.post("link-request-getwork-ecn-fast.php", {type: "GWQ_SELECT", query: "SELECT id FROM share WHERE shareledger = '" + f_Hash.m_OutputHash + "'"}, function(data, status)
 				{
 				var response = data;
 				var resultcount = response.resultcount;
@@ -1377,7 +1421,7 @@ function ag_GatherTransactions(f_JobID, f_Block, callback)
 					{
 					console.log("Inserting share!");
 					
-					$.post("http://www.bitcoin-office.com/link-request-getwork-ecn-long-share.php", {type: "GWQ_SHARE", mark: f_Target.m_Mark, jobid: f_JobID, hash: f_Hash.m_OutputHash, owner: "0360ce57376c9433e2a677216e8f5ef14f307b18a71b5c806f508084442ee1f7", bck_red: f_Hesh.m_bckred, bck_green: f_Hesh.m_bckgreen, bck_blue: f_Hesh.m_bckblue}, function(data, status)
+					$.post("link-request-getwork-ecn-long-share.php", {type: "GWQ_SHARE", mark: f_Target.m_Mark, jobid: f_JobID, hash: f_Hash.m_OutputHash, owner: "0360ce57376c9433e2a677216e8f5ef14f307b18a71b5c806f508084442ee1f7", bck_red: f_Hesh.m_bckred, bck_green: f_Hesh.m_bckgreen, bck_blue: f_Hesh.m_bckblue}, function(data, status)
 						{
 						ag_Wait(3000);
 

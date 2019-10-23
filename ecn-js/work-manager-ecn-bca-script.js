@@ -14,7 +14,7 @@ var g_cubevalue = new Array();
 
 var g_Wallet = new ecnWallet();
 
-var g_admax = 100;
+var g_admax = 5;
 
 var g_EBlocker = 0;
 
@@ -138,7 +138,7 @@ function onSuccess(jsonresp, f_admax)
     var data = JSON.stringify(response);
 
     //$('#info').val(data);
-	console.log(data);
+	//console.log(data);
 		
 	var job = {};
 
@@ -246,6 +246,242 @@ function ag_Load_Share(f_ShareID, f_JobID, f_PEER, f_CurrentShareOffset, thetaxx
 		}, "json");
 }
 
+function ag_CompileTarget_Script(response)
+{
+	var hellynom = response.helly;
+	var hollynom = response.holly;
+	var tvob = response.tvob;
+	var tcob = response.tcob;
+	
+	var f_Target = new classTarget_JScript();
+	
+	//f_Target.acMergeUpper();
+	
+	var f_FunctionCount = 1;
+	for(var f_funcCount = 0; f_funcCount < f_FunctionCount; f_funcCount++)
+		{
+		var f_Function = new classFunction();
+		f_Function.m_Name = "";
+		
+		 ////////////////
+		// Demo 
+		
+		//Inputs Var		
+		/*while(f_Target.m_GRMinput[INSTA_TYPE_VAR_CALL] > -5)
+			{
+			var f_vec_Line = [];
+			var f_idx_vec_Line = 0;
+			
+			if(f_Target.m_GRMinput[INSTA_TYPE_VAR_CALL] > -5)
+				{
+				var f_NewInstaVarDef = new classInsta();
+				f_NewInstaVarDef.m_Type = INSTA_TYPE_VAR_DEF;
+				f_NewInstaVarDef.m_String = "var * = ";
+				f_NewInstaVarDef.m_value = 0.0;
+			
+				var f_NewInstaInputCall = new classInsta();
+				f_NewInstaInputCall.m_Type = INSTA_TYPE_VAR_CALL;
+				f_NewInstaInputCall.m_String = f_Target.ac_next_InputName(INSTA_TYPE_VAR_CALL);
+				f_NewInstaInputCall.m_value = 0.0;
+			
+				f_vec_Line[f_idx_vec_Line] = f_NewInstaVarDef;
+				f_idx_vec_Line++;
+				f_vec_Line[f_idx_vec_Line] = f_NewInstaInputCall;
+				f_idx_vec_Line++;
+			
+				f_Function.m_vec_CodeLineStorage[f_Function.m_idx_vec_CodeLineStorage] = f_vec_Line;
+				f_Function.m_idx_vec_CodeLineStorage++;
+				}
+			}*/
+			
+		//Output string
+		/*while(f_Target.m_GRMoutput[INSTA_TYPE_FUNC_CALL] > -5)
+			{
+			var f_NewInstaVarDef = new classInsta();
+			f_NewInstaVarDef.m_Type = INSTA_TYPE_FUNC_CALL;
+			f_NewInstaVarDef.m_String = f_Target.ac_next_OutputName(INSTA_TYPE_FUNC_CALL);
+			f_NewInstaVarDef.m_value = 0.0;
+				
+			while(f_Target.m_GRMoutput[INSTA_TYPE_VAR_CALL] > -5)
+				{
+				var f_NewInstaInputCall = new classInsta();
+				f_NewInstaInputCall.m_Type = INSTA_TYPE_VAR_CALL;
+				f_NewInstaInputCall.m_String = f_Target.ac_next_OutputName(INSTA_TYPE_VAR_CALL);
+				f_NewInstaInputCall.m_value = 0.0;
+			
+				f_vec_Line[f_idx_vec_Line] = f_NewInstaVarDef;
+				f_idx_vec_Line++;
+				f_vec_Line[f_idx_vec_Line] = f_NewInstaInputCall;
+				f_idx_vec_Line++;
+			
+				f_Function.m_vec_CodeLineStorage[f_Function.m_idx_vec_CodeLineStorage] = f_vec_Line;
+				f_Function.m_idx_vec_CodeLineStorage++;
+				}
+			}*/
+			
+		f_Target.m_vec_Function[f_Target.m_idx_vec_Function] = f_Function;
+		f_Target.m_idx_vec_Function++;
+		}	
+		
+	console.log("Loaded classTarget-jscript-base ID 1x");
+	
+	return f_Target;
+}
+
+var f_Hesh = new ecnHesh();
+var g_Target = new classTarget_JScript();
+
+function ag_Load_Share_Script(f_ShareID, f_JobID, f_PEER, f_CurrentShareOffset, thetaxx, thetaxy, thetaxz)
+{	
+	$.post("link-request-getwork-ecn-fast-ary.php", {shareid: f_ShareID, jobid: f_JobID, peer: f_PEER, offset: f_CurrentShareOffset, thetaxx, thetaxy, thetaxz}, function(data, status)
+		{
+		var clobnom = data.clobnom;
+		var clobarray = data.clob;
+		
+		var f_ShareIDX = data.shareid;
+
+		console.log("ECN displaying share id " + f_ShareIDX);
+
+		eminer(clobarray, clobnom, data.hellynom, data.clob_bckred, data.clob_bckgreen, data.clob_bckblue, data.thetaxz, data.thetaxy, data.thetaxx);
+
+		// Hesh Generator
+		for(var f_Int = 0; f_Int < clobnom; f_Int++)
+			{
+			var f_Bike = new CubeBicycle();
+			
+			var f_Vector1v = new BiVector(parseFloat(clobarray[(f_Int * (8 * 6))]), parseFloat(clobarray[(f_Int * (8 * 6)) + 1]), parseFloat(clobarray[(f_Int * (8 * 6)) + 2]));
+			var f_Vector1c = new BiVector(parseFloat(clobarray[(f_Int * (8 * 6)) + 3]), parseFloat(clobarray[(f_Int * (8 * 6)) + 4]), parseFloat(clobarray[(f_Int * (8 * 6)) + 5]));
+			var f_Vector2v = new BiVector(parseFloat(clobarray[(f_Int * (8 * 6)) + 6]), parseFloat(clobarray[(f_Int * (8 * 6)) + 7]), parseFloat(clobarray[(f_Int * (8 * 6)) + 8]));
+			var f_Vector2c = new BiVector(parseFloat(clobarray[(f_Int * (8 * 6)) + 9]), parseFloat(clobarray[(f_Int * (8 * 6)) + 10]), parseFloat(clobarray[(f_Int * (8 * 6)) + 11]));			
+			var f_Vector3v = new BiVector(parseFloat(clobarray[(f_Int * (8 * 6)) + 12]), parseFloat(clobarray[(f_Int * (8 * 6)) + 13]), parseFloat(clobarray[(f_Int * (8 * 6)) + 14]));
+			var f_Vector3c = new BiVector(parseFloat(clobarray[(f_Int * (8 * 6)) + 15]), parseFloat(clobarray[(f_Int * (8 * 6)) + 16]), parseFloat(clobarray[(f_Int * (8 * 6)) + 17]));
+			var f_Vector4v = new BiVector(parseFloat(clobarray[(f_Int * (8 * 6)) + 18]), parseFloat(clobarray[(f_Int * (8 * 6)) + 19]), parseFloat(clobarray[(f_Int * (8 * 6)) + 20]));
+			var f_Vector4c = new BiVector(parseFloat(clobarray[(f_Int * (8 * 6)) + 21]), parseFloat(clobarray[(f_Int * (8 * 6)) + 22]), parseFloat(clobarray[(f_Int * (8 * 6)) + 23]));
+			var f_Vector5v = new BiVector(parseFloat(clobarray[(f_Int * (8 * 6)) + 24]), parseFloat(clobarray[(f_Int * (8 * 6)) + 25]), parseFloat(clobarray[(f_Int * (8 * 6)) + 26]));
+			var f_Vector5c = new BiVector(parseFloat(clobarray[(f_Int * (8 * 6)) + 27]), parseFloat(clobarray[(f_Int * (8 * 6)) + 28]), parseFloat(clobarray[(f_Int * (8 * 6)) + 29]));
+			var f_Vector6v = new BiVector(parseFloat(clobarray[(f_Int * (8 * 6)) + 30]), parseFloat(clobarray[(f_Int * (8 * 6)) + 31]), parseFloat(clobarray[(f_Int * (8 * 6)) + 32]));
+			var f_Vector6c = new BiVector(parseFloat(clobarray[(f_Int * (8 * 6)) + 33]), parseFloat(clobarray[(f_Int * (8 * 6)) + 34]), parseFloat(clobarray[(f_Int * (8 * 6)) + 35]));
+			var f_Vector7v = new BiVector(parseFloat(clobarray[(f_Int * (8 * 6)) + 36]), parseFloat(clobarray[(f_Int * (8 * 6)) + 37]), parseFloat(clobarray[(f_Int * (8 * 6)) + 38]));
+			var f_Vector7c = new BiVector(parseFloat(clobarray[(f_Int * (8 * 6)) + 39]), parseFloat(clobarray[(f_Int * (8 * 6)) + 40]), parseFloat(clobarray[(f_Int * (8 * 6)) + 41]));
+			var f_Vector8v = new BiVector(parseFloat(clobarray[(f_Int * (8 * 6)) + 42]), parseFloat(clobarray[(f_Int * (8 * 6)) + 43]), parseFloat(clobarray[(f_Int * (8 * 6)) + 44]));
+			var f_Vector8c = new BiVector(parseFloat(clobarray[(f_Int * (8 * 6)) + 45]), parseFloat(clobarray[(f_Int * (8 * 6)) + 46]), parseFloat(clobarray[(f_Int * (8 * 6)) + 47]));
+
+			f_Bike.m_vec_Vertex[0] = f_Vector1v;
+			f_Bike.m_vec_Vertex[1] = f_Vector2v;
+			f_Bike.m_vec_Vertex[2] = f_Vector3v;
+			f_Bike.m_vec_Vertex[3] = f_Vector4v;
+			f_Bike.m_vec_Vertex[4] = f_Vector5v;
+			f_Bike.m_vec_Vertex[5] = f_Vector6v;
+			f_Bike.m_vec_Vertex[6] = f_Vector7v;
+			f_Bike.m_vec_Vertex[7] = f_Vector8v;
+
+			f_Bike.m_idx_vec_Vertex = 8;
+
+			f_Bike.m_vec_Color[0] = f_Vector1c;
+			f_Bike.m_vec_Color[1] = f_Vector2c;
+			f_Bike.m_vec_Color[2] = f_Vector3c;
+			f_Bike.m_vec_Color[3] = f_Vector4c;
+			f_Bike.m_vec_Color[4] = f_Vector5c;
+			f_Bike.m_vec_Color[5] = f_Vector6c;
+			f_Bike.m_vec_Color[6] = f_Vector7c;
+			f_Bike.m_vec_Color[7] = f_Vector8c;
+			
+			f_Bike.m_idx_vec_Color = 8;
+			
+			var f_KEY = new CubeKEY();
+			
+			f_KEY.acAddBicycle(f_Bike);
+			
+			f_Hesh.m_vec_Key[f_Hesh.m_idx_vec_Key] = f_KEY;
+			f_Hesh.m_idx_vec_Key++;
+			}
+
+		for(var f_Integer = 0; f_Integer < clobnom; f_Integer++)
+			{
+			f_Hesh.m_vec_Cube[f_Hesh.m_idx_vec_Cube] = f_Integer;
+			f_Hesh.m_idx_vec_Cube++;
+			}
+
+		var f_ColorBCK = new BiVector(data.clob_bckred, data.clob_bckgreen, data.clob_bckblue);
+
+		  ////////////
+		 // HESH   //
+		// Target //
+		//f_Hesh.m_Hash = f_Hash;
+
+		f_Hesh.m_bckred = f_ColorBCK.m_X;
+		f_Hesh.m_bckgreen = f_ColorBCK.m_Y;
+		f_Hesh.m_bckblue = f_ColorBCK.m_Z;
+		
+		 //////////////////
+		// Affinity
+		$.post("link-request-getwork-ecn-fast-target-volume.php", {targetid: 1}, function(data2, status)
+			{
+			var response = data2;
+			
+			g_Target = ag_CompileTarget_Script(response);
+
+			var f_TargetScript = new classTarget_JScript();
+	
+			//f_TargetScript.acMerge_ICOtoName();
+			//f_TargetScript.acMergeUpper();
+			
+			f_TargetScript.acFromHesh(f_Hesh, g_Target);
+			
+			//document.getElementById('script').innerHTML = "<textarea unselectable=\"on\" rows=\"10\" cols=\"80\" style=\"user-select: none;\">" + f_TargetScript.m_String + "</textarea>";
+			document.getElementById('scriptninja').innerHTML = "<textarea class=\"mytextarea\" id=\"scriptninja\" onselect=\"return false;\" readonly=\"readonly\" unselectable=\"on\" disabled=\"disabled\" rows=\"10\" cols=\"80\">" + f_TargetScript.m_String + "</textarea>";
+			document.getElementById('cutebay').innerHTML = "<button onclick=\"eval(\"" + f_TargetScript.m_vec_Function[0].m_vec_String + "\");" + f_TargetScript.m_vec_Function[0].m_Name + "();\">" + f_TargetScript.m_vec_Function[0].m_Name + "</button>";
+			
+			console.log("Checkin' Script!");
+			
+			var f_ClearCute = true;
+				
+			try
+				{
+				eval(f_TargetScript.m_vec_Function[0].m_vec_String);
+				
+				g_Target.acEvalNames();
+				
+				ag_StartApp();
+				
+				eval(f_TargetScript.m_vec_Function[0].m_Name + "();");
+				}
+			catch(e)
+				{
+				f_ClearCute = false;
+				//console.log(f_TargetScript.m_vec_Function[0].m_vec_String);
+				//console.log(JSON.stringify(e)); //*****UNCOMMENT FOR SYNTAX THEN PROPER ERROR SOLVE *****
+				throw(e);
+				}
+				
+			if(f_ClearCute == true)
+				{
+				console.log("ALL good! script is clean!");
+				
+				ag_ElementButton("Execute", g_Target.acEvalNamestoString() + f_TargetScript.m_vec_Function[0].m_vec_String + f_TargetScript.m_vec_Function[0].m_Name + "();");
+				}
+			else
+				{
+				console.log("ERRORS in script!");
+				}
+			
+			  ///////////////
+			 // share info
+			//
+			$.post("link-request-getwork-ecn-fast.php", {type: "GWQ_SELECT", query: "SELECT id, mark FROM share WHERE id = " + f_ShareID}, function(data, status)
+				{
+				var resp = data;
+				var resultcount = resp.resultcount;
+
+				if(resultcount == 1)
+					{
+					document.getElementById('grademark').innerHTML = 'GradeMark(highest) - ' + resp.result[1];
+					}
+				}, "json");
+			}, "json");
+		}, "json");
+}
+
 function ag_Wait(f_Length)
 {						
 	for(var f_X = 0; f_X < f_Length; f_X++)
@@ -268,13 +504,13 @@ function onWorkerMessage(event)
 	var f_TargetDifficulty = job.targdiff;
 	var f_ShareResult = job.result;
 	var f_HighGrade = job.mark;
-	
+		
 	if(f_Save == true)
 		{
 		var f_Hash = job.hash;
 		var f_Hesh = job.hesh;
 		
-		console.log("Share Found! Mark = " + f_Target.m_Mark);
+		console.log("Share Found! Mark = " + f_HighGrade);
 		
 			////////////
 		   //
@@ -293,26 +529,26 @@ function onWorkerMessage(event)
 		
 		 ///////////////
 		// post	
-		//$.post("link-request-getwork-ecn-fast.php", {type: "GWQ_SELECT", query: "SELECT id, jobid, blockledger, dated FROM block ORDER BY dated DESC LIMIT 1"}, function(data, status)
-		//	{
-			//var resp = data;
-			//var resultcount = resp.resultcount;
+		$.post("link-request-getwork-ecn-fast.php", {type: "GWQ_SELECT", query: "SELECT id, jobid, blockledger, dated FROM block ORDER BY dated DESC LIMIT 1"}, function(data, status)
+			{
+			var resp = data;
+			var resultcount = resp.resultcount;
 		
-			var g_JobID = 1;
-			var f_BlockID = 1;
+			var g_JobID = 0;
+			var f_BlockID = 0;
 		
-			/*if(resultcount > 0)
+			if(resultcount == 1)
 				{
 				f_BlockID = resp.result[0];
 				g_JobID = resp.result[1];
 				g_JobID++;
 				f_previousblock = resp.result[2];
-				}*/
+				}
+				
+			console.log("f_previousblock = " + f_previousblock);
 				
 			var f_JobID = g_JobID;
-			
 			var f_Block = 0;
-			
 			var f_tx = "";
 			
 			g_EBlocker = 1;
@@ -328,7 +564,7 @@ function onWorkerMessage(event)
 				if((f_Block >= (f_TxLCount - 1)) && (g_EBlocker == 1))
 					{
 					g_EBlocker = 0;
-						
+					
 					var f_job = f_tx + f_previousblock;
 					
 					f_InputHash += f_job;
@@ -349,7 +585,7 @@ function onWorkerMessage(event)
 						if(resultcount <= 0)
 							{
 							console.log("online4");
-							$.post("link-request-getwork-ecn-long-share.php", {type: "GWQ_SHARE", mark: f_Target.m_Mark, jobid: f_JobID, hash: f_Hash.m_OutputHash, owner: "0360ce57376c9433e2a677216e8f5ef14f307b18a71b5c806f508084442ee1f7", bck_red: f_Hesh.m_bckred, bck_green: f_Hesh.m_bckgreen, bck_blue: f_Hesh.m_bckblue}, function(data, status)
+							$.post("link-request-getwork-ecn-long-share.php", {type: "GWQ_SHARE", mark: f_HighGrade, jobid: f_JobID, hash: f_Hash.m_OutputHash, owner: g_Wallet.GetAdr(), bck_red: f_Hesh.m_bckred, bck_green: f_Hesh.m_bckgreen, bck_blue: f_Hesh.m_bckblue}, function(data, status)
 								{		
 								$.post("link-request-getwork-ecn-fast.php", {type: "GWQ_SELECT", query: "SELECT id FROM share WHERE shareledger = '" + f_Hash.m_OutputHash + "'"}, function(data, status)
 									{
@@ -371,54 +607,54 @@ function onWorkerMessage(event)
 										for(var f_Int = 0; f_Int < f_Hesh.m_idx_vec_Cube; f_Int++)
 											{
 											$.post("link-request-getwork-ecn-long-cube.php", {type: "GWQ_CUBE",
-												vert1x: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Vertex[0].m_X,
-												vert1y: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Vertex[0].m_Y,
-												vert1z: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Vertex[0].m_Z,
-												vert2x: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Vertex[1].m_X,
-												vert2y: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Vertex[1].m_Y,
-												vert2z: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Vertex[1].m_Z,
-												vert3x: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Vertex[2].m_X,
-												vert3y: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Vertex[2].m_Y,
-												vert3z: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Vertex[2].m_Z,
-												vert4x: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Vertex[3].m_X,
-												vert4y: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Vertex[3].m_Y,
-												vert4z: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Vertex[3].m_Z,
-												vert5x: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Vertex[4].m_X,
-												vert5y: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Vertex[4].m_Y,
-												vert5z: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Vertex[4].m_Z,
-												vert6x: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Vertex[5].m_X,
-												vert6y: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Vertex[5].m_Y,
-												vert6z: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Vertex[5].m_Z,
-												vert7x: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Vertex[6].m_X,
-												vert7y: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Vertex[6].m_Y,
-												vert7z: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Vertex[6].m_Z,
-												vert8x: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Vertex[7].m_X,
-												vert8y: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Vertex[7].m_Y,
-												vert8z: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Vertex[7].m_Z,
-												vert1r: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Color[0].m_X,
-												vert1g: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Color[0].m_Y,
-												vert1b: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Color[0].m_Z,
-												vert2r: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Color[1].m_X,
-												vert2g: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Color[1].m_Y,
-												vert2b: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Color[1].m_Z,
-												vert3r: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Color[2].m_X,
-												vert3g: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Color[2].m_Y,
-												vert3b: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Color[2].m_Z,
-												vert4r: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Color[3].m_X,
-												vert4g: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Color[3].m_Y,
-												vert4b: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Color[3].m_Z,
-												vert5r: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Color[4].m_X,
-												vert5g: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Color[4].m_Y,
-												vert5b: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Color[4].m_Z,
-												vert6r: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Color[5].m_X,
-												vert6g: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Color[5].m_Y,
-												vert6b: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Color[5].m_Z,
-												vert7r: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Color[6].m_X,
-												vert7g: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Color[6].m_Y,
-												vert7b: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Color[6].m_Z,
-												vert8r: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Color[7].m_X,
-												vert8g: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Color[7].m_Y,
-												vert8b: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Color[7].m_Z,
+												vert1x: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Vertex[0].m_X.toFixed(8),
+												vert1y: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Vertex[0].m_Y.toFixed(8),
+												vert1z: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Vertex[0].m_Z.toFixed(8),
+												vert2x: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Vertex[1].m_X.toFixed(8),
+												vert2y: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Vertex[1].m_Y.toFixed(8),
+												vert2z: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Vertex[1].m_Z.toFixed(8),
+												vert3x: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Vertex[2].m_X.toFixed(8),
+												vert3y: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Vertex[2].m_Y.toFixed(8),
+												vert3z: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Vertex[2].m_Z.toFixed(8),
+												vert4x: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Vertex[3].m_X.toFixed(8),
+												vert4y: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Vertex[3].m_Y.toFixed(8),
+												vert4z: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Vertex[3].m_Z.toFixed(8),
+												vert5x: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Vertex[4].m_X.toFixed(8),
+												vert5y: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Vertex[4].m_Y.toFixed(8),
+												vert5z: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Vertex[4].m_Z.toFixed(8),
+												vert6x: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Vertex[5].m_X.toFixed(8),
+												vert6y: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Vertex[5].m_Y.toFixed(8),
+												vert6z: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Vertex[5].m_Z.toFixed(8),
+												vert7x: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Vertex[6].m_X.toFixed(8),
+												vert7y: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Vertex[6].m_Y.toFixed(8),
+												vert7z: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Vertex[6].m_Z.toFixed(8),
+												vert8x: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Vertex[7].m_X.toFixed(8),
+												vert8y: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Vertex[7].m_Y.toFixed(8),
+												vert8z: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Vertex[7].m_Z.toFixed(8),
+												vert1r: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Color[0].m_X.toFixed(8),
+												vert1g: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Color[0].m_Y.toFixed(8),
+												vert1b: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Color[0].m_Z.toFixed(8),
+												vert2r: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Color[1].m_X.toFixed(8),
+												vert2g: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Color[1].m_Y.toFixed(8),
+												vert2b: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Color[1].m_Z.toFixed(8),
+												vert3r: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Color[2].m_X.toFixed(8),
+												vert3g: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Color[2].m_Y.toFixed(8),
+												vert3b: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Color[2].m_Z.toFixed(8),
+												vert4r: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Color[3].m_X.toFixed(8),
+												vert4g: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Color[3].m_Y.toFixed(8),
+												vert4b: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Color[3].m_Z.toFixed(8),
+												vert5r: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Color[4].m_X.toFixed(8),
+												vert5g: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Color[4].m_Y.toFixed(8),
+												vert5b: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Color[4].m_Z.toFixed(8),
+												vert6r: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Color[5].m_X.toFixed(8),
+												vert6g: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Color[5].m_Y.toFixed(8),
+												vert6b: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Color[5].m_Z.toFixed(8),
+												vert7r: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Color[6].m_X.toFixed(8),
+												vert7g: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Color[6].m_Y.toFixed(8),
+												vert7b: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Color[6].m_Z.toFixed(8),
+												vert8r: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Color[7].m_X.toFixed(8),
+												vert8g: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Color[7].m_Y.toFixed(8),
+												vert8b: f_Hesh.m_vec_Key[f_Hesh.m_vec_Cube[f_Int]].m_Link.m_vec_Color[7].m_Z.toFixed(8),
 												jobid: f_JobID,
 												shareid: f_ShareID}, function(data, status)
 												{
@@ -448,26 +684,38 @@ function onWorkerMessage(event)
 											if((f_ShareResult == "_ECNJSSCRIPTSHARE_") ||
 											   (f_ShareResult == "_ECNHIGHTON_"))
 												{
-												console.log("ECN-SHARESCRIPT v1.1 " + f_ShareResult);	
-												console.log(f_Target.m_vec_Function[0].m_vec_String);
+												console.log("ECN-SHARESCRIPT v1.1 " + f_ShareResult);
 												
-												document.getElementById('script').innerHTML = '<textarea rows="10" cols="80" style="color:#000000">' + f_Target.m_String + '</textarea>';
+												document.getElementById('scriptninja').innerHTML = "<textarea class=\"mytextarea\" id=\"scriptninja\" onselect=\"return false;\" readonly=\"readonly\" unselectable=\"on\" disabled=\"disabled\" rows=\"10\" cols=\"80\">" + f_Target.m_String + "</textarea>";
 												document.getElementById('grademark').innerHTML = 'GradeMark(highest) - ' + f_HighGrade;
 												
-												var f_Clear = true;
-												try
+												if(true)
 													{
-													eval(f_Target.m_vec_Function[0].m_vec_String);
-													}
-												catch(e)
-													{
-													f_Clear = false;
-													throw( e );
-													}
-													
-												if(f_Clear == true)
-													{
-													console.log("ALL good! script is clean!");
+													console.log("Checkin' Script");
+														
+													var f_Clear = true;
+													try
+														{
+														eval(f_Target.m_vec_Function[0].m_vec_String);
+														}
+													catch(e)
+														{
+														f_Clear = false;
+														console.log(JSON.stringify(e));
+														}
+														
+													if(f_Clear == true)
+														{
+														console.log("ALL good! script is clean!");
+														
+														document.getElementById('cutebay').innerHTML = "<button onclick=\"eval(\"" + f_Target.m_vec_Function[0].m_vec_String + "\");" + f_Target.m_vec_Function[0].m_Name + "();\">" + f_Target.m_vec_Function[0].m_Name + "</button>";
+														document.getElementById('voting').innerHTML = "<button onclick=\"ag_VoteShareUp(" + f_ShareID + ");\" style=\"font-family: Abel;\" class=\"font\">Vote Up</button>";
+														document.getElementById('viewlink').innerHTML = "<a href=\"http://www.bitcoin-office.com/ecn-share.php?share=" + f_ShareID + "\" style=\"font-family: Abel;\" class=\"font\">eglx shareView</a>";
+														}
+													else
+														{
+														console.log("ERRORS in script!");
+														}
 													}
 												}
 											else
@@ -482,7 +730,7 @@ function onWorkerMessage(event)
 						}, "json");
 					}
 				});
-			//}, "json");
+			}, "json");
 		}
 	else
 		{

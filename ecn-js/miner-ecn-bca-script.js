@@ -1,9 +1,9 @@
-﻿var CUBE_ADMAX = 15;
+﻿var CUBE_ADMAX = 5;
 var g_swit = 0.75;
 var g_Result = false;
 
 var reportPeriod = 1000;
-var HighPeriod = 420000;
+var HighPeriod = 15000;
 var jobPeriod = 25000;
 var jobPeriodnonces = 360000;
 var maxNonce = 0xFFFFFFFF;
@@ -21,6 +21,7 @@ importScripts('hesh.js');
 importScripts('cube.js');
 importScripts('classtarget.js');
 importScripts('classtarget-js-script.js');
+importScripts('ecn-wwb-principlerunners.js');
 
 function ag_PrepareInsert(f_Table, f_Count, f_Fields, f_Values)
 {
@@ -154,76 +155,14 @@ function ag_CompileTarget_Script(response)
 	
 	var f_Target = new classTarget_JScript();
 	
-	//f_Target.acMergeUpper();
-	
-	f_Target.acGatherNames();
-	
-	f_Target.acGatherICO_jscript_base();
-	
-	f_Target.acMerge_ICOtoName();
+	//f_Target.acMerge_ICOtoName();
 	
 	var f_FunctionCount = 1;
 	for(var f_funcCount = 0; f_funcCount < f_FunctionCount; f_funcCount++)
 		{
 		var f_Function = new classFunction();
-		f_Function.m_Name = "";
-		
-		 ////////////////
-		// Demo 
-		
-		//Inputs Var		
-		/*while(f_Target.m_GRMinput[INSTA_TYPE_VAR_CALL] > -5)
-			{
-			var f_vec_Line = [];
-			var f_idx_vec_Line = 0;
-			
-			if(f_Target.m_GRMinput[INSTA_TYPE_VAR_CALL] > -5)
-				{
-				var f_NewInstaVarDef = new classInsta();
-				f_NewInstaVarDef.m_Type = INSTA_TYPE_VAR_DEF;
-				f_NewInstaVarDef.m_String = "var * = ";
-				f_NewInstaVarDef.m_value = 0.0;
-			
-				var f_NewInstaInputCall = new classInsta();
-				f_NewInstaInputCall.m_Type = INSTA_TYPE_VAR_CALL;
-				f_NewInstaInputCall.m_String = f_Target.ac_next_InputName(INSTA_TYPE_VAR_CALL);
-				f_NewInstaInputCall.m_value = 0.0;
-			
-				f_vec_Line[f_idx_vec_Line] = f_NewInstaVarDef;
-				f_idx_vec_Line++;
-				f_vec_Line[f_idx_vec_Line] = f_NewInstaInputCall;
-				f_idx_vec_Line++;
-			
-				f_Function.m_vec_CodeLineStorage[f_Function.m_idx_vec_CodeLineStorage] = f_vec_Line;
-				f_Function.m_idx_vec_CodeLineStorage++;
-				}
-			}*/
-			
-		//Output string
-		/*while(f_Target.m_GRMoutput[INSTA_TYPE_FUNC_CALL] > -5)
-			{
-			var f_NewInstaVarDef = new classInsta();
-			f_NewInstaVarDef.m_Type = INSTA_TYPE_FUNC_CALL;
-			f_NewInstaVarDef.m_String = f_Target.ac_next_OutputName(INSTA_TYPE_FUNC_CALL);
-			f_NewInstaVarDef.m_value = 0.0;
-				
-			while(f_Target.m_GRMoutput[INSTA_TYPE_VAR_CALL] > -5)
-				{
-				var f_NewInstaInputCall = new classInsta();
-				f_NewInstaInputCall.m_Type = INSTA_TYPE_VAR_CALL;
-				f_NewInstaInputCall.m_String = f_Target.ac_next_OutputName(INSTA_TYPE_VAR_CALL);
-				f_NewInstaInputCall.m_value = 0.0;
-			
-				f_vec_Line[f_idx_vec_Line] = f_NewInstaVarDef;
-				f_idx_vec_Line++;
-				f_vec_Line[f_idx_vec_Line] = f_NewInstaInputCall;
-				f_idx_vec_Line++;
-			
-				f_Function.m_vec_CodeLineStorage[f_Function.m_idx_vec_CodeLineStorage] = f_vec_Line;
-				f_Function.m_idx_vec_CodeLineStorage++;
-				}
-			}*/
-			
+		f_Function.m_Name = "DemoFunction";
+
 		f_Target.m_vec_Function[f_Target.m_idx_vec_Function] = f_Function;
 		f_Target.m_idx_vec_Function++;
 		}	
@@ -237,14 +176,13 @@ function ag_Gen_Hesha(job, progress_report, cb)
 {
 	var data = job.data;
 	var f_JobID = job.jobid;
-	
 	var g_Target = ag_CompileTarget_Script(job.response);	
 	
 	var hashes = 0;
     var timet = (new Date()).getTime() + 1000;
 	var h = (new Date()).getTime() + HighPeriod;
-	
-	job.targdiff = 15000; //Target Mark Threshold
+
+	job.targdiff = 150000000; //Target Mark Threshold
 	var f_TargetFails = 0;
 	job.save = false;
 	job.end = false;
@@ -303,6 +241,15 @@ function ag_Gen_Hesha(job, progress_report, cb)
 			var f_Color6 = new BiVector(Math.random(), Math.random(), Math.random());
 			var f_Color7 = new BiVector(Math.random(), Math.random(), Math.random());
 			var f_Color8 = new BiVector(Math.random(), Math.random(), Math.random());
+			
+			f_Color1.acFix(8);
+			f_Color2.acFix(8);
+			f_Color3.acFix(8);
+			f_Color4.acFix(8);
+			f_Color5.acFix(8);
+			f_Color6.acFix(8);
+			f_Color7.acFix(8);
+			f_Color8.acFix(8);
 
 			  ///////////////////
 			 // staging
@@ -335,6 +282,15 @@ function ag_Gen_Hesha(job, progress_report, cb)
 			f_Vector6.mul(2.0, 2.0, 2.0);
 			f_Vector7.mul(2.0, 2.0, 2.0);
 			f_Vector8.mul(2.0, 2.0, 2.0);
+			
+			f_Vector1.acFix(8);
+			f_Vector2.acFix(8);
+			f_Vector3.acFix(8);
+			f_Vector4.acFix(8);
+			f_Vector5.acFix(8);
+			f_Vector6.acFix(8);
+			f_Vector7.acFix(8);
+			f_Vector8.acFix(8);
 			
 			f_Hash.m_vec_Input[f_Hash.m_idx_vec_Input] = parseInt(f_Vector1.m_X * 1000);
 			f_Hash.m_idx_vec_Input++;
@@ -463,23 +419,14 @@ function ag_Gen_Hesha(job, progress_report, cb)
 			f_Hesh.m_vec_Key[f_Hesh.m_idx_vec_Key] = f_KEY;
 			f_Hesh.m_idx_vec_Key++;
 			}
-
-		var f_LimitSense = (CUBE_ADMAX * 1.0);// * Math.random();
-		
-		//f_LimitSense /= 1.7;
-
-		while(f_Hesh.m_idx_vec_Cube < f_LimitSense)
+			
+		//Sense Limits
+		for(var f_Integer = 0; f_Integer < CUBE_ADMAX; f_Integer++)
 			{
-			var g_Fingat = 85;
-
-			if(g_Fingat > ((f_LimitSense / CUBE_ADMAX) * 80))
-				{
-				var f_Finger = parseInt(Math.random() * CUBE_ADMAX);
-				f_Hesh.m_vec_Cube[f_Hesh.m_idx_vec_Cube] = f_Finger;
-				f_Hesh.m_idx_vec_Cube++;
-				f_Hash.m_vec_Input[f_Hash.m_idx_vec_Input] = f_Finger;
-				f_Hash.m_idx_vec_Input++;
-				}
+			f_Hesh.m_vec_Cube[f_Hesh.m_idx_vec_Cube] = f_Integer;
+			f_Hesh.m_idx_vec_Cube++;
+			f_Hash.m_vec_Input[f_Hash.m_idx_vec_Input] = f_Integer;
+			f_Hash.m_idx_vec_Input++;
 			}
 
 		var f_ColorBCK = new BiVector(Math.random(), Math.random(), Math.random());
@@ -502,82 +449,102 @@ function ag_Gen_Hesha(job, progress_report, cb)
 
 		var f_TargetScript = new classTarget_JScript();
 		
-		f_TargetScript.acGatherNames();
+		//pre-stage
+		g_Target.m_idx_vec_Name = 0;
 		
-		//f_TargetScript.acMergeUpper();
 		f_TargetScript.acFromHesh(f_Hesh, g_Target);
 
-		//console.log(f_TargetScript.m_String);
-		
-		//console.log("steam!");
-
-		if(f_TargetScript.m_idx_vec_Function >= 1)
+		if((f_TargetScript.m_idx_vec_Function >= 1) || 1)
 			{
-			var g_Result1 = true; //f_TargetScript.acCompare(f_Target, 5.55, job.targdiff, true);
-
-			//console.log("tea!");
+			var g_Result1 = true;
 			
-			/*try
+			try
 				{
 				eval(f_TargetScript.m_vec_Function[0].m_vec_String);
 				}
 			catch(e)
 				{
-				//console.log(JSON.stringify(e));
+				if(false) //test print each fail
+					{
+					job.hesh = f_Hesh;
+					job.hash = f_Hash;
+					job.heshtarget = f_TargetScript;
+					job.result = "_ECNJSSCRIPTSHARE_";
+					job.save = true;
+					job.mark = g_Target.m_Mark;
+					run = false;
+					cb(job);
+					throw(e);
+					}
+					
 				g_Result1 = false;
-				}*/
-			
-			if((g_Result1 == true) && (f_TargetScript.m_vec_Function[0].m_vec_String.length > 500))
-				{
-				//console.log("mmm!");*/
-				var f_Result2 = f_TargetScript.acCompare(g_Target, 50.55 * (f_TargetScript.m_vec_Function[0].m_vec_String.length / 1000), job.targdiff);
+				}
 				
-				if(f_Result2 == true)
-				     {
-				     job.hesh = f_Hesh;
-				     job.hash = f_Hash;
-				     job.heshtarget = f_TargetScript;
-				     job.result = "_ECNJSSCRIPTSHARE_";
-				     job.save = true;
-					 job.mark = g_Target.m_Mark;
-				     run = false;
-				     cb(job);
-				     }
+			f_TargetScript.acPowerDown();
+			
+			if((g_Result1 == true)/* && (f_TargetScript.m_vec_Function[0].m_vec_String.length > 500)*/)
+				{
+				//console.log("ECN-Script Passed first evaluation stage");
+			
+				var f_ClearCute = true;
+				
+				try
+					{
+					eval(f_TargetScript.m_vec_Function[0].m_vec_String);
+					
+					g_Target.acEvalNames();
+					
+					ag_StartApp();
+					
+					eval(f_TargetScript.m_vec_Function[0].m_Name + "();");
+					}
+				catch(e)
+					{
+					f_ClearCute = false;
+					//console.log(f_TargetScript.m_vec_Function[0].m_vec_String);	//Solving Biscuit syntax errors with following lines uncommented
+					//throw(e);
+					}
+					
+				f_TargetScript.acPowerDown();
+					
+				if(f_ClearCute == true)
+					{
+					console.log("ECN-Script Passed second evaluation stage");
+					
+					var f_Result2 = f_TargetScript.acCompare(g_Target, 5.0, job.targdiff);
+				
+					if(f_Result2 == true)
+						{
+						job.hesh = f_Hesh;
+						job.hash = f_Hash;
+						job.heshtarget = f_TargetScript;
+						job.result = "_ECNJSSCRIPTSHARE_";
+						job.save = true;
+						job.mark = g_Target.m_Mark;
+						run = false;
+						cb(job);
+						}
+					else
+						{
+						f_TargetFails++;
+						
+						if(f_TargetFails > 10)
+							{
+							job.targdiff -= 100;
+							f_TargetFails = 0;
+							}
+							
+						if(g_Target.m_Mark > g_HightonMark)
+							{
+							g_HightonMark = g_Target.m_Mark;
+							g_Highton = f_Hesh;
+							g_HightonTarget = f_TargetScript;
+							}
+						}
+					}
 				else
 					{
-					f_TargetFails++;
-					//f_TargetScript.acPowerDown();
-					
-					if(f_TargetFails > 2000)
-						{
-						job.targdiff--;
-						f_TargetFails = 0;
-						}
-						
-					if(g_Target.m_Mark > g_HightonMark)
-						{
-						g_HightonMark = g_Target.m_Mark;
-						g_Highton = f_Hesh;
-						g_HightonTarget = f_TargetScript;
-						}
-					}
-				}
-			else
-				{
-				f_TargetFails++;
-				//f_TargetScript.acPowerDown();
-				
-				if(f_TargetFails > 2000)
-					{
-					job.targdiff--;
-					f_TargetFails = 0;
-					}
-					
-				if(g_Target.m_Mark > g_HightonMark)
-					{
-					g_HightonMark = g_Target.m_Mark;
-					g_Highton = f_Hesh;
-					g_HightonTarget = f_TargetScript;
+					//console.log("ERRORS in script!");
 					}
 				}
 				
@@ -585,15 +552,22 @@ function ag_Gen_Hesha(job, progress_report, cb)
 			
 			if(h < (new Date()).getTime())
 				{
-				h = (new Date()).getTime() + HighPeriod;
-				job.hesh = g_Highton;
-				job.hash = g_Highton.m_Hash;
-				job.heshtarget = g_HightonTarget;
-				job.result = "_ECNHIGHTON_";
-				job.save = true;
-				job.mark = g_HightonMark;
-				run = false;
-				cb(job);
+				if(g_HightonMark > job.targdiff / 150.0)
+					{
+					h = (new Date()).getTime() + HighPeriod;
+					job.hesh = g_Highton;
+					job.hash = g_Highton.m_Hash;
+					job.heshtarget = g_HightonTarget;
+					job.result = "_ECNHIGHTON_";
+					job.save = true;
+					job.mark = g_HightonMark;
+					run = false;
+					cb(job);
+					}
+				else
+					{
+					h = (new Date()).getTime() + HighPeriod;
+					}
 				}
 			else
 				{
@@ -611,7 +585,6 @@ function ag_Gen_Hesha(job, progress_report, cb)
 				}
 			}
 		}
-		
 }
 
 ///// Web Worker /////
