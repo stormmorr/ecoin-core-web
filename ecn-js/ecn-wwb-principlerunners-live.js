@@ -42,7 +42,7 @@ g_idx_vec_scrInputHTML++;
 g_vec_scrInputType[g_idx_vec_scrInputType] = INSTA_TYPE_FUNC_CALL;
 g_idx_vec_scrInputType++;
 
-g_vec_scrInputArg[g_idx_vec_scrInputArg] = 4;
+g_vec_scrInputArg[g_idx_vec_scrInputArg] = 3;
 g_idx_vec_scrInputArg++;
 
 var g_vec_Input_Pack_takeMeasure = [];
@@ -1208,6 +1208,10 @@ function ag_StartApp()
 	g_SchemaRef.m_Z = 0.2943;
 	
 	g_ElementIndex = 0;
+	
+	f_URL = 3;
+	
+	g_Y = 5;
 }
 
    //////////////////
@@ -1219,49 +1223,23 @@ var g_idx_vec_Store = 0;
 
 function ag_Archive(f_Data)
 {
-	if(f_Data != undefined)
-		{
-		g_cuteMark.m_vec_Int[5] += 50000;
-		}
-	else
-		{
-		g_cuteMark.m_vec_Int[4] += 50000;
-		}
-	
 	g_vec_Store[g_idx_vec_Store] = f_Data;
 	g_idx_vec_Store++;
 }
 
+function ag_StoreElements(f_TargetScript)
+{
+	g_Collection = new classCollection();
+	
+	for(var f_Count = 0; f_Count < f_TargetScript.m_Collection.m_idx_vec_Element; f_Count++)
+		{
+		g_Collection.m_vec_Element[g_Collection.m_idx_vec_Element] = f_TargetScript.m_Collection.m_vec_Element[f_Count];
+		g_Collection.m_idx_vec_Element++;
+		}
+}
+
 function ac_takeMeasureINTV1(f_StartRange, f_EndRange, f_WeightRangetoStart)  // scale resolution 1-3
 {
-	//precute
-	if(parseInt(f_StartRange) >= 0)
-		{
-		g_cuteMark.m_vec_Int[5] += 10000;
-		}
-	else
-		{
-		g_cuteMark.m_vec_Int[4] += 10000;
-		}
-		
-	if(parseInt(f_EndRange) >= 0)
-		{
-		g_cuteMark.m_vec_Int[5] += 50000;
-		}
-	else
-		{
-		g_cuteMark.m_vec_Int[4] += 50000;
-		}
-		
-	if(parseInt(f_WeightRangetoStart) >= 0)
-		{
-		g_cuteMark.m_vec_Int[5] += 30000;
-		}
-	else
-		{
-		g_cuteMark.m_vec_Int[4] += 30000;
-		}
-		
 	var m_Depth = 3;
 	m_Depth--;
 	
@@ -1440,6 +1418,8 @@ function ag_GenName(f_Vertex)
 				}
 			}
 		}
+		
+	document.getElementById("wwb_content1_output1").innerHTML += f_Result + " ";
 
 	return f_Result;
 }
@@ -1493,29 +1473,11 @@ var g_OutFinger = 0;
 
 function selectOut(f_Finger)
 {
-	if(f_Finger != undefined)
-		{
-		g_cuteMark.m_vec_Int[5] += 50000;
-		}
-	else
-		{
-		g_cuteMark.m_vec_Int[4] += 50000;
-		}
-	
 	g_OutFinger = f_Finger;
 }
 
 function ag_Output(f_DATA)
 {
-	if(f_DATA != undefined)
-		{
-		g_cuteMark.m_vec_Int[5] += 50000;
-		}
-	else
-		{
-		g_cuteMark.m_vec_Int[4] += 50000;
-		}
-	
 	var f_VarCall_List = new classListO(INSTA_TYPE_VAR_CALL);
 				
 	if(g_OutFinger > f_VarCall_List.m_idx_vec_List)
@@ -1609,7 +1571,7 @@ function loadDoc(f_URL, f_ID)
 
 		var lastPartB_String = lastPartA_String.split(">", 2)[0];
 
-		//Xdocument.getElementById(f_OutputDivName).innerHTML += lastPartB_String;
+		document.getElementById(f_OutputDivName).innerHTML += lastPartB_String;
 		});
 }
 
@@ -1620,24 +1582,6 @@ function workUrl(f_URL)
 	
 function ag_Char(f_String, f_Index)
 {
-	if(f_String != undefined)
-		{
-		g_cuteMark.m_vec_Int[5] += 50000;
-		}
-	else
-		{
-		g_cuteMark.m_vec_Int[4] += 50000;
-		}
-		
-	if(f_Index != undefined)
-		{
-		g_cuteMark.m_vec_Int[5] += 50000;
-		}
-	else
-		{
-		g_cuteMark.m_vec_Int[4] += 50000;
-		}
-	
 	if(f_String == undefined)
 		{
 		var f_String = "http://www.google.com";
@@ -1686,62 +1630,40 @@ function ag_ElementButton(f_StringA, f_StringB)
 	
 	if(f_StringA != undefined)
 		{
-		g_cuteMark.m_vec_Int[5] += 50000;
-		
-		if(f_StringA.length > 5)
+		if(f_StringA.length < 3)
 			{
-			g_cuteMark.m_vec_Int[5] += 50000;
-			}
-		else
-			{
-			g_cuteMark.m_vec_Int[4] += 50000;
+			f_StringA = ag_GenName();
 			}
 		}
 	else
 		{
-		g_cuteMark.m_vec_Int[4] += 50000;
+		var f_StringA = ag_GenName();
 		}
 		
 	if(f_StringB != undefined)
 		{
-		g_cuteMark.m_vec_Int[5] += 50000;
-		
-		if(f_StringB.length > 10)
+		if(f_StringB.length < 10)
 			{
-			g_cuteMark.m_vec_Int[5] += 50000;
-			}
-		else
-			{
-			g_cuteMark.m_vec_Int[4] += 50000;
+			f_StringB = "document.getElementById('wwb_deploy_output1').innerHTML += ag_GenName(/*CodeFunctionSquirtorNameServered*/) + ag_GenName(/*CodeFunctionSquirtorNameServered*/);";
 			}
 		}
 	else
 		{
-		g_cuteMark.m_vec_Int[4] += 50000;
+		var f_StringB = "document.getElementById('wwb_deploy_output1').innerHTML += ag_GenName(/*CodeFunctionSquirtorNameServered*/) + ag_GenName(/*CodeFunctionSquirtorNameServered*/);";
 		}
 	
-	//Xconsole.log("ECN-Function-ag_ElementButton f_StringA = " + f_StringA + " f_StringB = " + f_StringB)
-	
-	if(f_StringB != null)
-		{
-		f_StringElement += "<button onclick=\"" + f_StringB + "\">";
-	
-		//FIXME DETECT HTML
-		//if(ag_DetectButtonHTML(f_StringB))
-			
-		if(f_StringA != null)
-			{
-			f_StringElement += f_StringA + "</button>";
-			}
-		else
-			{
-			f_StringElement += "Execute</button>";
-			}
-			
-		//Xconsole.log("F_STRINGELEMENT = " + f_StringElement);
-			
-		//Xdocument.getElementById("cutebay").innerHTML += f_StringElement;
-		}
+	console.log("ECN-Function-ag_ElementButton f_StringA = " + f_StringA + " f_StringB = " + f_StringB)
+
+	f_StringElement += "<button onclick=\"" + f_StringB + "\">";
+
+	//FIXME DETECT HTML
+	//if(ag_DetectButtonHTML(f_StringB))
+		
+	f_StringElement += f_StringA + "</button>";
+		
+	console.log("F_STRINGELEMENT = " + f_StringElement);
+		
+	document.getElementById("cutebay").innerHTML += f_StringElement;
 }
 
 function ag_ElementHeading(f_StringA, f_StringB)
@@ -1750,45 +1672,33 @@ function ag_ElementHeading(f_StringA, f_StringB)
 	
 	if(f_StringA != undefined)
 		{
-		g_cuteMark.m_vec_Int[5] += 50000;
-		
-		if(f_StringA.length > 5)
+		if(f_StringA.length < 3)
 			{
-			g_cuteMark.m_vec_Int[5] += 50000;
-			}
-		else
-			{
-			g_cuteMark.m_vec_Int[4] += 50000;
+			f_StringA = ag_GenName();
 			}
 		}
 	else
 		{
-		g_cuteMark.m_vec_Int[4] += 50000;
+		var f_StringA = ag_GenName();
 		}
 		
 	if(f_StringB != undefined)
 		{
-		g_cuteMark.m_vec_Int[5] += 50000;
-		
-		if(f_StringB.length > 10)
+		if(f_StringB.length < 10)
 			{
-			g_cuteMark.m_vec_Int[5] += 50000;
-			}
-		else
-			{
-			g_cuteMark.m_vec_Int[4] += 50000;
+			f_StringB = "document.getElementById('ecnheading1').innerHTML += ag_GenName(/*CodeFunctionSquirtorNameServered*/) + ag_GenName(/*CodeFunctionSquirtorNameServered*/);";
 			}
 		}
 	else
 		{
-		g_cuteMark.m_vec_Int[4] += 50000;
+		var f_StringB = "document.getElementById('ecnheading1').innerHTML += ag_GenName(/*CodeFunctionSquirtorNameServered*/) + ag_GenName(/*CodeFunctionSquirtorNameServered*/);";
 		}
 	
-	//Xconsole.log("ECN-Function-ag_ElementHeading f_StringA = " + f_StringA + " f_StringB = " + f_StringB);
+	console.log("ECN-Function-ag_ElementHeading f_StringA = " + f_StringA + " f_StringB = " + f_StringB);
 	
 	if(f_StringB != null)
 		{
-		f_StringElement += "<h1 onhover=\"eval(" + f_StringB + ");\">";
+		f_StringElement += "<h1 id=\"ecnheading1\" onhover=\"eval(" + f_StringB + ");\">";
 	
 		//FIXME DETECT HTML
 		//if(ag_DetectButtonHTML(f_StringB))
@@ -1802,7 +1712,7 @@ function ag_ElementHeading(f_StringA, f_StringB)
 			f_StringElement += f_StringB + "</h1>";
 			}
 
-		//Xdocument.getElementById("cutebay").innerHTML += f_StringElement;
+		document.getElementById("cutebay").innerHTML += f_StringElement;
 		}
 	else
 		{
@@ -1820,7 +1730,7 @@ function ag_ElementHeading(f_StringA, f_StringB)
 			f_StringElement += f_StringB + "</h1>";
 			}
 
-		//Xdocument.getElementById("cutebay").innerHTML += f_StringElement;
+		document.getElementById("cutebay").innerHTML += f_StringElement;
 		}
 }
 
@@ -1828,29 +1738,12 @@ function ag_ElementNavbar(f_Array)
 {
 	var f_StringElement = "";
 	
-	//Xconsole.log("ECN-Function-ag_ElementNavbar f_Array = " + JSON.stringify(f_Array));
-	
 	if(f_Array == undefined)
 		{
-		g_Mark.m_vec_Int[3] += 100000;
-		
 		var f_Array = ag_GenArray();
 		}
-	else
-		{
-		g_Mark.m_vec_Int[6] += 100000;
-
-		if(f_Array.length >= 5)
-			{
-			g_Mark.m_vec_Int[6] += 200000;	
-			}
-		else
-			{
-			g_Mark.m_vec_Int[1] += 1000;
-			}
-		}
 	
-	//Xconsole.log("ECN-Function-redux-ag_ElementNavbar f_Array.length = " + f_Array.length);
+	console.log("ECN-Function-redux-ag_ElementNavbar f_Array.length = " + f_Array.length);
 	
 	//FIXME perraps build paragraph quality detection
 	if(f_Array != null)
@@ -1864,7 +1757,7 @@ function ag_ElementNavbar(f_Array)
 			
 		f_StringElement += "</table>";
 			
-		//Xdocument.getElementById("cutebay").innerHTML += f_StringElement;
+		document.getElementById("cutebay").innerHTML += f_StringElement;
 		}
 }
 

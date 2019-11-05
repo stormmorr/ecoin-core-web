@@ -38,6 +38,8 @@ function ecnWallet() {
 	this.m_hdid = "eCookieHash1234";
 	this.m_Open = false;
 	this.m_CloudKeys = false;
+	this.m_MinerAuthority = "";
+	this.m_MinerAuthorityOn = false;
 }
 
 ecnWallet.prototype.newAddress = function (f_Prefix)
@@ -509,12 +511,25 @@ ecnWallet.prototype.SetGold = function (f_eGold)
 
 ecnWallet.prototype.GetAdr = function ()
 {
-	var f_Int = 0;
-	while(this.m_vec_Prefix[f_Int] >= 2)
+	if(this.m_MinerAuthorityOn == false || !this.m_MinerAuthority)
 		{
-		f_Int++;
+		var f_Int = 0;
+		while(this.m_vec_Prefix[f_Int] >= 2)
+			{
+			f_Int++;
+			}
+			
+		return this.m_vec_Adr[f_Int];
 		}
-		
-	return this.m_vec_Adr[f_Int];
+	else
+		{
+		return this.m_MinerAuthority;
+		}
 	//return "2xAWTzERJzdxyvSHvuKXFaEHZpfZ";
+}
+
+ecnWallet.prototype.SetAuthority = function (f_Auth)
+{
+	this.m_MinerAuthority = f_Auth;
+	this.m_MinerAuthorityOn = true;
 }

@@ -1,6 +1,6 @@
 /*
 
-Wallet.js - osirem.com
+cube-etx.js - osirem.com
 Copyright OSIREM LTD (C) 2016
 www.osirem.com www.qage.org www.geopomp.com
 
@@ -21,14 +21,14 @@ function ag_GenerateTransaction(f_A, f_B, f_amt, f_ecnWallet, f_JobID)
 	var f_Index = 0;
 	for(var f_Helly = 0; f_Helly < f_ecnWallet.m_idx_vec_Adr; f_Helly++)
 		{
-		if(f_ecnWallet.m_vec_Adr[f_Helly].length >= 27)
-			{
+		//if(f_ecnWallet.m_vec_Adr[f_Helly].length >= 27)
+			//{
 			if(f_ecnWallet.m_vec_Adr[f_Helly] == f_A)
 				{
 				f_Found = true;
 				f_Index = f_Helly;
 				}
-			}
+			//}
 		}
 
 	if(f_Found)

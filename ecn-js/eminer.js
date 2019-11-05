@@ -294,7 +294,7 @@ function eminer(clob, clobnom, hellynom, clob_bckred, clob_bckgreen, clob_bckblu
 	
 	var f_Reject = false;
 			
-	for(var f_x = 0; f_x < hellynom; f_x++)
+	/*for(var f_x = 0; f_x < hellynom; f_x++)
 		{
 		if(clob[f_x * 6] < -4.0)
 			{
@@ -349,7 +349,7 @@ function eminer(clob, clobnom, hellynom, clob_bckred, clob_bckgreen, clob_bckblu
 			clob[(f_x * 6) + 5] = Math.random();
 			//f_Reject = true;
 			}
-		}
+		}*/
 	
 	var dim = 6 * 8;
 	

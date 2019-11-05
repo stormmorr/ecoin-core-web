@@ -16,6 +16,7 @@ var TotalHeshes = 0;
 var g_Highton = null;
 var g_HightonMark = -500000000000;
 var g_HightonTarget = null;
+var g_HightonGlobalTarget = null;
 
 importScripts('hesh.js');
 importScripts('cube.js');
@@ -172,6 +173,111 @@ function ag_CompileTarget_Script(response)
 	return f_Target;
 }
 
+function ag_LaunchPrep(f_String)
+{
+	var f_Result = "";
+	var f_LP_CT = 0;
+	
+	for(var f_CharCnt = 0; f_CharCnt < f_String.length; f_CharCnt++)
+		{
+		var f_Char = f_String.charAt(f_CharCnt);
+		
+		if(f_LP_CT == 0)
+			{
+			if(f_Char == ' ')
+				{
+				f_Result += f_Char + "ag_LaunchFunction(";
+				f_LP_CT++;
+				}
+			else
+				{
+				f_Result += f_Char;	
+				}
+			}
+		else if(f_LP_CT == 1)
+			{
+			if(f_Char == ')')
+				{
+				f_Result += f_Char;
+				f_LP_CT++;
+				}
+			}
+		else if(f_LP_CT == 2)
+			{
+			if(f_Char == '{')
+				{
+				f_Result += f_Char;
+				f_LP_CT++;
+				}
+			else
+				{
+				f_Result += f_Char;	
+				}
+			}
+		else
+			{
+			f_Result += f_Char;
+			}
+		}
+		
+	/*var f_ListInputVarCall = new classListI(INSTA_TYPE_VAR_CALL);
+				
+	if(f_ListInputVarCall.m_idx_vec_List >= 1)
+		{
+		for(var f_XY = 0; f_XY < f_ListInputVarCall.m_idx_vec_List; f_XY++)
+			{
+			var f_Value = 0;
+			eval("f_Value = " + f_ListInputVarCall.m_vec_List[f_XY] + ";");
+			
+			if(f_Value != 0)
+				{
+				f_Result += "document.getElementById('wwb_base_output1').innerHTML += " + f_ListInputVarCall.m_vec_List[f_XY] + ";";
+				}
+			}
+		}
+		
+	var f_ListControlVarCall = new classListC(INSTA_TYPE_VAR_CALL);
+				
+	if(f_ListControlVarCall.m_idx_vec_List >= 1)
+		{
+		for(var f_XY = 0; f_XY < f_ListControlVarCall.m_idx_vec_List; f_XY++)
+			{
+			var f_Value = 0;
+			eval("f_Value = " + f_ListControlVarCall.m_vec_List[f_XY] + ";");
+			
+			if(f_Value != 0)
+				{
+				f_Result += "document.getElementById('wwb_base_output1').innerHTML += " + f_ListControlVarCall.m_vec_List[f_XY] + ";";
+				}
+			}
+		}
+		
+	var f_ListOutputVarCall = new classListO(INSTA_TYPE_VAR_CALL);
+				
+	if(f_ListOutputVarCall.m_idx_vec_List >= 1)
+		{
+		for(var f_XY = 0; f_XY < f_ListOutputVarCall.m_idx_vec_List; f_XY++)
+			{
+			var f_Value = 0;
+			eval("f_Value = " + f_ListOutputVarCall.m_vec_List[f_XY] + ";");
+			
+			if(f_Value != 0)
+				{
+				f_Result += "document.getElementById('wwb_base_output1').innerHTML += " + f_ListOutputVarCall.m_vec_List[f_XY] + ";";
+				}
+			}
+		}*/
+		
+	/*f_Result += "document.getElementById('wwb_base_output1').innerHTML += f_Result;";
+	f_Result += "document.getElementById('wwb_base_output1').innerHTML += f_URL;";
+	f_Result += "document.getElementById('wwb_base_output1').innerHTML += f_ResultC1;";
+	f_Result += "document.getElementById('wwb_base_output1').innerHTML += f_X;";
+	f_Result += "document.getElementById('wwb_base_output1').innerHTML += f_Y;";
+	f_Result += "document.getElementById('wwb_base_output1').innerHTML += f_Z;";*/
+		
+	return f_Result;
+}
+
 function ag_Gen_Hesha(job, progress_report, cb)
 {
 	var data = job.data;
@@ -182,7 +288,7 @@ function ag_Gen_Hesha(job, progress_report, cb)
     var timet = (new Date()).getTime() + 1000;
 	var h = (new Date()).getTime() + HighPeriod;
 
-	job.targdiff = 150000000; //Target Mark Threshold
+	job.targdiff = 85000000; //Target Mark Threshold
 	var f_TargetFails = 0;
 	job.save = false;
 	job.end = false;
@@ -454,110 +560,88 @@ function ag_Gen_Hesha(job, progress_report, cb)
 		
 		f_TargetScript.acFromHesh(f_Hesh, g_Target);
 
-		if((f_TargetScript.m_idx_vec_Function >= 1) || 1)
+		if((f_TargetScript.m_idx_vec_Function >= 1))
 			{
-			var g_Result1 = true;
-			
+			var f_ClearCute = true;
+			var f_LaunchString = ag_LaunchPrep(f_TargetScript.m_vec_Function[0].m_vec_String);
 			try
 				{
-				eval(f_TargetScript.m_vec_Function[0].m_vec_String);
+				g_cuteMark.acReset();
+					
+				g_Target.acEvalNames();
+				
+				eval(f_LaunchString);
+				
+				ag_StartApp();
+				
+				ag_LaunchFunction();
 				}
 			catch(e)
 				{
-				if(false) //test print each fail
+				//console.log(f_LaunchString);
+				//console.log(JSON.stringify(e)); //*****UNCOMMENT FOR SYNTAX THEN PROPER ERROR SOLVE *****
+				//document.getElementById("scripterrors").innerHTML = "<h3>" + JSON.stringify(e) + "</h3>";
+				//throw(e);
+				f_ClearCute = false;
+				}
+			
+			if((f_ClearCute == true) && (f_TargetScript.m_vec_Function[0].m_vec_String.length > 300))
+				{
+				console.log("ECN-Script gained second evaluation stage");
+				
+				var f_cutemark = g_cuteMark.acSumStuffcuter();
+				
+				console.log("ECN-stat-cute-mark " + f_cutemark);
+				
+				var f_Result2 = f_TargetScript.acCompare(g_Target, 5.0, job.targdiff, f_cutemark);
+			
+				if(f_Result2 == true)
 					{
 					job.hesh = f_Hesh;
 					job.hash = f_Hash;
 					job.heshtarget = f_TargetScript;
+					job.globaltarget = g_Target;
 					job.result = "_ECNJSSCRIPTSHARE_";
 					job.save = true;
 					job.mark = g_Target.m_Mark;
 					run = false;
 					cb(job);
-					throw(e);
-					}
-					
-				g_Result1 = false;
-				}
-				
-			f_TargetScript.acPowerDown();
-			
-			if((g_Result1 == true)/* && (f_TargetScript.m_vec_Function[0].m_vec_String.length > 500)*/)
-				{
-				//console.log("ECN-Script Passed first evaluation stage");
-			
-				var f_ClearCute = true;
-				
-				try
-					{
-					eval(f_TargetScript.m_vec_Function[0].m_vec_String);
-					
-					g_Target.acEvalNames();
-					
-					ag_StartApp();
-					
-					eval(f_TargetScript.m_vec_Function[0].m_Name + "();");
-					}
-				catch(e)
-					{
-					f_ClearCute = false;
-					//console.log(f_TargetScript.m_vec_Function[0].m_vec_String);	//Solving Biscuit syntax errors with following lines uncommented
-					//throw(e);
-					}
-					
-				f_TargetScript.acPowerDown();
-					
-				if(f_ClearCute == true)
-					{
-					console.log("ECN-Script Passed second evaluation stage");
-					
-					var f_Result2 = f_TargetScript.acCompare(g_Target, 5.0, job.targdiff);
-				
-					if(f_Result2 == true)
-						{
-						job.hesh = f_Hesh;
-						job.hash = f_Hash;
-						job.heshtarget = f_TargetScript;
-						job.result = "_ECNJSSCRIPTSHARE_";
-						job.save = true;
-						job.mark = g_Target.m_Mark;
-						run = false;
-						cb(job);
-						}
-					else
-						{
-						f_TargetFails++;
-						
-						if(f_TargetFails > 10)
-							{
-							job.targdiff -= 100;
-							f_TargetFails = 0;
-							}
-							
-						if(g_Target.m_Mark > g_HightonMark)
-							{
-							g_HightonMark = g_Target.m_Mark;
-							g_Highton = f_Hesh;
-							g_HightonTarget = f_TargetScript;
-							}
-						}
 					}
 				else
 					{
-					//console.log("ERRORS in script!");
+					f_TargetFails++;
+					
+					if(f_TargetFails > 10)
+						{
+						job.targdiff -= 100;
+						f_TargetFails = 0;
+						}
+						
+					if(g_Target.m_Mark > g_HightonMark)
+						{
+						g_HightonMark = g_Target.m_Mark;
+						g_Highton = f_Hesh;
+						g_HightonTarget = f_TargetScript;
+						g_HightonGlobalTarget = g_Target;
+						}
 					}
+				}
+			else
+				{
+				console.log("ERRORS in script! or short!");
 				}
 				
 			TotalHeshes++;
 			
 			if(h < (new Date()).getTime())
 				{
-				if(g_HightonMark > job.targdiff / 150.0)
+				if(g_HightonMark > job.targdiff)
 					{
 					h = (new Date()).getTime() + HighPeriod;
 					job.hesh = g_Highton;
 					job.hash = g_Highton.m_Hash;
 					job.heshtarget = g_HightonTarget;
+					job.globaltarget = g_HightonGlobalTarget;
 					job.result = "_ECNHIGHTON_";
 					job.save = true;
 					job.mark = g_HightonMark;
@@ -577,6 +661,7 @@ function ag_Gen_Hesha(job, progress_report, cb)
 					job.hesh = f_Hesh;
 					job.hash = f_Hash;
 					job.heshtarget = f_TargetScript;
+					job.globaltarget = g_Target;
 					job.result = "_ECNREPORT_";
 					job.save = false;
 					job.mark = g_HightonMark;

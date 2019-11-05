@@ -109,9 +109,13 @@ var g_This = new classInsta(g_ThisName, g_ThisType);
 var g_ThisIDX = 0;
 var g_ThisLine = [];
 
+var g_Collection = new classCollection();
+
 var g_currentFunctionInstaCount = 0;
 
 var g_Complete_FUNC_CALL = new classCompleteList(INSTA_TYPE_FUNC_CALL);
+
+var g_cuteMark = new classMark();
 
 function classTarget_JScript()
 {
@@ -407,7 +411,21 @@ classTarget_JScript.prototype.acEvalNames = function()
 		}
 }
 
-classTarget_JScript.prototype.acEvalNamestoString = function()
+function ag_Eval(f_classJTarget)
+{
+	for(var f_Helly = 0; f_Helly < f_classJTarget.m_idx_vec_Name; f_Helly++)
+		{
+		var f_Trigger = "var ";
+		f_Trigger += f_classJTarget.m_vec_Name[f_Helly].m_Name;
+		f_Trigger += " = 0;";
+		
+		eval(f_Trigger);
+		
+		console.log(f_Trigger);
+		}
+}
+
+classTarget_JScript.prototype.acEvalString = function()
 {
 	var f_String = "";
 	for(var f_Helly = 0; f_Helly < this.m_idx_vec_Name; f_Helly++)
@@ -1098,7 +1116,6 @@ classTarget_JScript.prototype.acMark_TestICO = function(f_Target)
 				{
 				g_ThisIDX = f_A;
 				
-				//var f_Achievement = new classAchievement();
 				var f_Achievement = g_vec_scrInputTestCuteFunc[f_A](f_Target, f_testARG);
 			
 				f_Mark.acIncrement(f_Achievement.m_Mark);
@@ -1114,7 +1131,6 @@ classTarget_JScript.prototype.acMark_TestICO = function(f_Target)
 				{
 				g_ThisIDX = f_A;
 				
-				//var f_Achievement = new classAchievement();
 				var f_Achievement = g_vec_scrControlTestCuteFunc[f_A](f_Target, f_testARG);
 			
 				f_Mark.acIncrement(f_Achievement.m_Mark);
@@ -1130,7 +1146,6 @@ classTarget_JScript.prototype.acMark_TestICO = function(f_Target)
 				{
 				g_ThisIDX = f_A;
 				
-				//var f_Achievement = new classAchievement();
 				var f_Achievement = g_vec_scrOutputTestCuteFunc[f_A](f_Target, f_testARG);
 			
 				f_Mark.acIncrement(f_Achievement.m_Mark);
@@ -1146,7 +1161,6 @@ classTarget_JScript.prototype.acMark_TestICO = function(f_Target)
 		f_Run += f_Line.length;
 		}
 		
-	//console.log(JSON.stringify(f_Mark));
 
 	return f_Mark;
 }
@@ -1435,8 +1449,6 @@ classTarget_JScript.prototype.acMark_Bridges = function()
 				}
 			}
 		}
-		
-	//console.log(JSON.stringify(f_Mark));
 		
 	return f_Mark;
 }
@@ -1733,6 +1745,8 @@ function classCountLock(f_Count, f_StringC, f_Type)
 
 classTarget_JScript.prototype.acFromHesh = function(f_Hesh, f_Target)
 {
+	g_Collection = new classCollection();
+	
 	for(var f_Count = 0; f_Count < f_Hesh.m_idx_vec_Cube; f_Count++)
 		{
 		var f_Element = new classElement();
@@ -1740,6 +1754,9 @@ classTarget_JScript.prototype.acFromHesh = function(f_Hesh, f_Target)
 		
 		this.m_Collection.m_vec_Element[this.m_Collection.m_idx_vec_Element] = f_Element;
 		this.m_Collection.m_idx_vec_Element++;
+		
+		g_Collection.m_vec_Element[g_Collection.m_idx_vec_Element] = f_Element;
+		g_Collection.m_idx_vec_Element++;
 		}
 
 	this.m_SchemaTop = 0;
@@ -1755,8 +1772,9 @@ classTarget_JScript.prototype.acFromHesh = function(f_Hesh, f_Target)
 		{
 		var f_FunctionType = 1;
 		var f_ArgumentCount = this.ac_takeMeasurementINTV1(f_Element, 0, 6, 1, 3, 3);
-		var f_Weight = this.ac_takeMeasurementINTV1(f_Element, 1, 4, 0, 3, 3);
+		var f_Weight = this.ac_takeMeasurementINTV1(f_Element, 2, 4, 0, 3, 3);
 		var f_InstaCountMap = this.ac_takeMeasurementINTV1(f_Element, 18, 100, f_Weight, 3, 4);
+		//var f_InstaCountMap = this.ac_takeMeasurementINTV1(f_Element, 80, 90, f_Weight, 3, 4);
 		this.m_InstaCountMap = f_InstaCountMap;
 		g_currentFunctionInstaCount = f_InstaCountMap;
 		
@@ -1775,11 +1793,14 @@ classTarget_JScript.prototype.acFromHesh = function(f_Hesh, f_Target)
 		f_Function.m_vec_Insta[f_Function.m_idx_vec_Insta] = f_Insta;
 		f_Function.m_idx_vec_Insta++;
 		
+		var f_ArgumentBar = "(";
+		
 		for(var f_Int = 0; f_Int < f_ArgumentCount; f_Int++)
 			{
 			if(f_Int > 0)
 				{
 				f_StringA += ", ";
+				f_ArgumentBar += ", ";
 				}
 				
 			var f_VarNameA = this.acMakeUnison(f_Target, ag_GenerateName(this.ac_takeMeasurement(f_Element)), 1, INSTA_TYPE_VAR_CALL, f_Element, f_Function.m_idx_vec_Insta, this.m_idx_vec_Function);
@@ -1789,7 +1810,10 @@ classTarget_JScript.prototype.acFromHesh = function(f_Hesh, f_Target)
 			f_Function.m_idx_vec_Insta++;
 			
 			f_StringA += f_VarNameA;
+			f_ArgumentBar += f_VarNameA;
 			}
+			
+		f_Function.m_ArgumentBar = f_ArgumentBar + ")";
 
 		f_Function.m_vec_String += f_StringA;
 		
@@ -1808,7 +1832,7 @@ classTarget_JScript.prototype.acFromHesh = function(f_Hesh, f_Target)
 			{
 			f_ElementID++;
 			
-			if(f_ElementID >= this.m_Collection.m_idx_vec_Element)
+			if(f_ElementID >= 2)
 				{
 				f_ElementID = 0;
 				}
@@ -2113,16 +2137,18 @@ classTarget_JScript.prototype.acFromHesh = function(f_Hesh, f_Target)
 							}
 						}
 						
-					var f_Name = this.acMakeUnison(f_Target, ag_GenerateName(this.ac_takeMeasurement(f_Element)), 1, INSTA_TYPE_VAR_DEF, f_Element, f_Function.m_idx_vec_Insta, this.m_idx_vec_Function);
+					var f_Name = this.acMakeUnison(f_Target, ag_GenerateName(this.ac_takeMeasurement(f_Element)), 1, INSTA_TYPE_VAR_CALL, f_Element, f_Function.m_idx_vec_Insta, this.m_idx_vec_Function);
 					var f_forVarName = ag_GenerateName(this.ac_takeMeasurement(f_Element));
 					
-					var f_clsName = new clsName(f_forVarName, 1, INSTA_TYPE_VAR_CALL, f_Function.m_idx_vec_Insta, this.m_idx_vec_Function);
+					//var f_clsName = new clsName(f_Name, 1, INSTA_TYPE_VAR_CALL, f_Function.m_idx_vec_Insta, this.m_idx_vec_Function);
 		
-					f_clsName.m_vec_Name[f_clsName.m_idx_vec_Name] = f_clsName;
+					/*f_clsName.m_vec_Name[f_clsName.m_idx_vec_Name] = f_clsName;
 					f_clsName.m_idx_vec_Name++;
 					
 					f_Target.m_vec_Name[f_Target.m_idx_vec_Name] = f_clsName;
-					f_Target.m_idx_vec_Name++;
+					f_Target.m_idx_vec_Name++;*/
+					
+					//var f_Str = "for(var " + f_forVarName + " = 0; " + f_forVarName + " < " + f_Name + "; " + f_forVarName + "++)\n";
 					
 					var f_Str = "for(var " + f_forVarName + " = 0; " + f_forVarName + " < " + f_Name + "; " + f_forVarName + "++)\n";
 					var f_Insta = new classInsta(f_Str, INSTA_TYPE_LOOP_DEF);
@@ -3040,35 +3066,24 @@ function classStateLayer()
 	this.m_Aquisition = [];
 }
 
-classTarget_JScript.prototype.acCompare = function(f_Target, f_QualityRank, f_Grade)
+classTarget_JScript.prototype.acCompare = function(f_Target, f_QualityRank, f_Grade, f_CuteMark)
 {
 	f_Target.m_Mark = 0.0;
 	
 	 /////////////////////
 	// Prime Evaluation
-	//for(var f_XY = 0; f_XY < this.m_idx_vec_Function; f_XY++)
-	//	{
-		//var f_Mark = f_Function.acInterrogate(f_QualityRank);
+	var f_Mark = this.acMark_Bridges();
 		
-		//f_Mark.acIncrement(f_Function.acMark_Bridges());
+	f_Target.m_Mark += f_Mark.acSumStuff(f_QualityRank * 200.0);
+	
+	if(g_EnablePR == true)
+		{
+		var f_MarkICO = this.acMark_TestICO(f_Target);
 		
-		var f_Mark = this.acMark_Bridges();
-		
-		//console.log(JSON.stringify(f_Mark));
-		
-		f_Target.m_Mark += f_Mark.acSumStuff(f_QualityRank * 200.0);
-		
-		if(g_EnablePR == true)
-			{
-			var f_MarkICO = this.acMark_TestICO(f_Target);
-			
-			f_Target.m_Mark += f_MarkICO.acSumStuff(f_QualityRank * 5.0);
-			}
-	//	}
-	//else
-	//	{
-	//	return false;
-	//	}
+		f_Target.m_Mark += f_MarkICO.acSumStuff(f_QualityRank * 5.0);
+		}
+
+	f_Target.m_Mark += f_CuteMark;
 	
 	 ///////////////////////
 	// Prime Conditional
@@ -3213,12 +3228,31 @@ classMark.prototype.acSumStuff = function(f_QualityRank)
 	// Traversing to positive Marking Scheme
 	for(var f_X = this.m_idx_flip; f_X < this.m_idx_vec_Int; f_X++)
 		{
-		f_Mark += this.m_vec_Int[f_X] * 8.5; //(f_QualityRank / 3.0); //adjustment
+		f_Mark += this.m_vec_Int[f_X] * 1.0; //(f_QualityRank / 3.0); //adjustment
 		}
 	
 	for(var f_X = 0; f_X < this.m_idx_flip; f_X++)
 		{
-		f_Mark -= this.m_vec_Int[f_X];// * (f_QualityRank * 5.0);
+		f_Mark -= this.m_vec_Int[f_X] * 9.0;// * (f_QualityRank * 5.0);
+		}
+		
+	return f_Mark;
+}
+
+classMark.prototype.acSumStuffcuter = function(f_QualityRank)
+{
+	var f_Mark = 0.0;
+
+	 ////////////////////////////////////////
+	// Traversing to positive Marking Scheme
+	for(var f_X = this.m_idx_flip; f_X < this.m_idx_vec_Int; f_X++)
+		{
+		f_Mark += this.m_vec_Int[f_X] * 5.0; //(f_QualityRank / 3.0); //adjustment
+		}
+	
+	for(var f_X = 0; f_X < this.m_idx_flip; f_X++)
+		{
+		f_Mark -= this.m_vec_Int[f_X] * 20.0;// * (f_QualityRank * 5.0);
 		}
 		
 	return f_Mark;
@@ -3236,6 +3270,8 @@ function classAchievement()
 function classFunction()
 {
 	this.m_vec_String = "";
+	
+	this.m_ArgumentBar = "";
 	
 	this.m_Type = 0;
 	this.m_Status = 0;
