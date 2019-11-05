@@ -103,6 +103,15 @@
 			$g_CurrentShareOffset = $_GET["ofs"];
 			$f_ShareIDX = 0;
 			}
+
+		if(empty($_GET["vote"]))
+			{
+			$g_VoteC = 0;
+			}
+		else
+			{
+			$g_VoteC = $_GET["vote"];
+			}
 			
 		//Initiate the database class
 		$database = new DBM();
@@ -146,6 +155,7 @@
 	<script>
 		var getip = '<?php echo $getip; ?>';
 		var ShareID = '<?php echo $f_ShareIDX; ?>';
+		var Vote = '<?php echo $g_VoteC; ?>';
 		console.log("User IP Logged at " + getip);
 	</script>
 	<title>ecoin eglx</title>
@@ -180,7 +190,7 @@
 	<script type="text/javascript" src="javascript/miner-identified.js"></script>
     <script type="text/javascript" src="ecn-js/eminer-b.js"></script>
 	<script type="text/javascript" src="ecn-js/work-manager-ecn-bca-script.js"></script>
-	<script type="text/javascript" src="ecn-js/ecn-wwb-principlerunners.js"></script>
+	<script type="text/javascript" src="ecn-js/ecn-wwb-principlerunners-live.js"></script>
 	<script type="text/javascript">
 		function playSound(filename)
 			{
@@ -267,7 +277,7 @@
     <script type="text/javascript">
         $(document).ready(function()
 			{
-            $('#scriptninja').bind("select",function(e)
+            $('#script').bind("select",function(e)
 				{
                 e.preventDefault();
                 $(this).text($(this).text());
@@ -321,30 +331,42 @@
 									<tbody>
 										<tr>
 											<td>
-												<div id="scriptninja">
-												</div>
-												<!--<textarea 
+												<textarea 
 													class="mytextarea"
-													onclick="ag_ClearText();"
 													id="script"
 													onselect="return false;"
 													readonly="readonly"
 													unselectable="on"
 													disabled="disabled"
-													rows="10" cols="80">Test Test Test Test Test Test Test Test Test Test Test Test
-												</textarea>-->
+													rows="10" cols="80">
+												</textarea>
 											</td>
 										</tr>
 										<tr>
 											<td>
 												<div id="cutebay">
 												</div>
+												<div id="scripterrors">
+												</div>
 											</td>
 										</tr>
 										<tr>
 											<td>
-												<button id="voteup" onclick="ag_VoteShareUp(ShareID);">Vote Up
-												</button>
+												<table>
+													<tbody>
+														<tr>
+															<td>
+																<button id="voteup" onclick="ag_VoteShareUp(ShareID, 1);">Vote Up
+																</button>
+															</td>
+															<td>
+																<?php
+																	echo "<a href=\"http://www.bitcoin-office.com/eglx.php?share=" . $f_ShareIDX . "&vote=1\"><h3 style=\"color: rgb(55,55,55);\">Vote UP Link</h3></a>";
+																?>
+															</td>
+														</tr>
+													</tbody>
+												</table>
 											</td>
 										</tr>
 										<tr>
@@ -360,6 +382,42 @@
 																<h3 id="voteresult">
 																	Current Vote is <?php echo $g_Vote; ?>
 																</h3>
+															</td>
+														</tr>
+														<tr>
+															<td>
+																<div id="wwb_base_output1">
+																</div>
+															</td>
+															<td>
+																<div id="wwb_navbar_output1">
+																</div>
+															</td>
+														</tr>
+														<tr>
+															<td>
+																<div id="wwb_content1_output1">
+																</div>
+															</td>
+															<td>
+																<div id="wwb_deploy_output1">
+																</div>
+															</td>
+														</tr>
+														<tr>
+															<td>
+																<div id="wwb_mission_output1">
+																</div>
+															</td>
+															<td>
+																<div id="wwb_mission_output2">
+																</div>
+															</td>
+														</tr>
+														<tr>
+															<td>
+																<div id="biscuitstats">
+																</div>
 															</td>
 														</tr>
 													</tbody>
@@ -391,6 +449,11 @@
 			
 			var g_PEER = '<?php echo $g_PEER; ?>';
 			var g_CurrentShareOffset = '<?php echo $g_CurrentShareOffset; ?>';
+			
+			if(Vote == 1)
+				{
+				ag_VoteShareUp(ShareID, 1);
+				}
 			
 			ag_Load_Share_Script(f_ShareIDX, g_JobID, g_PEER, g_CurrentShareOffset, thetaxx, thetaxy, thetaxz);
 		</script>

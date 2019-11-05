@@ -101,7 +101,7 @@
 	<title>share.ecn.world</title>
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="ecoin statistics global for all ECN world existence">
+    <meta name="description" content="ecoin shares global for all ECN world existence">
 	<meta name="keywords" content="investment blocks, investments, bitcoin, exchange, spend bitcoin, bit.ly, bitcoin investments, buy bitcoin, buy bitcoins, invest in bitcoin, invest bitcoin, bitcoin exchange rate, how to invest in bitcoin, double bitcoin, bitcoin stock, invest btc, bitcoin price, bitcoin wallet, bitcoin exchange, bitcoin mining, buy bitcoin with credit card, buy bitcoins with credit card, bitcoin buy, bitcoin trading, where to buy bitcoins, buy bitcoin instantly, bitcoin miner, bitcoin exchange rate, local bitcoin, bitcoin value, buy bitcoins online, bitcoin calculator, buy bitcoin with debit card, btc, buy bitcoin online, bitcoin credit card, bitcoin chart, bitcoin rate, bitcoin account, buy bitcoins instantly, buy bitcoin credit card, bitcoin market, bitcoins for sale, cpu mining coins, cpu mining calculator, cpu mining software, cpu mining vs gpu mining, geforce nvidia drivers windows, geforce nvidia drivers for windows, mining rig frame diy, mining rig calculator, free bitcoin cloud mining software">
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
@@ -503,7 +503,7 @@
 							
 						$minusHours = 100;
 						
-						$f_txqueryo1 = "SELECT id, shareid, mark, blockledger, targetid, score, difficulty, pledge, dated FROM block WHERE dated > date_sub(NOW(), interval " . $minusHours . " hour) ORDER BY id DESC LIMIT 5";
+						$f_txqueryo1 = "SELECT id, shareid, mark, blockledger, targetid, score, difficulty, pledge, dated FROM block ORDER BY id DESC LIMIT 10";
 				
 						$tx_num_row = $database->num_rows($f_txqueryo1);
 						
@@ -531,9 +531,6 @@
 						echo "</th>";
 						echo "<th>";
 						echo "<h2 style=\"font-family: Abel;\" class=\"font\">DateTime</h2>";
-						echo "</th>";
-						echo "<th>";
-						echo "<h2 style=\"font-family: Abel;\" class=\"font\">Action</h2>";
 						echo "</th>";
 						echo "</tr>";
 						
@@ -568,14 +565,11 @@
 								echo "<td>";
 								echo "<h2 style=\"font-family: Abel;\" class=\"font\">" . $tx_row[8] . "</h2>";
 								echo "</td>";
-								echo "<td>";
-								//echo "<button onclick=\"ag_VoteShareUp(" . $tx_row[1] . ");\" style=\"font-family: Abel;\" class=\"font\">Vote Up</button>";
-								echo "</td>";
 								echo "</tr>";
 								}
 							else
 								{
-								$tx_results = $database->get_results($f_txquery);
+								$tx_results = $database->get_results($f_txqueryo1);
 			
 								// Loop through each row of results..
 								foreach($tx_results as $tx_result)
@@ -605,9 +599,6 @@
 									echo "<td>";
 									echo "<h2 style=\"font-family: Abel;\" class=\"font\">" . $tx_result["dated"] . "</h2>";
 									echo "</td>";
-									echo "<td>";
-									//echo "<button onclick=\"ag_VoteShareUp(" . $tx_result["shareid"] . ");\" style=\"font-family: Abel;\" class=\"font\">Vote Up</button>";
-									echo "</td>";
 									echo "</tr>";
 									}
 								}
@@ -626,7 +617,7 @@
 						echo "<table>";
 						echo "<tbody>";
 						
-						$f_txqueryo2 = "SELECT id, mark, targetid, score, difficulty, pledge, dated FROM share WHERE score > 0 AND jobid = " . $f_JobID . " AND dated > date_sub(NOW(), interval " . $minusHours . " hour) ORDER BY score DESC LIMIT 7";
+						$f_txqueryo2 = "SELECT id, mark, targetid, score, difficulty, pledge, dated FROM share WHERE score > 0 AND jobid = " . $f_JobID . " ORDER BY score DESC LIMIT 8";
 				
 						$tx_num_row = $database->num_rows($f_txqueryo2);
 						
@@ -654,6 +645,9 @@
 						echo "</th>";
 						echo "<th>";
 						echo "<h2 style=\"font-family: Abel;\" class=\"font\">Action</h2>";
+						echo "</th>";
+						echo "<th>";
+						echo "<h2 style=\"font-family: Abel;\" class=\"font\">Action Link</h2>";
 						echo "</th>";
 						echo "</tr>";
 						
@@ -686,7 +680,10 @@
 								echo "<h2 style=\"font-family: Abel;\" class=\"font\">" . $tx_row[6] . "</h2>";
 								echo "</td>";
 								echo "<td>";
-								echo "<button onclick=\"ag_VoteShareUp(" . $tx_row[0] . ");\" style=\"font-family: Abel;\" class=\"font\">Vote Up</button>";
+								echo "<button onclick=\"ag_VoteShareUp(" . $tx_row[0] . ", 2);\" style=\"font-family: Abel;\" class=\"font\">Vote Up</button>";
+								echo "</td>";
+								echo "<td>";
+								echo "<a href=\"http://www.bitcoin-office.com/eglx.php?share=" . $tx_row[0] . "&vote=1\"><h3 style=\"color: rgb(55,55,55);\">Vote UP Link</h3></a>";
 								echo "</td>";
 								echo "</tr>";
 								}
@@ -720,7 +717,10 @@
 									echo "<h2 style=\"font-family: Abel;\" class=\"font\">" . $tx_result["dated"] . "</h2>";
 									echo "</td>";
 									echo "<td>";
-									echo "<button onclick=\"ag_VoteShareUp(" . $tx_result["id"] . ");\" style=\"font-family: Abel;\" class=\"font\">Vote Up</button>";
+									echo "<button onclick=\"ag_VoteShareUp(" . $tx_result["id"] . ", 2);\" style=\"font-family: Abel;\" class=\"font\">Vote Up</button>";
+									echo "</td>";
+									echo "<td>";
+									echo "<a href=\"http://www.bitcoin-office.com/eglx.php?share=" . $tx_result["id"] . "&vote=1\"><h3 style=\"color: rgb(55,55,55);\">Vote UP Link</h3></a>";
 									echo "</td>";
 									echo "</tr>";
 									}
@@ -742,7 +742,7 @@
 
 						if($iddesc == 0)
 							{
-							$f_txqueryo3 = "SELECT id, mark, jobid, targetid, difficulty, score, pledge, dated FROM share WHERE owner = '" . $owner . "' AND jobid = " . $f_JobID . " AND dated > date_sub(NOW(), interval " . $minusHours . " hour) ORDER BY mark DESC LIMIT 25";
+							$f_txqueryo3 = "SELECT id, mark, jobid, targetid, difficulty, score, pledge, dated FROM share WHERE owner = '" . $owner . "' AND jobid = " . $f_JobID . " ORDER BY mark DESC LIMIT 25";
 					
 							$tx_num_row = $database->num_rows($f_txqueryo3);
 							
@@ -767,6 +767,9 @@
 							echo "</th>";
 							echo "<th>";
 							echo "<h2 style=\"font-family: Abel;\" class=\"font\">Action</h2>";
+							echo "</th>";
+							echo "<th>";
+							echo "<h2 style=\"font-family: Abel;\" class=\"font\">Action Link</h2>";
 							echo "</th>";
 							echo "</tr>";
 							
@@ -796,7 +799,10 @@
 									echo "<h2 style=\"font-family: Abel;\" class=\"font\">" . $tx_row[7] . "</h2>";
 									echo "</td>";
 									echo "<td>";
-									echo "<button onclick=\"ag_VoteShareUp(" . $tx_row[0] . ");\" style=\"font-family: Abel;\" class=\"font\">Vote Up</button>";
+									echo "<button onclick=\"ag_VoteShareUp(" . $tx_row[0] . ", 2);\" style=\"font-family: Abel;\" class=\"font\">Vote Up</button>";
+									echo "</td>";
+									echo "<td>";
+									echo "<a href=\"http://www.bitcoin-office.com/eglx.php?share=" . $tx_row[0] . "&vote=1\"><h3 style=\"color: rgb(55,55,55);\">Vote UP Link</h3></a>";
 									echo "</td>";
 									echo "</tr>";
 									}
@@ -827,7 +833,10 @@
 										echo "<h2 style=\"font-family: Abel;\" class=\"font\">" . $tx_result["dated"] . "</h2>";
 										echo "</td>";
 										echo "<td>";
-										echo "<button onclick=\"ag_VoteShareUp(" . $tx_result["id"] . ");\" style=\"font-family: Abel;\" class=\"font\">Vote Up</button>";
+										echo "<button onclick=\"ag_VoteShareUp(" . $tx_result["id"] . ", 2);\" style=\"font-family: Abel;\" class=\"font\">Vote Up</button>";
+										echo "</td>";
+										echo "<td>";
+										echo "<a href=\"http://www.bitcoin-office.com/eglx.php?share=" . $tx_result["id"] . "&vote=1\"><h3 style=\"color: rgb(55,55,55);\">Vote UP Link</h3></a>";
 										echo "</td>";
 										echo "</tr>";
 										}
@@ -844,7 +853,7 @@
 							}
 						else if($iddesc == 1)
 							{
-							$f_txqueryo4 = "SELECT id, mark, jobid, targetid, difficulty, score, pledge, dated FROM share WHERE jobid = " . $f_JobID . " AND owner = '" . $owner . "' AND dated > date_sub(NOW(), interval " . $minusHours . " hour) ORDER BY id DESC LIMIT 50";
+							$f_txqueryo4 = "SELECT id, mark, jobid, targetid, difficulty, score, pledge, dated FROM share WHERE jobid = " . $f_JobID . " AND owner = '" . $owner . "' ORDER BY id DESC LIMIT 50";
 					
 							$tx_num_row = $database->num_rows($f_txqueryo4);
 							
@@ -869,6 +878,9 @@
 							echo "</th>";
 							echo "<th>";
 							echo "<h2 style=\"font-family: Abel;\" class=\"font\">Action</h2>";
+							echo "</th>";
+							echo "<th>";
+							echo "<h2 style=\"font-family: Abel;\" class=\"font\">Action Link</h2>";
 							echo "</th>";
 							echo "</tr>";
 							
@@ -898,7 +910,10 @@
 									echo "<h2 style=\"font-family: Abel;\" class=\"font\">" . $tx_row[7] . "</h2>";
 									echo "</td>";
 									echo "<td>";
-									echo "<button onclick=\"ag_VoteShareUp(" . $tx_row[0] . ");\" style=\"font-family: Abel;\" class=\"font\">Vote Up</button>";
+									echo "<button onclick=\"ag_VoteShareUp(" . $tx_row[0] . ", 2);\" style=\"font-family: Abel;\" class=\"font\">Vote Up</button>";
+									echo "</td>";
+									echo "<td>";
+									echo "<a href=\"http://www.bitcoin-office.com/eglx.php?share=" . $tx_row[0] . "&vote=1\"><h3 style=\"color: rgb(55,55,55);\">Vote UP Link</h3></a>";
 									echo "</td>";
 									echo "</tr>";
 									}
@@ -929,7 +944,10 @@
 										echo "<h2 style=\"font-family: Abel;\" class=\"font\">" . $tx_result["dated"] . "</h2>";
 										echo "</td>";
 										echo "<td>";
-										echo "<button onclick=\"ag_VoteShareUp(" . $tx_result["id"] . ");\" style=\"font-family: Abel;\" class=\"font\">Vote Up</button>";
+										echo "<button onclick=\"ag_VoteShareUp(" . $tx_result["id"] . ", 2);\" style=\"font-family: Abel;\" class=\"font\">Vote Up</button>";
+										echo "</td>";
+										echo "<td>";
+										echo "<a href=\"http://www.bitcoin-office.com/eglx.php?share=" . $tx_result["id"] . "&vote=1\"><h3 style=\"color: rgb(55,55,55);\">Vote UP Link</h3></a>";
 										echo "</td>";
 										echo "</tr>";
 										}
