@@ -187,7 +187,8 @@
 	<script type="text/javascript" src="ecn-js/classtarget.js"></script>
 	<script type="text/javascript" src="ecn-js/classtarget-js-script.js"></script>
 	<script type="text/javascript" src="ecn-js/wallet.js"></script>
-	<script type="text/javascript" src="javascript/miner-identified.js"></script>
+	<script type="text/javascript" src="javascript/base64.js"></script>
+	<script type="text/javascript" src="javascript/miner-identified-delegate-trading.js"></script>
     <script type="text/javascript" src="ecn-js/eminer-b.js"></script>
 	<script type="text/javascript" src="ecn-js/work-manager-ecn-bca-script.js"></script>
 	<script type="text/javascript" src="ecn-js/ecn-wwb-principlerunners-live.js"></script>

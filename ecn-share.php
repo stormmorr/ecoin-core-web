@@ -126,7 +126,8 @@
 	<script type="text/javascript" src="ecn-js/cube.js"></script>
 	<script type="text/javascript" src="ecn-js/classtarget.js"></script>
 	<script type="text/javascript" src="ecn-js/wallet.js"></script>
-	<script type="text/javascript" src="javascript/miner-identified.js"></script>
+	<script type="text/javascript" src="javascript/base64.js"></script>
+	<script type="text/javascript" src="javascript/miner-identified-delegate-trading.js"></script>
     <script type="text/javascript" src="ecn-js/eminer.js"></script>
 	<script type="text/javascript">
 		function playSound(filename)
@@ -466,7 +467,7 @@
 					</td>
 					<td>
 						<script>
-							g_Wallet.GetBalance(false, function(f_Balance)
+							/*g_Wallet.GetBalance(false, function(f_Balance)
 								{
 								document.getElementById("ownerbalance").innerHTML = "<h2 style=\"font-family: Abel;\" class=\"font\">" + f_Balance + " ECN ecoin</h2>";
 									
@@ -474,7 +475,7 @@
 									{
 									document.getElementById("poundsbalance").innerHTML = "<h2 style=\"font-family: Abel;\" class=\"font\">£" + f_PoundsBalance + "</h2>";
 									});
-								});
+								});*/
 						</script>
 						<div id="ownerbalance"></div>
 					</td>
