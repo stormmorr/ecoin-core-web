@@ -130,7 +130,7 @@ else
 		setCookie("ecn_adrcnt", ecn_adrcnt, 2500);
 		}
 				
-	$.post("link-request-getwork-ecn-fast.php", {type: "GWQ_SELECT", query: "SELECT id, keyadr, keymas FROM multiwallet WHERE owner = '" + ecn_walletadr_address[0] + "' AND status >= 0"}, function(data, status)
+	$.post("http://www.bitcoin-office.com/link-request-getwork-ecn-fast.php", {type: "GWQ_SELECT", query: "SELECT id, keyadr, keymas FROM multiwallet WHERE owner = '" + ecn_walletadr_address[0] + "' AND status >= 0"}, function(data, status)
 		{
 		var resp = data;
 		var resultcount = resp.resultcount;
@@ -146,6 +146,7 @@ else
 			ecn_walletadr_prefix[ecn_adrcnt] = 1;
 			ecn_walletadr_address[ecn_adrcnt] = f_Multikeyadr;
 			ecn_walletadr_masterkey[ecn_adrcnt] = f_Multikeymas;
+		
 			
 			const f_Key = bitcoin.ECPair.fromWIF(ecn_walletadr_masterkey[ecn_adrcnt]);
 			
@@ -172,9 +173,9 @@ else
 				ecn_adrcnt++;
 				}
 			}
+		
+		g_Wallet.Update();
+
+		console.log("ECN:::WALLET ADDRESS: " + g_Wallet.GetAdr());
 		}, "json");
 	}
-	
-g_Wallet.Update();
-
-console.log("ECN:::WALLET ADDRESS: " + g_Wallet.GetAdr());
