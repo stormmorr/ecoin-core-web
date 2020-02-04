@@ -374,169 +374,10 @@ function ag_GetEValue(callback)
 
 ecnWallet.prototype.GetEValue = function(callback)
 {
-	var f_Circulationamt = 0.0;
-	
-	console.log("ECN::GetEValue::*******************");
-
-	if(this.m_RefreshEValueLVL > 1)
+	ag_GetEValue(function(f_Price)
 		{
-		$.post("http://www.bitcoin-office.com/link-request-getamt-ecn-fast.php", {type: "GWQ_SELECT", query: "SELECT amt FROM address"}, function(data, status)
-			{
-			var response = data;
-			var amtresult = response.ciramt;
-			
-			this.m_Circulationamt = amtresult;
-			
-			console.log("this.m_Circulationamt = " + this.m_Circulationamt);
-			
-			$.post("http://www.bitcoin-office.com/link-request-getwork-ecn-fast.php", {type: "GWQ_SELECT", query: "SELECT price, tx, unit, visits FROM coin WHERE assetofficeid = 3"}, function(data, status)
-				{
-				var resp = data;
-				var result = resp.result;
-				var resultcount = resp.resultcount;
-			
-				if(resultcount == 1)
-					{
-					this.m_EVALUE = result[0];
-					this.m_Price = this.m_EVALUE;
-					
-					this.m_TX = result[1];
-					this.m_Unit = result[2];
-					
-					console.log("this.m_Price = " + this.m_Price + " this.m_TX = " + this.m_TX);
-					
-					var f_Visits = parseInt(result[3]);
-					
-					g_EVALUE = this.m_EVALUE;
-
-					if(g_TX < this.m_TX)
-						{
-						g_TX = this.m_TX;
-						}
-						
-					  //////////////
-					 //START COIN//
-					//
-					if(this.m_Price <= 0.0)
-						{
-						var f_StorageWealth = 50.0;
-						
-						this.m_TX = 5.09000015;
-						this.m_Price = (f_StorageWealth + this.m_TX) / this.f_Circulationamt;
-						
-						g_EVALUE = this.m_Price;
-						}
-
-					   ////////////////////
-					  // Equation
-					 // Storage Wealth
-					// Value/Worth
-					if(g_TX != this.m_TX)
-						{
-						if(this.m_Circulationamt > 0.0)
-							{
-							this.m_Price = ((g_EVALUE * this.m_Circulationamt) + this.m_TX) / this.m_Circulationamt;
-							g_EVALUE = this.m_Price;
-							}
-
-						var f_coinupvalue = [];
-						var f_coinupfield = [];
-
-						f_coinupfield[0] = "price";
-						f_coinupfield[1] = "tx";
-						f_coinupfield[2] = "unit";
-						f_coinupfield[3] = "visits";
-						
-						f_coinupvalue[0] = this.m_Price;
-						f_coinupvalue[1] = this.m_TX;
-						f_coinupvalue[2] = this.m_Unit;
-						f_coinupvalue[3] = f_Visits + 1;
-						
-						var f_ResultcoinUP = "";
-						for(var f_i = 0; f_i < 4; f_i++)
-							{
-							f_ResultcoinUP += f_coinupfield[f_i] + "::::";
-							f_ResultcoinUP += f_coinupvalue[f_i] + "::::";
-							}
-
-						$.post("http://www.bitcoin-office.com/link-request-getwork-ecn-update.php", {type: "GWQ_UPDATE", table: "coin", count: 4, string: f_ResultcoinUP, id: 2}, function(data, status)
-							{
-							g_TX = this.m_TX;
-							
-							this.m_RefreshEValueLVL = 1;
-							
-							this.m_RefreshEValueCNT--;
-							if(this.m_RefreshEValueCNT <= 0)
-								{
-								this.m_RefreshEValueCNT = 8;
-								this.m_RefreshEValueLVL = 2;
-								}
-							
-							callback(g_EVALUE);
-							}, "json");
-						}
-					else
-						{
-						this.m_RefreshEValueLVL = 1;
-						
-						this.m_RefreshEValueCNT--;
-						if(this.m_RefreshEValueCNT <= 0)
-							{
-							this.m_RefreshEValueCNT = 8;
-							this.m_RefreshEValueLVL = 2;
-							}
-							
-						callback(g_EVALUE);
-						}
-					}
-				else if(resultcount <= 0)
-					{
-					var f_coinupfield = [];
-					var f_coinupvalue = [];
-					
-					f_coinupfield[0] = "assetofficeid";
-					f_coinupfield[1] = "price";
-					f_coinupfield[2] = "tx";
-					f_coinupfield[3] = "unit";
-					f_coinupfield[4] = "visits";
-					
-					f_coinupvalue[0] = 3;
-					f_coinupvalue[1] = 1.0;
-					f_coinupvalue[2] = 15.0;
-					f_coinupvalue[3] = 5.0;
-					f_coinupvalue[4] = 0;
-					
-					var f_Resulttxcoin = "";
-					for(var f_i = 0; f_i < 5; f_i++)
-						{
-						f_Resulttxcoin += f_coinupfield[f_i] + "::::";
-						f_Resulttxcoin += f_coinupvalue[f_i] + "::::";
-						}
-
-					$.post("http://www.bitcoin-office.com/link-request-getwork-ecn-insert.php", {type: "GWQ_INSERT", table: "coin", count: 5, string: f_Resulttxcoin}, function(data, status)
-						{
-						this.m_Price = 1.0;
-						this.m_TX = 15.0;
-						
-						g_TX = this.m_TX;
-						
-						this.m_RefreshEValueLVL = 1;
-						
-						callback(this.m_Price);
-						}, "json");
-					}
-				}, "json");
-			}, "json");
-		}
-	else
-		{
-		this.m_RefreshEValueCNT--;
-		if(this.m_RefreshEValueCNT <= 0)
-			{
-			this.m_RefreshEValueCNT = 8;
-			this.m_RefreshEValueLVL = 2;
-			}
-		}
+		callback(f_Price);
+		});
 		
 	//Execution -falls through
 }
@@ -546,116 +387,77 @@ ecnWallet.prototype.GetEValue = function(callback)
 //
 function ag_GetBalance(f_InPoundsSterling, callback)
 {	
-	if(g_Wallet.m_RefreshLVL > 0)
+	g_Wallet.m_Bank_ecoin = 0.0;
+	
+	g_WBlocker = 1;
+	
+	g_WalletPopFeeder = new fillPopulusFeeder(ecn_adrcnt);
+	
+	for(var f_Helly = 0; f_Helly < ecn_adrcnt; f_Helly++)
 		{
-		g_Wallet.m_Bank_ecoin = 0.0;
-		g_Wallet.m_RefreshLVL = 0;
-
-		//if(g_Wallet.m_RefreshLVL > 1)
-		//	{
-		//	//RefreshLVL == 2 rerun the verification
-		//	}
-		
-		g_WBlocker = 1;
-		
-		g_WalletPopFeeder = new fillPopulusFeeder(ecn_adrcnt);
-		
-		for(var f_Helly = 0; f_Helly < ecn_adrcnt; f_Helly++)
+		if(ecn_walletadr_prefix[f_Helly] == 1)
 			{
-			if(ecn_walletadr_prefix[f_Helly] == 1)
+			$.post("http://www.bitcoin-office.com/link-request-getwork-ecn-fast-block.php", {type: "GWQ_SELECT", query: "SELECT amt FROM address WHERE owner = '" + ecn_walletadr_address[f_Helly] + "'", block: f_Helly}, function(data, status)
 				{
-				$.post("http://www.bitcoin-office.com/link-request-getwork-ecn-fast-block.php", {type: "GWQ_SELECT", query: "SELECT amt FROM address WHERE owner = '" + ecn_walletadr_address[f_Helly] + "'", block: f_Helly}, function(data, status)
-					{
-					var response = data;
-					var balresult = response.result;
-					var balresultcount = response.resultcount;
-					var f_Block = response.block;
+				var response = data;
+				var balresult = response.result;
+				var balresultcount = response.resultcount;
+				var f_Block = response.block;
 
-					if(balresultcount == 1)
-						{
-						g_Wallet.m_Bank_ecoin += parseFloat(balresult[0]);
-						console.log("balresult[0] = " + balresult[0]);
-						}
-					
-					g_WalletPopFeeder.acFeed(f_Block);
-					
-					if((g_WalletPopFeeder.acCheckEmpty() == true) && (g_WBlocker == 1))
-						{
-						g_WBlocker = 0;
-						
-						if(f_InPoundsSterling)
-							{
-							ag_GetEValue(function(f_Price) 
-								{
-								console.log("f_Price = " + f_Price);
-								console.log("g_Wallet.m_Bank_ecoin = " + g_Wallet.m_Bank_ecoin);
-								
-								var f_Balance = parseFloat(g_Wallet.m_Bank_ecoin) * parseFloat(f_Price);
-							
-								f_Balance = parseFloat(f_Balance).toFixed(2);
-								
-								console.log("f_Balance = " + f_Balance);
-								callback(f_Balance);
-								}, g_Wallet);
-							}
-						else
-							{
-							callback(g_Wallet.m_Bank_ecoin);
-							}
-						callback(0.0);
-						}
-					}, "json");
-				}
-			else
-				{
-				g_WalletPopFeeder.acFeed(f_Helly);
-					
+				if(balresultcount == 1)
+					{
+					g_Wallet.m_Bank_ecoin += parseFloat(balresult[0]);
+					}
+				
+				g_WalletPopFeeder.acFeed(f_Block);
+				
 				if((g_WalletPopFeeder.acCheckEmpty() == true) && (g_WBlocker == 1))
 					{
 					g_WBlocker = 0;
 					
 					if(f_InPoundsSterling)
 						{
-						g_Wallet.GetEValue(function(f_Price) 
+						ag_GetEValue(function(f_Price) 
 							{
 							var f_Balance = parseFloat(g_Wallet.m_Bank_ecoin) * parseFloat(f_Price);
 						
 							f_Balance = parseFloat(f_Balance).toFixed(2);
-						
+							
 							callback(f_Balance);
-							});
+							}, g_Wallet);
 						}
 					else
 						{
 						callback(g_Wallet.m_Bank_ecoin);
 						}
+					callback(0.0);
 					}
-				}
-			}
-		}
-	else
-		{
-		g_Wallet.m_RefreshCNT++;
-		if(g_Wallet.m_RefreshCNT > 5)
-			{
-			g_Wallet.m_RefreshCNT = 0;
-			g_Wallet.m_RefreshLVL = 2;
-			}
-			
-		if(f_InPoundsSterling)
-			{
-			g_Wallet.GetEValue(function(f_Price)
-				{
-				var f_Balance = parseFloat(g_Wallet.m_Bank_ecoin) * parseFloat(f_Price);
-				
-				f_Balance = parseFloat(f_Balance).toFixed(2);
-				
-				callback(f_Balance);
-				});
+				}, "json");
 			}
 		else
 			{
-			callback(g_Wallet.m_Bank_ecoin);
+			g_WalletPopFeeder.acFeed(f_Helly);
+				
+			if((g_WalletPopFeeder.acCheckEmpty() == true) && (g_WBlocker == 1))
+				{
+				g_WBlocker = 0;
+				
+				if(f_InPoundsSterling)
+					{
+					g_Wallet.GetEValue(function(f_Price) 
+						{
+						var f_Balance = parseFloat(g_Wallet.m_Bank_ecoin) * parseFloat(f_Price);
+					
+						f_Balance = parseFloat(f_Balance).toFixed(2);
+					
+						callback(f_Balance);
+						});
+					}
+				else
+					{
+					callback(g_Wallet.m_Bank_ecoin);
+					}
+				}
 			}
 		}
 }
